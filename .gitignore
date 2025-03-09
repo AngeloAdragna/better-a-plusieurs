@@ -1,1 +1,38 @@
-.idea
+# Ignorer les fichiers de configuration de l'environnement
+.env
+.env.local
+.env.*.local
+
+# Ignorer les fichiers de logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorer les dossiers de build
+/build
+/dist
+
+# Ignorer les fichiers de configuration de l'éditeur
+.vscode
+
+# Ignorer les fichiers de cache de Node
+node_modules/
+
+# Ignorer les fichiers de configuration de l'IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Ignorer les fichiers de cache de l'OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
