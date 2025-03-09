@@ -8,4 +8,4 @@
 2- Tu fais `node main.js`\
 3 - t'ouvre un autre terminal tu fais `cd client`\
 4 - tu fais ``npm run dev``\
-5 - tu ouvres ton navigateur et tu vas sur `localhost:5173`\
+5 - tu ouvres ton navigateur et tu vas sur `localhost:5173`
