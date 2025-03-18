@@ -1,7 +1,3 @@
-Voici une version reformulée pour le fichier README :  
-
----
-
 ## Installation et lancement du projet  
 
 ### 1. Installation des dépendances  
@@ -32,7 +28,3 @@ Ouvrir un navigateur et se rendre à l'adresse :
 ```
 http://localhost:5173  
 ```  
-
----
-
-Cette version est plus claire et mieux structurée pour un README.
