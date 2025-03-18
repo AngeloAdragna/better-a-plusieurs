@@ -1,11 +1,38 @@
-# Setup initial
-1. `cd client`
-2. `npm install`
+Voici une version reformulée pour le fichier README :  
 
-# Lancer le projet
+---
 
-1 - Tu vas dans serveur dans un premier terminal ```cd server```\
-2- Tu fais `node main.js`\
-3 - t'ouvre un autre terminal tu fais `cd client`\
-4 - tu fais ``npm run dev``\
-5 - tu ouvres npm install express@4ton navigateur et tu vas sur `localhost:5173`
+## Installation et lancement du projet  
+
+### 1. Installation des dépendances  
+Dans le dossier `client`, exécuter la commande suivante :  
+```sh
+cd client  
+npm install  
+```
+
+### 2. Lancement du projet  
+
+#### Démarrer le serveur  
+Ouvrir un premier terminal et exécuter :  
+```sh
+cd server  
+node main.js  
+```
+
+#### Démarrer le client  
+Dans un second terminal, exécuter les commandes suivantes :  
+```sh
+cd client  
+npm run dev  
+```
+
+### 3. Accès à l'application  
+Ouvrir un navigateur et se rendre à l'adresse :  
+```
+http://localhost:5173  
+```  
+
+---
+
+Cette version est plus claire et mieux structurée pour un README.
