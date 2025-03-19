@@ -1,5 +1,5 @@
 import React from "react";
-import WebSocketChat from "./WebSocketChat";
+import WebSocketChat from "./components/WebSocketChat";
 
 function App() {
     return (
