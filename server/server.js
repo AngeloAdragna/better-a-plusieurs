@@ -22,6 +22,16 @@ io.on("connection", (socket) => {
         io.emit("message", data);
     });
 
+    socket.on("pause", (data) => {
+        console.log(`Réception d'un évènement Pause : ${data}`)
+        socket.broadcast.emit("pause", data)
+    });
+
+    socket.on("play", (data) => {
+        console.log(`Réception d'un évènement Play : ${data}`)
+        socket.broadcast.emit("play", data)
+    });
+
     socket.on("disconnect", () => {
         console.log("Utilisateur déconnecté");
     });
