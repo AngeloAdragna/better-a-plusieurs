@@ -1,0 +1,7 @@
+.RecommandationContent {
+    background-color: #835c87;
+    width : 100%;
+    height:auto;
+    margin-top: 10px;
+    flex-grow: 1;
+}
