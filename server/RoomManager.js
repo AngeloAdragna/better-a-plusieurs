@@ -1,22 +1,24 @@
 class RoomManager {
-    #rooms;
-    constructor() {
-        this.#rooms = [];
-    }
+    static #rooms = [];
 
-    addRoom(room) {
+    static addRoom(room) {
         this.#rooms.push(room);
     }
 
-    removeRoom(room) {
+    static removeRoom(room) {
         this.#rooms = this.#rooms.filter((r) => r !== room);
     }
 
-    getRooms() {
+    static changeRoomParameters(roomId, voteSkip, voteAdd, freeToShare) {
+        const room = this.#rooms.find((r) => r.getId() === roomId);
+        room.changePreferences(voteSkip, voteAdd, freeToShare);
+    }
+
+    static getRooms() {
         return this.#rooms;
     }
 
-    getRoomById(id) {
+    static getRoomById(id) {
         return this.#rooms.find((r) => r.getId() === id);
     }
 }
