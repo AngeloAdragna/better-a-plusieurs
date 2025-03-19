@@ -1,13 +1,13 @@
-## Installation et lancement du projet  
 
-### 1. Installation des dépendances  
+### Installation des dépendances  
 Dans le dossier `client`, exécuter la commande suivante :  
 ```sh
 cd client  
 npm install  
 ```
 
-### 2. Lancement du projet  
+
+### Lancement du projet  
 
 #### Démarrer le serveur  
 Ouvrir un premier terminal et exécuter :  
