@@ -1,12 +1,14 @@
 class Room {
     #id;
+    #roomName;
     #clients;
     #voteSkip; // Systeme de vote pour passer à la vidéo suivante
     #voteAdd; // systeme de vote pour ajouter une vidéo à la playlist
     #freeToShare; // Tout les participants a la room peuvent la partager
 
-    constructor(id, voteSkip, voteAdd, freeToShare) {
+    constructor(id,name, voteSkip, voteAdd, freeToShare) {
         this.#id = id;
+        this.#roomName = name;
         this.#clients = [];
         this.#voteSkip = voteSkip;
         this.#voteAdd = voteAdd;
@@ -46,4 +48,14 @@ class Room {
     getId() {
         return this.#id;
     }
+
+    getName(){
+        return this.#roomName;
+    }
+
+    setName(name){
+        this.#roomName = name;
+    }
 }
+
+export default Room;
