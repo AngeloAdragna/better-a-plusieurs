@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import "../styles/WebSocketChat.css";
+
 
 const socket = io("http://localhost:8080"); // Connexion au serveur
 
@@ -23,7 +25,7 @@ const WebSocketChat = () => {
     };
 
     return (
-        <div>
+        <div className="ChatContainer">
             <h2>Chat en temps réel</h2>
             <div>
                 {messages.map((msg, index) => (
