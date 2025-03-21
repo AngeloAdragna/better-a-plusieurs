@@ -7,12 +7,22 @@ import "./styles/App.css";
 
 function App() {
     return (
-        <div className="App">
-            <BarPage />
+    <div className="app-container">
+      <BarPage />  {/* Barre de navigation */}
+      <div className="main-content"> {/* Conteneur principal */}
+        <div className="left-section">
+          <div className="video-container"> {/* Vidéo */}
             <VideoContent />
+          </div>
+          <div className="recommendation-container">{/* Recommandations */}
             <RecommandationContent />
-            <WebSocketChat />
+          </div>
         </div>
+        <div className="chat-section">{/* Chat */}
+          <WebSocketChat />
+        </div>
+      </div>
+    </div>
     );
 }
 

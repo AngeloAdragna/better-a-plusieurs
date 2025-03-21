@@ -1,7 +1,5 @@
 .RecommandationContent {
-    background-color: #835c87;
+    background-color: var(--dark-blue);
     width : 100%;
-    height:auto;
-    margin-top: 10px;
-    flex-grow: 1;
+    height: 100%;
 }
