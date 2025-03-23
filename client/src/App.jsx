@@ -3,11 +3,12 @@ import WebSocketChat from "./components/WebSocketChat";
 import BarPage from "./components/BarPage";
 import VideoContent from "./components/VideoContent";
 import RecommandationContent from "./components/RecommandationContent";
-import "./styles/App.css";
+import PlaylistContent from "./components/PlaylistContent";
+import "./styles/Room.css";
 
 function App() {
     return (
-    <div className="app-container">
+    <div className="room-container">
       <BarPage />  {/* Barre de navigation */}
       <div className="main-content"> {/* Conteneur principal */}
         <div className="left-section">
@@ -18,9 +19,10 @@ function App() {
             <RecommandationContent />
           </div>
         </div>
-        <div className="chat-section">{/* Chat */}
-          <WebSocketChat />
+        <div className="playlist-section">{/* Chat */}
+          <PlaylistContent />
         </div>
+          <WebSocketChat />
       </div>
     </div>
     );

@@ -24,8 +24,15 @@ const WebSocketChat = () => {
         }
     };
 
+      // Collapse the sidebar
+      const [isCollapsed, setIsCollapsed] = useState(false);
+      const handleLinkClick = () => {
+          setIsCollapsed((prev) => !prev);
+      };
+
     return (
         <div className="ChatContainer">
+            <div className={`arrow-icon ${isCollapsed ? 'rotated' : 'arrow'}`}>V</div>
             <h2>Chat en temps réel</h2>
             <div>
                 {messages.map((msg, index) => (
