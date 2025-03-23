@@ -1,6 +1,6 @@
 .BarPage{
     background-color: var(--dark-blue);
-    height: fit-content;
-    margin: 0.5vw 0.5vw 0px 0.5vw;
+    height: 9.5vh;
+    margin: 0.5vw 0.5vw 0 0.5vw;
     padding: 0.5vw;
 }

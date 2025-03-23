@@ -6,7 +6,7 @@
 }
 
 .main-content {
-  padding: 1vw 3vw 0.5% 3vw;
+  padding: 1vw 3vw 0.5vh 3vw;
   display: flex;
   flex-grow: 1;
   gap: 2vw;

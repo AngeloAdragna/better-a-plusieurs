@@ -1,20 +1,73 @@
-.ChatContainer{
+.ChatContainer {
     background-color: var(--dark-blue);
     width: 35vw;
-    height: 85.5vh;
     position: fixed;
     z-index: 1;
-    right:0;
+    right: 0;
+    top: calc(10vh + 1vw);
+    bottom: 0.5vh;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
     padding: 1%;
 }
 
-.arrow {
-transform: translate(-160%, -400%);
+/* chat ouvert */
+.ChatContainer:not(.collapsed) {
+    transform: translateX(0);
+    animation: slide-out 0.5s ease-in-out;
+}
 
-background:var(--dark-blue);
-width: 5%;
-height: 3vw;
+.ChatContainer.collapsed {
+    transform: translateX(100%);
+    animation: slide-in 0.5s ease-in-out;
+}
+
+/* Animation ouverture */
+@keyframes slide-out {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Animation fermeture */
+@keyframes slide-in {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+.ChatContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.arrow {
+    position: absolute;
+    left: -5%; /* Décale .arrow en dehors de .ChatContent pour le coller */
+    background: var(--dark-blue);
+    width: 5%;
+    height: 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: 0.5s ease-in-out;
+}
+.rotate{
+    position: absolute;
+    left: -10%; /* Décale .arrow en dehors de .ChatContent pour le coller */
+    background: var(--dark-blue);
+    width: 10%;
+    height: 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(180deg);
 }

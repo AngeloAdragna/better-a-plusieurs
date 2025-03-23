@@ -31,21 +31,23 @@ const WebSocketChat = () => {
       };
 
     return (
-        <div className="ChatContainer">
-            <div className={`arrow-icon ${isCollapsed ? 'rotated' : 'arrow'}`}>V</div>
-            <h2>Chat en temps réel</h2>
-            <div>
-                {messages.map((msg, index) => (
-                    <div key={index}>{msg}</div>
-                ))}
+        <section className={`ChatContainer ${isCollapsed ? 'collapsed' : ''}`}>
+            <btn onClick={handleLinkClick} className={`${isCollapsed ? 'rotate' : 'arrow'}`}>V</btn>
+            <div className={`ChatContent`}>
+                <h2>Chat en temps réel</h2>
+                <div>
+                    {messages.map((msg, index) => (
+                        <div key={index}>{msg}</div>
+                    ))}
+                </div>
+                <input
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Message..."
+                    />
+                <button onClick={handleSend}>Envoyer</button>
             </div>
-            <input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Message..."
-            />
-            <button onClick={handleSend}>Envoyer</button>
-        </div>
+        </section>
     );
 };
 
