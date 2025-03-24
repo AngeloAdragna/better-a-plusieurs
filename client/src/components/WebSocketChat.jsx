@@ -25,7 +25,7 @@ const WebSocketChat = () => {
     };
 
       // Collapse the sidebar
-      const [isCollapsed, setIsCollapsed] = useState(false);
+      const [isCollapsed, setIsCollapsed] = useState(true);
       const handleLinkClick = () => {
           setIsCollapsed((prev) => !prev);
       };
