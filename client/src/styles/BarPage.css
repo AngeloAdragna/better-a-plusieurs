@@ -3,4 +3,7 @@
     height: 9.5vh;
     margin: 0.5vw 0.5vw 0 0.5vw;
     padding: 0.5vw;
+    border-radius: 10px;
+    border: 1px solid #1e1e1e84;
+    box-shadow: 1px 4px 3px #1e1e1e;
 }

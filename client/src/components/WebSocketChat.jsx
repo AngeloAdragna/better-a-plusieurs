@@ -32,7 +32,7 @@ const WebSocketChat = () => {
 
     return (
         <section className={`ChatContainer ${isCollapsed ? 'collapsed' : ''}`}>
-            <btn onClick={handleLinkClick} className={`${isCollapsed ? 'rotate' : 'arrow'}`}>V</btn>
+            <span onClick={handleLinkClick} className={`${isCollapsed ? 'rotate' : 'arrow'}`}>V</span>
             <div className={`ChatContent`}>
                 <h2>Chat en temps réel</h2>
                 <div>

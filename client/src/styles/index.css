@@ -16,15 +16,22 @@
   --light-text: #B7ACD2;
   --mid-dark-blue: #393767; /* #btn in playlist */
   --light-grey: #595170; /* #nuance bar */
+  --mid-blue-btn:#393767; /* #btn in playlist */
   --mid-blue: #393766; /* #playlist */
   --mid-blue: #403D73; /* #playlist */
-  --bg-color: #4A4459
+
+  --bg-color: #4A4459;
+  
 }
 
 body {
   height: 100vh;
   width: 100vw;
-  background: rgb(95, 95, 112);
+  background: var(--bg-color);
+  background-image: url('../assets/space.svg'); /* Chemin relatif depuis le fichier CSS */
+  background-size: cover; /* Adapte l'image à la taille de l'écran */
+  background-repeat: no-repeat; /* Évite la répétition de l'image */
+  background-position: center; /* Centrage de l'image */
   margin: 0;
 }
 
