@@ -4,6 +4,8 @@ import admin from "firebase-admin";
 import { readFile } from "fs/promises";
 import crypto from "crypto";
 
+let connected_users = [];
+
 function createSHA256Hash(inputString) {
     const hash = crypto.createHash('sha256');
     hash.update(inputString);
@@ -59,11 +61,8 @@ export async function randomUserId(){
     try {
         const dbAdmin = admin.database();
         const usersRef = dbAdmin.ref("users");
-        let number = Math.random();
-        while(await usersRef.child(number).get()){
-            number = Math.random();
-        }
-        return number
+        const newRef = usersRef.push(); // crée une nouvelle référence
+        return newRef.key;
     }catch (error){
         console.error("Erreur lors de la création d'un nouvel ID :", error);
         return null
@@ -74,16 +73,30 @@ export async function createUser(user) {
     try {
         const dbAdmin = admin.database();
         const usersRef = dbAdmin.ref("users");
+
+        // Hash du mot de passe
         user.password = createSHA256Hash(user.password);
-        if (user.password){
-            if (user.name){
-                usersRef.push(user);
-            }else {
-                console.error("Erreur lors de l'ajout de l'utilisateur : name is empty");
-            }
-        }else {
-            console.error("Erreur lors de l'ajout de l'utilisateur : password is empty");
+
+        // Vérifie les champs requis
+        if (!user.name || !user.password) {
+            console.error("Erreur : nom ou mot de passe manquant.");
+            return;
         }
+
+        // Vérifie si un utilisateur avec le même nom existe déjà
+        const snapshot = await usersRef.once("value");
+        const users = snapshot.val() || {};
+
+        for (const u of Object.values(users)) {
+            if (u.name === user.name) {
+                console.error("Erreur : l'utilisateur existe déjà.");
+                return;
+            }
+        }
+
+        // Ajout de l'utilisateur
+        await usersRef.push(user);
+        console.log("Utilisateur ajouté avec succès !");
     } catch (error) {
         console.error("Erreur lors de l'ajout de l'utilisateur :", error);
     }
@@ -96,6 +109,47 @@ export async function deleteUser(userId) {
         await usersRef.child(userId).remove();
     } catch (error) {
         console.error("Erreur lors de la suppression de l'utilisateur :", error);
+    }
+}
+
+export async function getUserById(id) {
+    try {
+        const dbAdmin = admin.database();
+        const usersRef = dbAdmin.ref("users");
+        const snapshot = await usersRef.child(id).get();
+
+        if (snapshot.exists()) {
+            return snapshot.val();
+        } else {
+            console.error("Utilisateur non trouvé pour l'id :", id);
+            return null;
+        }
+    } catch (error) {
+        console.error("Erreur lors de la récupération d'un utilisateur :", error);
+        return null;
+    }
+}
+
+export async function login(username,pswd){
+    try{
+        const dbAdmin = admin.database();
+        const usersRef = dbAdmin.ref("users");
+        const snapshot = await usersRef.once("value");
+
+        if (!snapshot.exists()) return false;
+
+        const users = snapshot.val();
+        const hashedPswd = createSHA256Hash(pswd);
+
+        for (const [_, user] of Object.entries(users)) {
+            if (user.name === username && user.password === hashedPswd) {
+                connected_users.push(user);
+                return true; // Authentification réussie
+            }
+        }
+        return false; // Authentification échouée
+    }catch (error){
+        console.error("Erreur lors de la connexion :", error);
     }
 }
 
