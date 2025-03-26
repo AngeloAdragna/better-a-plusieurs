@@ -2,7 +2,7 @@ import React from "react";
 import WebSocketChat from "../WebSocketChat.jsx";
 import BarPage from "../BarPage.jsx";
 import VideoContent from "../VideoContent.jsx";
-import RecommandationContent from "../RecommandationContent.jsx";
+import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
 import PlaylistContent from "../PlaylistContent.jsx";
 import "../../styles/Room.css";
 import { useParams } from "react-router-dom";
