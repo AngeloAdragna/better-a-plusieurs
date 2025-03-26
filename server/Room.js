@@ -6,13 +6,13 @@ class Room {
     #voteAdd; // systeme de vote pour ajouter une vidéo à la playlist
     #freeToShare; // Tout les participants a la room peuvent la partager
 
-    constructor(id,name, voteSkip, ownerClient, voteAdd, freeToShare) {
+    constructor(id, name, voteSkip, ownerClient, voteAdd, freeToShare) {
         this.#id = id;
         this.#roomName = name;
         this.#voteSkip = voteSkip;
         this.#ownerClient = ownerClient;
         this.#voteAdd = voteAdd;
-        this.#freeToShare =freeToShare;
+        this.#freeToShare = freeToShare;
     }
 
     setOwner(client) {
@@ -45,11 +45,11 @@ class Room {
         return this.#id;
     }
 
-    getName(){
+    getName() {
         return this.#roomName;
     }
 
-    setName(name){
+    setName(name) {
         this.#roomName = name;
     }
 }

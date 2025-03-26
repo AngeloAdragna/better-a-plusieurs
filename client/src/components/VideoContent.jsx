@@ -1,8 +1,6 @@
-import "../styles/VideoContent.css";
-
 function VideoContent() {
     return (
-        <section className='VideoContent'>   
+        <section className='videoContent'>
             Video
         </section>
     );

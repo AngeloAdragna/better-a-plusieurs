@@ -1,4 +1,4 @@
-import {getDatabase, ref, get} from "firebase/database";
+import { getDatabase, ref, get } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import admin from "firebase-admin";
 import { readFile } from "fs/promises";
@@ -57,13 +57,13 @@ export async function getUsers() {
     }
 }
 
-export async function randomUserId(){
+export async function randomUserId() {
     try {
         const dbAdmin = admin.database();
         const usersRef = dbAdmin.ref("users");
         const newRef = usersRef.push(); // crée une nouvelle référence
         return newRef.key;
-    }catch (error){
+    } catch (error) {
         console.error("Erreur lors de la création d'un nouvel ID :", error);
         return null
     }
@@ -130,7 +130,9 @@ export async function getUserById(id) {
     }
 }
 
+
 export async function login(name, password) {
+
     try {
         const dbAdmin = admin.database();
         const usersRef = dbAdmin.ref("users");
@@ -151,6 +153,7 @@ export async function login(name, password) {
     } catch (error) {
         console.error("Login error:", error);
         return false;
+
     }
 }
 
