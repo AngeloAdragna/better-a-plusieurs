@@ -6,7 +6,35 @@ import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
+
+//Créer un utilisateur
+app.post("/users", async (req, res) => {
+    const user = req.body;
+    if (!user.name || !user.password) {
+        return res.status(400).json({ error: "Nom ou mot de passe manquant" });
+    }
+
+    await createUser(user);
+    res.status(201).json({ message: "Utilisateur créé" });
+});
+
+//Login utilisateur
+app.post("/login", async (req, res) => {
+    const { name, password } = req.body;
+    const success = await login(name, password);
+    if (success) {
+        res.status(200).json({ success: true });
+    } else {
+        res.status(401).json({ success: false });
+    }
+});
+
+app.delete("/users/:id", async (req, res) => {
+    await deleteUser(req.params.id);
+    res.status(200).json({ message: "Utilisateur supprimé" });
+});
 
 async function fetchUsers() {
     try {
@@ -42,46 +70,31 @@ async function test(){
 
 //test();
 
-const server = createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-    },
-});
+export default app;
 
-io.on("connection", (socket) => {
-    console.log(`Utilisateur connecté : ${socket.id}`);
-
-    socket.on("message", (data) => {
-        console.log(`Message reçu : ${data}`);
-        io.emit("message", data);
+if (process.env.NODE_ENV !== 'test') {
+    const server = createServer(app);
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"],
+        },
     });
 
-    socket.on("disconnect", () => {
-        console.log("Utilisateur déconnecté");
+    io.on("connection", (socket) => {
+        console.log(`User connected: ${socket.id}`);
+
+        socket.on("message", (data) => {
+            io.emit("message", data);
+        });
+
+        socket.on("disconnect", () => {
+            console.log("User disconnected");
+        });
     });
 
-    socket.on("login", async (data) => {
-        console.log(`Login reçu : ${data}`);
-        const res = await login(data.name,data.password);
-        console.log(res);
-        io.emit("login", res);
+    server.listen(8080, () => {
+        console.log("Server is running on http://localhost:8080");
     });
+}
 
-    socket.on("deleteUser", async (data) => {
-        console.log(`DeleteUser reçu : ${data}`);
-        await deleteUser(data);
-        io.emit("deleteUser", data);
-    })
-
-    socket.on("createUser", async (data) => {
-        console.log(`CreateUser reçu : ${data}`);
-        await createUser(data);
-        io.emit("createUser", data);
-    })
-});
-
-server.listen(8080, () => {
-    console.log("Serveur Socket.IO lancé sur http://localhost:8080");
-});

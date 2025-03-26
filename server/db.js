@@ -130,8 +130,8 @@ export async function getUserById(id) {
     }
 }
 
-export async function login(username,pswd){
-    try{
+export async function login(name, password) {
+    try {
         const dbAdmin = admin.database();
         const usersRef = dbAdmin.ref("users");
         const snapshot = await usersRef.once("value");
@@ -139,17 +139,18 @@ export async function login(username,pswd){
         if (!snapshot.exists()) return false;
 
         const users = snapshot.val();
-        const hashedPswd = createSHA256Hash(pswd);
+        const hashedPswd = createSHA256Hash(password);
 
-        for (const [_, user] of Object.entries(users)) {
-            if (user.name === username && user.password === hashedPswd) {
+        for (const user of Object.values(users)) {
+            if (user.name === name && user.password === hashedPswd) {
                 connected_users.push(user);
-                return true; // Authentification réussie
+                return true;
             }
         }
-        return false; // Authentification échouée
-    }catch (error){
-        console.error("Erreur lors de la connexion :", error);
+        return false;
+    } catch (error) {
+        console.error("Login error:", error);
+        return false;
     }
 }
 
