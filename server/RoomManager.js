@@ -4,7 +4,7 @@ class RoomManager {
     static #rooms = [];
 
     static createRoom(name, voteSkip, voteAdd, freeToShare) {
-        const room = new Room(crypto.randomUUID(), name, voteSkip, voteAdd, freeToShare);
+        const room = new Room(crypto.randomUUID(), name, voteSkip,null,voteAdd, freeToShare);
         this.#rooms.push(room);
         return room;
     }
