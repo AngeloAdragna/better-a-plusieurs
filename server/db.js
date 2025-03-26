@@ -98,5 +98,4 @@ export async function deleteUser(userId) {
         console.error("Erreur lors de la suppression de l'utilisateur :", error);
     }
 }
-
 export { db };
