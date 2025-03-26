@@ -40,7 +40,7 @@ async function test(){
     console.log(res2);
 }
 
-test();
+//test();
 
 const server = createServer(app);
 const io = new Server(server, {
