@@ -9,7 +9,6 @@ const TestRoomCreation = () => {
             <a className="waves-effect waves-light btn modal-trigger" href="#modal1" onClick={() => setModalOpen(true)}>
                 Ouvrir le Modal
             </a>
-
             {modalOpen && <RoomParametersWindow />}
         </div>
     );
