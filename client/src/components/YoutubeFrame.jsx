@@ -1,21 +1,23 @@
 import React, {useEffect, useState} from "react";
-import { io } from "socket.io-client";
 import YouTube from "react-youtube";
 
-const socket = io("http://localhost:8080")
 
-const VideoPlayer = ({ videoId }) => {
+const VideoPlayer = ({ videoId, socket }) => {
     const [player, setPlayer] = useState(null)
     const [isPlaying, setIsPlaying] = useState(false);
 
 
     const opts = {
         height: "390",
-        width: "640",
+        width: "661",
         playerVars: {
             autoplay: 1,    // Auto
-            mute: 1         // the only current way to enable autoplay in navigator
+            //mute: 1         // the only current way to enable autoplay in navigator
                             // I have to find a solution
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // !!!!! You have to enable "video and audio" into your navigator to enable autoplay with sound !!!!!
+            // !!!!! without doing this, it won't work                                                      !!!!!
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         },
     };
 
@@ -64,8 +66,7 @@ const VideoPlayer = ({ videoId }) => {
         };
     }, [player]);
 
-    return <YouTube videoId={videoId} opts={opts} onReady={onReady} onStateChange={onStateChange} />;
-
+    return <YouTube videoId={videoId} opts={opts} onReady={onReady} onStateChange={onStateChange} />
 };
 
 export default VideoPlayer;
