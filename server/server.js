@@ -2,10 +2,11 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import { getUsers } from './db.js';
+import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from './db.js';
 
 const app = express();
 app.use(cors());
+
 
 async function fetchUsers() {
     try {
@@ -16,8 +17,30 @@ async function fetchUsers() {
     }
 }
 
-fetchUsers();
 
+async function test(){
+
+    await fetchUsers();
+    const id =await randomUserId();
+    const user = {
+        id: id,
+        name: "test",
+        password: "test",
+    };
+    await createUser(user);
+    await fetchUsers();
+    await deleteUser(id);
+    await fetchUsers();
+    await createUser(user);
+    const user2 = await getUserById(id);
+    console.log(user2);
+    const res = await login("test","test");
+    console.log(res);
+    const res2 = await login("test","test2");
+    console.log(res2);
+}
+
+//test();
 
 const server = createServer(app);
 const io = new Server(server, {
@@ -38,6 +61,25 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("Utilisateur déconnecté");
     });
+
+    socket.on("login", async (data) => {
+        console.log(`Login reçu : ${data}`);
+        const res = await login(data.name,data.password);
+        console.log(res);
+        io.emit("login", res);
+    });
+
+    socket.on("deleteUser", async (data) => {
+        console.log(`DeleteUser reçu : ${data}`);
+        await deleteUser(data);
+        io.emit("deleteUser", data);
+    })
+
+    socket.on("createUser", async (data) => {
+        console.log(`CreateUser reçu : ${data}`);
+        await createUser(data);
+        io.emit("createUser", data);
+    })
 });
 
 server.listen(8080, () => {
