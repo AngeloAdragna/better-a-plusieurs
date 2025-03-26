@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 
 function Room() {
     const { roomId } = useParams();
+
     return (
     <div className="room-container">
       <BarPage />  {/* Barre de navigation */}

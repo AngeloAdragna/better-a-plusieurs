@@ -2,6 +2,13 @@ import {getDatabase, ref, get} from "firebase/database";
 import { initializeApp } from "firebase/app";
 import admin from "firebase-admin";
 import { readFile } from "fs/promises";
+import crypto from "crypto";
+
+function createSHA256Hash(inputString) {
+    const hash = crypto.createHash('sha256');
+    hash.update(inputString);
+    return hash.digest('hex');
+}
 
 // Charger la clé de service Firebase (chemin à modifier selon ton projet)
 const serviceAccount = JSON.parse(
@@ -30,7 +37,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app)
 
-
 // Example query: Get all documents in the 'users' collection
 export async function getUsers() {
     try {
@@ -49,4 +55,47 @@ export async function getUsers() {
     }
 }
 
+export async function randomUserId(){
+    try {
+        const dbAdmin = admin.database();
+        const usersRef = dbAdmin.ref("users");
+        let number = Math.random();
+        while(await usersRef.child(number).get()){
+            number = Math.random();
+        }
+        return number
+    }catch (error){
+        console.error("Erreur lors de la création d'un nouvel ID :", error);
+        return null
+    }
+}
+
+export async function createUser(user) {
+    try {
+        const dbAdmin = admin.database();
+        const usersRef = dbAdmin.ref("users");
+        user.password = createSHA256Hash(user.password);
+        if (user.password){
+            if (user.name){
+                usersRef.push(user);
+            }else {
+                console.error("Erreur lors de l'ajout de l'utilisateur : name is empty");
+            }
+        }else {
+            console.error("Erreur lors de l'ajout de l'utilisateur : password is empty");
+        }
+    } catch (error) {
+        console.error("Erreur lors de l'ajout de l'utilisateur :", error);
+    }
+}
+
+export async function deleteUser(userId) {
+    try {
+        const dbAdmin = admin.database();
+        const usersRef = dbAdmin.ref("users");
+        await usersRef.child(userId).remove();
+    } catch (error) {
+        console.error("Erreur lors de la suppression de l'utilisateur :", error);
+    }
+}
 export { db };
