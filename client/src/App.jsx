@@ -1,7 +1,7 @@
 
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-//import TestRoomCreation from "client/src/components/RoomCreation/TestRoomCreation.jsx";
+import TestRoomCreation from "./components/RoomCreation/TestRoomCreation.jsx";
 import Room from "./components/RoomCreation/Room.jsx";
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={
                         <>
-                            <Room />
+                             <TestRoomCreation />
                         </>
                     } />
                     <Route path="/room/:roomId" element={<Room />} />
