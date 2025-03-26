@@ -8,6 +8,3 @@ export default defineConfig({
     historyApiFallback: true, // Permet de gérer le routage côté client
   },
 });
-
-
-
