@@ -13,8 +13,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={
                         <>
-                            <TestRoomCreation />
                             <div>
+                                < TestRoomCreation />
                                 <a className="waves-effect waves-light btn modal-trigger" href="#modalCreate" onClick={() => setModalOpenConnection(true)}>
                                     Créer Room
                                 </a>
