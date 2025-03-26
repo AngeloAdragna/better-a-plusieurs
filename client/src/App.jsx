@@ -8,7 +8,7 @@ function App() {
     // In the future, the socket will be the socket of the room
     return (
         <div className="App">
-            <WebSocketChat /><br/>
+            <WebSocketChat/><br/>
             <YoutubeFrame videoId="Sga1agmMkoU" socket={socket}/>
         </div>
     );

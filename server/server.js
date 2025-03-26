@@ -32,9 +32,15 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("play", data)
     });
 
+    socket.on("sync", (timeCode) => {
+        console.log(`Réception d'un évènement Sync : ${timeCode}`)
+        socket.broadcast.emit("sync", timeCode)
+    })
+
     socket.on("disconnect", () => {
         console.log("Utilisateur déconnecté");
     });
+
 });
 
 server.listen(8080, () => {
