@@ -1,0 +1,82 @@
+.ChatContainer {
+    background-color: var(--dark-blue);
+    width: 35vw;
+    position: fixed;
+    z-index: 1;
+    right: 0;
+    top: calc(10vh + 1vw);
+    bottom: 0.5vh;
+    display: flex;
+    padding: 1%;
+    border-radius: 15px 0 0 15px;
+    border: 0.5px solid #1e1e1e84;
+    box-shadow:  -2px 0px 3px #1e1e1e;
+}
+
+/* chat ouvert */
+.ChatContainer:not(.collapsed) {
+    transform: translateX(0);
+    animation: slide-out 0.5s ease-in-out;
+}
+
+.ChatContainer.collapsed {
+    transform: translateX(100%);
+    animation: slide-in 0.5s ease-in-out;
+}
+
+/* Animation ouverture */
+@keyframes slide-out {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Animation fermeture */
+@keyframes slide-in {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+.ChatContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.arrow {
+    position: absolute;
+    left: -4.8%; /* Décale .arrow en dehors de .ChatContent pour le coller */
+    background: var(--dark-blue);
+    width: 5%;
+    height: 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: 0.5s ease-in-out;
+    border-radius: 10px 0 0 10px;
+    border-left: 0.5px solid #1e1e1e53;
+    box-shadow: -2px 3px 3px #1e1e1e;
+}
+.rotate{
+    position: absolute;
+    left: -10%; /* Décale .arrow en dehors de .ChatContent pour le coller */
+    background: var(--dark-blue);
+    width: 10%;
+    height: 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 10px 10px 0;
+    border-left: 0.5px solid #1e1e1e53;
+    box-shadow: 2px -3px 3px #1e1e1e;
+    transform: rotate(180deg);
+}

@@ -13,7 +13,7 @@ npm install
 Ouvrir un premier terminal et exécuter :  
 ```sh
 cd server  
-node main.js  
+node server.js  
 ```
 
 #### Démarrer le client  
