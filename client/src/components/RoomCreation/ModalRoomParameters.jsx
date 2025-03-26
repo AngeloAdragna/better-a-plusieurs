@@ -3,9 +3,10 @@ import RoomManager from "../../../../server/RoomManager";
 import { useNavigate } from "react-router-dom";
 import M from "materialize-css";
 
-const RoomParametersWindow = () => {
+const ModalRoomParameters = () => {
   const navigate = useNavigate();
 
+  // State for the form data
   const [formData, setFormData] = useState({
     roomName: "",
     voteSkip: false,
@@ -13,14 +14,15 @@ const RoomParametersWindow = () => {
     freeToShare: false,
   });
 
+  // Initialize the modal
   useEffect(() => {
-    const elems = document.querySelectorAll(".modal");
-    M.Modal.init(elems);
-
-    const modalInstance = M.Modal.getInstance(document.getElementById("modal1"));
-    modalInstance.open(); // Ouvre le modal automatiquement
+    const elem = document.getElementById("modalRoomParameters");
+    if (elem) {
+      M.Modal.init(elem);
+    }
   }, []);
 
+  // Create a room
   const onSubmit = (event) => {
     event.preventDefault();
     let room = RoomManager.createRoom(formData.voteSkip, formData.voteAdd, formData.freeToShare);
@@ -31,13 +33,14 @@ const RoomParametersWindow = () => {
     }
   };
 
+  // Handle the change of the switches
   const handleChange = (event) => {
     const { name, checked } = event.target;
     setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
   return (
-    <div id="modal1" className="modal">
+    <div id="modalRoomParameters" className="modal">
       <div className="modal-content">
         <h5>Paramètres de la Room</h5>
         <form onSubmit={onSubmit}>
@@ -83,4 +86,4 @@ const RoomParametersWindow = () => {
   );
 };
 
-export default RoomParametersWindow;
+export default ModalRoomParameters;
