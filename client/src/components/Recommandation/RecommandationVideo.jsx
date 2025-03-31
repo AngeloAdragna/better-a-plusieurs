@@ -1,5 +1,3 @@
-import "../../styles/RecommandationContent.css";
-
 const RecommandationVideo = ({ title, thumbnail, url }) => {
 
     const truncate = (str, maxLength) => {

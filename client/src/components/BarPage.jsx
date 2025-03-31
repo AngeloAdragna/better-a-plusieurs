@@ -1,5 +1,3 @@
-import "../styles/BarPage.css";
-
 function BarPage() {
     return (
         <section className='BarPage'>
