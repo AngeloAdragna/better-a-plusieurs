@@ -1,16 +1,31 @@
 import React from "react";
-import WebSocketChat from "./WebSocketChat";
-import YoutubeFrame from "./components/YoutubeFrame.jsx";
-import {io} from "socket.io-client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import TestRoomCreation from "./components/RoomCreation/TestRoomCreation.jsx";
+import Room from "./components/RoomCreation/Room.jsx";
+import ModalOpenConnection from "./components/RoomCreation/modalOpenConnection.jsx";
+import { useState } from "react";
 
-const socket = io("http://localhost:8080")
 function App() {
-    // In the future, the socket will be the socket of the room
+    const [modalOpenConnection, setModalOpenConnection] = useState(false);
     return (
-        <div className="App">
-            <WebSocketChat/><br/>
-            <YoutubeFrame videoId="Sga1agmMkoU" socket={socket} owner={true}/>
-        </div>
+        <BrowserRouter>
+            <div className="App">
+                <Routes>
+                    <Route path="/" element={
+                        <>
+                            <div>
+                                < TestRoomCreation />
+                                <a className="waves-effect waves-light btn modal-trigger" href="#modalCreate" onClick={() => setModalOpenConnection(true)}>
+                                    Créer Room
+                                </a>
+                                {modalOpenConnection && <ModalOpenConnection />}
+                            </div>
+                        </>
+                    } />
+                    <Route path="/room/:roomId" element={<Room />} />
+                </Routes>
+            </div>
+        </BrowserRouter>
     );
 }
 
