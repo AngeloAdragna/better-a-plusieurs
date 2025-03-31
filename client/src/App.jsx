@@ -9,7 +9,7 @@ function App() {
     return (
         <div className="App">
             <WebSocketChat/><br/>
-            <YoutubeFrame videoId="Sga1agmMkoU" socket={socket}/>
+            <YoutubeFrame videoId="Sga1agmMkoU" socket={socket} owner={true}/>
         </div>
     );
 }
