@@ -29,7 +29,7 @@ const WebSocketChat = () => {
       };
 
     return (
-        <section className={`ChatContainer ${isCollapsed ? 'collapsed' : ''}`}>
+        <section className={`ChatContainer  ${isCollapsed ? 'collapsed' : ''}`}>
             <span onClick={handleLinkClick} className={`${isCollapsed ? 'rotate' : 'arrow'}`}>V</span>
             <div className={`ChatContent`}>
                 <h2>Chat en temps réel</h2>
