@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import RoomManager from "../../../../server/RoomManager";
 import { useNavigate } from "react-router-dom";
 import M from "materialize-css";
 
-const ModalRoomParameters = () => {
+const ModalJoinParameters = () => {
   const navigate = useNavigate();
 
   // State for the form data
@@ -57,4 +56,4 @@ const ModalRoomParameters = () => {
   );
 };
 
-export default ModalRoomParameters;
+export default ModalJoinParameters;

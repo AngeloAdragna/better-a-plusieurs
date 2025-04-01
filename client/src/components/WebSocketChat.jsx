@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import M from "materialize-css";
 
 const socket = io("http://localhost:8080"); // Connexion au serveur
 
@@ -22,17 +23,21 @@ const WebSocketChat = () => {
         }
     };
 
-      // Collapse the sidebar
-      const [isCollapsed, setIsCollapsed] = useState(true);
-      const handleLinkClick = () => {
-          setIsCollapsed((prev) => !prev);
-      };
+    // Collapse the sidebar with MaterializeCSS
+    const [isCollapsed, setIsCollapsed] = useState(true);
+    const handleLinkClick = () => {
+        setIsCollapsed((prev) => !prev);
+        const chatContainer = document.querySelector(".ChatContainer");
+        if (chatContainer) {
+            M.Collapsible.init(chatContainer, { accordion: false });
+        }
+    };
 
     return (
-        <section className={`ChatContainer  ${isCollapsed ? 'collapsed' : ''}`}>
+        <section className={`ChatContainer ${isCollapsed ? 'collapsed' : ''}`}> 
             <span onClick={handleLinkClick} className={`${isCollapsed ? 'rotate' : 'arrow'}`}>V</span>
-            <div className={`ChatContent`}>
-                <h2>Chat en temps réel</h2>
+            <div className="ChatContent">
+            <h2>Chat en temps réel</h2>
                 <div>
                     {messages.map((msg, index) => (
                         <div key={index}>{msg}</div>
@@ -43,8 +48,7 @@ const WebSocketChat = () => {
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Message..."
                     />
-                <button onClick={handleSend}>Envoyer</button>
-            </div>
+                <button onClick={handleSend}>Envoyer</button>    </div>
         </section>
     );
 };
