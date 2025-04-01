@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import M from "materialize-css";
+import { IoIosArrowForward } from "react-icons/io";
 
 const socket = io("http://localhost:8080"); // Connexion au serveur
 
@@ -35,7 +36,7 @@ const WebSocketChat = () => {
 
     return (
         <section className={`ChatContainer ${isCollapsed ? 'collapsed' : ''}`}> 
-            <span onClick={handleLinkClick} className={`${isCollapsed ? 'rotate' : 'arrow'}`}>V</span>
+            <span onClick={handleLinkClick} className={`${isCollapsed ? 'rotate' : 'arrow'}`}> <IoIosArrowForward /></span>
             <div className="ChatContent">
             <h2>Chat en temps réel</h2>
                 <div>
