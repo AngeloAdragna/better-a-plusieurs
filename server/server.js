@@ -8,7 +8,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 //Créer un utilisateur
 app.post("/users", async (req, res) => {
     const user = req.body;
@@ -82,18 +81,35 @@ if (process.env.NODE_ENV !== 'test') {
     });
 
     io.on("connection", (socket) => {
-        console.log(`User connected: ${socket.id}`);
+        console.log(`Utilisateur connecté : ${socket.id}`);
 
         socket.on("message", (data) => {
+            console.log(`Message reçu : ${data}`);
             io.emit("message", data);
         });
 
-        socket.on("disconnect", () => {
-            console.log("User disconnected");
+        socket.on("pause", (data) => {
+            console.log(`Réception d'un évènement Pause : ${data}`)
+            socket.broadcast.emit("pause", data)
         });
+
+        socket.on("play", (data) => {
+            console.log(`Réception d'un évènement Play : ${data}`)
+            socket.broadcast.emit("play", data)
+        });
+
+        socket.on("sync", (timeCode) => {
+            console.log(`Réception d'un évènement Sync : ${timeCode}`)
+            socket.broadcast.emit("sync", timeCode)
+        })
+
+        socket.on("disconnect", () => {
+            console.log("Utilisateur déconnecté");
+        });
+
     });
 
     server.listen(8080, () => {
-        console.log("Server is running on http://localhost:8080");
+        console.log("Serveur Socket.IO lancé sur http://localhost:8080");
     });
 }
