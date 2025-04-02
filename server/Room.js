@@ -1,24 +1,22 @@
 class Room {
     #id;
-    #clients;
+    #roomName;
+    #ownerClient; // Client qui a créé la room
     #voteSkip; // Systeme de vote pour passer à la vidéo suivante
     #voteAdd; // systeme de vote pour ajouter une vidéo à la playlist
     #freeToShare; // Tout les participants a la room peuvent la partager
 
-    constructor(id, voteSkip, voteAdd, freeToShare) {
+    constructor(id, name, voteSkip, ownerClient, voteAdd, freeToShare) {
         this.#id = id;
-        this.#clients = [];
+        this.#roomName = name;
         this.#voteSkip = voteSkip;
+        this.#ownerClient = ownerClient;
         this.#voteAdd = voteAdd;
-        this.#freeToShare =freeToShare;
+        this.#freeToShare = freeToShare;
     }
 
-    addClient(client) {
-        this.#clients.push(client);
-    }
-
-    removeClient(client) {
-        this.#clients = this.#clients.filter((c) => c !== client);
+    setOwner(client) {
+        this.#ownerClient = client;
     }
 
     changePreferences(voteSkip, voteAdd, freeToShare) {
@@ -27,8 +25,8 @@ class Room {
         this.#freeToShare = freeToShare;
     }
 
-    getClients() {
-        return this.#clients;
+    getClient() {
+        return this.#ownerClient;
     }
 
     getVoteSkip() {
@@ -46,4 +44,14 @@ class Room {
     getId() {
         return this.#id;
     }
+
+    getName() {
+        return this.#roomName;
+    }
+
+    setName(name) {
+        this.#roomName = name;
+    }
 }
+
+export default Room;
