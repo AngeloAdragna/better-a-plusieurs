@@ -1,6 +1,6 @@
 function VideoContent() {
     return (
-        <section className='videoContent'>
+        <section>
             Video
         </section>
     );
