@@ -5,6 +5,7 @@ import Room from "./components/RoomCreation/Room.jsx";
 import ModalOpenConnection from "./components/RoomCreation/ModalOpenConnection.jsx";
 import ModalJoinRoom from "./components/RoomCreation/ModalJoinRoom.jsx";
 import ModalRoomParameters from "./components/RoomCreation/ModalRoomParameters.jsx";
+import LoginButton from "./components/Login/LoginButton.jsx";
 
 function App() {
     const [modalOpen, setModalOpen] = useState(false);
@@ -19,7 +20,7 @@ function App() {
                         <>
                             <div>
                                 {/* Bouton pour la connexion */}
-                                <a className="waves-effect waves-light btn modal-trigger" href="#modalCreate" 
+                                <a className="waves-effect waves-light btn modal-trigger" href="#modalCreate"
                                    onClick={() => {
                                        setModalOpen(true);
                                        setOnlyConnection(true); // onlyConnection à true pour le premier modal
@@ -30,8 +31,8 @@ function App() {
                             </div>
                             <div>
                                 {/* Bouton pour créer une room */}
-                                <a className="waves-effect waves-light btn modal-trigger" 
-                                   href={isConnected ? "#modalRoomParameters" : "#modalCreate"} 
+                                <a className="waves-effect waves-light btn modal-trigger"
+                                   href={isConnected ? "#modalRoomParameters" : "#modalCreate"}
                                    onClick={() => {
                                        setModalOpen(true);
                                        setOnlyConnection(false); // onlyConnection à false pour le second modal
@@ -44,12 +45,13 @@ function App() {
                             </div>
                             <div>
                                 {/* Bouton pour rejoindre une room */}
-                                <a className="waves-effect waves-light btn modal-trigger" href="#ModalJoinRoom" 
+                                <a className="waves-effect waves-light btn modal-trigger" href="#ModalJoinRoom"
                                    onClick={() => setModalOpen(true)}>
                                     Rejoindre
                                 </a>
                                 {modalOpen && <ModalJoinRoom />}
                             </div>
+                            <LoginButton />
                         </>
                     } />
                     <Route path="/room/:roomId" element={<Room />} />

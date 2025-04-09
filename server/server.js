@@ -21,8 +21,10 @@ app.post("/users", async (req, res) => {
 
 //Login utilisateur
 app.post("/login", async (req, res) => {
-    const { name, password } = req.body;
-    const success = await login(name, password);
+    const { username, password } = req.body;
+    console.log("Body:", req.body.username);
+    console.log("Login attempt with name:", username);
+    const success = await login(req.body.username, req.body.password);
     if (success) {
         res.status(200).json({ success: true });
     } else {
