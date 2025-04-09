@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from './db.js';
+import {authenticateToken} from "./middleware/authenticateToken.js";
 
 const app = express();
 app.use(cors());
@@ -22,14 +23,16 @@ app.post("/users", async (req, res) => {
 //Login utilisateur
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
-    console.log("Body:", req.body.username);
     console.log("Login attempt with name:", username);
-    const success = await login(req.body.username, req.body.password);
-    if (success) {
-        res.status(200).json({ success: true });
-    } else {
-        res.status(401).json({ success: false });
+    console.log("and password: ", password)
+    const loginResult = await login(username, password);
+
+    if (!loginResult) {
+        return res.status(401).json({ success: false });
     }
+
+    const { token } = loginResult;
+    res.status(200).json({ success: true, token });
 });
 
 app.delete("/users/:id", async (req, res) => {

@@ -25,8 +25,16 @@ const LoginModal = ({ isOpen, onClose }) => {
     // requête avec axios ou fetch pour envoyer les données au backend
     axios.post( 'http://localhost:8080' + '/login', formData)
         .then(response => {
+            const token = response.data;
+            console.log("Token received:", token);
+            // Stocker le token dans le localStorage
+            localStorage.setItem('token', token);
             console.log("Login successful:", response.data);
             setSubmittedData(formData);
+        })
+        .catch(error => {
+            console.error("Login failed:", error.response.data);
+            alert("Erreur de connexion : " + error.response.data.error);
         })
     onClose();
   };
