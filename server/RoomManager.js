@@ -27,7 +27,34 @@ class RoomManager {
     }
 
     static getRoomById(id) {
+        console.log("rooms",this.#rooms)
         return this.#rooms.find((r) => r.getId() === id);
+    }
+
+     // Ajoute cette méthode statique pour ajouter une vidéo à la playlist
+     static addVideoToPlaylist(roomId, video) {
+         const room = this.getRoomById(roomId);
+         if (room) {
+            room.addVideoToPlaylist(video);
+        }
+    }
+
+    // Ajoute cette méthode statique pour ajouter une vidéo à l'historique
+    static addVideoToHistory(roomId, video) {
+        const room = this.getRoomById(roomId);
+        if (room) {
+            room.addVideoToHistory(video);
+        }
+    }
+    // Ajoute cette méthode statique pour récupérer la playlist d'une room
+    static getVideoPlaylist(roomId) {
+        const room = this.getRoomById(roomId);
+        return room ? room.getVideoPlaylist() : null;
+    }
+    // Ajoute cette méthode statique pour récupérer l'historique d'une room
+    static getVideoHistory(roomId) {
+        const room = this.getRoomById(roomId);
+        return room ? room.getVideoHistory() : null;
     }
 }
 
