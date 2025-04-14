@@ -2,8 +2,9 @@ import React from "react";
 import WebSocketChat from "../WebSocketChat.jsx";
 import BarPage from "../BarPage/BarPage.jsx";
 import VideoContent from "../VideoContent.jsx";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
-import PlaylistContent from "../PlaylistContent.jsx";
+import PlaylistContent from "../Playlists/PlaylistContent.jsx";
 import "../../styles/Room.css";
 import { useParams } from "react-router-dom";
 import YoutubeFrame from "../YoutubeFrame.jsx";
@@ -22,7 +23,9 @@ function Room() {
             <YoutubeFrame videoId="Sga1agmMkoU" socket={socket}/>
           </div>
           <div className="recommendation-container">{/* Recommandations */}
-            <RecommandationContent />
+            <GoogleOAuthProvider clientId="261173889792-5lnsehpl504t0g1an722duv93n0mfhv1.apps.googleusercontent.com">
+              <RecommandationContent />
+            </GoogleOAuthProvider>
           </div>
         </div>
         <div className="col s6 m6 l6 playlist-section">{/* playlist */}
