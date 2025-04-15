@@ -5,6 +5,8 @@ class Room {
     #voteSkip; // Systeme de vote pour passer à la vidéo suivante
     #voteAdd; // systeme de vote pour ajouter une vidéo à la playlist
     #freeToShare; // Tout les participants a la room peuvent la partager
+    #videoPlaylist = [];   // ← Ajout
+    #videoHistory = [];    // ← Ajout
 
     constructor(id, name, voteSkip, voteAdd, freeToShare, ownerClient) {
       this.#id = id;
@@ -15,6 +17,24 @@ class Room {
       this.#freeToShare = freeToShare;
     }
 
+    // Méthodes d’accès aux vidéos
+    getVideoPlaylist() {
+        return this.#videoPlaylist;
+    }
+
+    getVideoHistory() {
+        return this.#videoHistory;
+    }
+
+    // Ajout d’une vidéo à la playlist
+    addVideoToPlaylist(video) {
+        this.#videoPlaylist.push(video);
+    }
+
+    // Ajout d’une vidéo à l’historique
+    addVideoToHistory(video) {
+        this.#videoHistory.push(video);
+    }
 
     setOwner(client) {
         this.#ownerClient = client;

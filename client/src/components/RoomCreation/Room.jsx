@@ -2,12 +2,13 @@ import React from "react";
 import WebSocketChat from "../WebSocketChat.jsx";
 import BarPage from "../BarPage/BarPage.jsx";
 import VideoContent from "../VideoContent.jsx";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
-import PlaylistContent from "../PlaylistContent.jsx";
+import PlaylistContent from "../Playlists/PlaylistContent.jsx";
 import "../../styles/Room.css";
 import { useParams } from "react-router-dom";
 import YoutubeFrame from "../YoutubeFrame.jsx";
-import {io} from "socket.io-client"
+import { io } from "socket.io-client"
 
 function Room() {
     const { roomId } = useParams();
@@ -77,15 +78,17 @@ function Room() {
                     <div className="video-container">
                         <YoutubeFrame videoId="xiyg1GuXd_Y" socket={socket} />
                     </div>
-                    <div className="recommendation-container">
-                        <RecommandationContent />
+                    <div className="recommendation-container">{/* Recommandations */}
+                        <GoogleOAuthProvider clientId="261173889792-5lnsehpl504t0g1an722duv93n0mfhv1.apps.googleusercontent.com">
+                            <RecommandationContent />
+                        </GoogleOAuthProvider>
                     </div>
                 </div>
-                <div className="col s6 m6 l6 playlist-section">
+                <div className="col s6 m6 l6 playlist-section">{/* playlist */}
                     <PlaylistContent />
                 </div>
-                <div>
-                    <WebSocketChat socket={socket} />
+                <div >{/* Chat */}
+                    <WebSocketChat socket={socket} /> {/* Chat */}
                 </div>
             </div>
         </div>
