@@ -5,7 +5,8 @@ import M from "materialize-css";
 const ModalRoomParameters = () => {
   const navigate = useNavigate();
 
-  // State for the form data
+
+    // State for the form data
   const [formData, setFormData] = useState({
     roomName: "",
     voteSkip: false,
@@ -26,6 +27,7 @@ const ModalRoomParameters = () => {
         event.preventDefault();
 
         try {
+            formData.ownerClient = localStorage.getItem("clientId");
             const response = await fetch('http://localhost:8080/create-room', {
                 method: 'POST',
                 headers: {

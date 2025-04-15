@@ -4,7 +4,7 @@ import ModalParametersUserRoom from "./ModalParametersUserRoom";
 import ModalShareRoom from "./ModalShareRoom";
 import { useState } from "react";
 
-function BarPage() {
+const BarPage = ({roomName, isAllowedToShare}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const isConnected = false; //TODO Remplace ça par un vrai état de connexion
     return (
@@ -21,7 +21,11 @@ function BarPage() {
                     </div>
                 </div>
                 <div className='col s5'>
-                    <div className='item center-align'>La navbar</div>
+                    <div className='item center-align'>
+                        <p className='roomNameBar'>
+                            {roomName}
+                        </p>
+                    </div>
                 </div>
                 <div className='col s4'>
                     <div className='item'>
@@ -48,14 +52,16 @@ function BarPage() {
                                 </a>
                                 {<ModalHelpUser/>}
                             </div>
-                            <div className='col s4'>
-                                <a className="modal-trigger" href="#modalShareRoom"
-                                   onClick={() => setModalOpen(true)}>
-                                    <img className="barIcons" src='/src/assets/share.png'
-                                         alt='Icon share Parameters'/>
-                                </a>
-                                {<ModalShareRoom/>}
-                            </div>
+                            {isAllowedToShare && (
+                                <div className='col s4'>
+                                    <a className="modal-trigger" href="#modalShareRoom"
+                                       onClick={() => setModalOpen(true)}>
+                                        <img className="barIcons" src='/src/assets/share.png'
+                                             alt='Icon share Parameters'/>
+                                    </a>
+                                    <ModalShareRoom />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

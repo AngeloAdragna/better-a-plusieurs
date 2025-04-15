@@ -13,7 +13,23 @@ function Room() {
     const { roomId } = useParams();
 
     const [socket, setSocket] = React.useState(io("http://localhost:8080"));
+    /**
+     * roomInfo contient les informations de la salle :
+     * {
+     *   id: string,
+     *   name: string,
+     *   voteSkip: boolean,
+     *   voteAdd: boolean,
+     *   freeToShare: boolean,
+     *   ownerClient: string | null
+     * }
+     */
     const [roomInfo, setRoomInfo] = React.useState(null);
+
+    // TODO : connection du client pour definir si c'est le propriétaire ou pas
+    //const clientId = localStorage.getItem("clientId");
+    //const isOwner = roomInfo.ownerClient === clientId;
+
 
     // INITIALISATION DU SOCKET
     React.useEffect(() => {
@@ -51,7 +67,11 @@ function Room() {
 
     return (
         <div className="room-container row">
-            <BarPage />
+            <BarPage roomName={roomInfo.name}
+                     isAllowedToShare={
+                    // TODO : vérifier si le client est le propriétaire
+                    roomInfo.freeToShare
+            }/>
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
                     <div className="video-container">
