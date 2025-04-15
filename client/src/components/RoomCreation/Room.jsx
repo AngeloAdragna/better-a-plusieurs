@@ -35,7 +35,6 @@ function Room() {
             const response = await fetch(`http://localhost:8080/room/${roomId}`);
             if (response.ok) {
                 const data = await response.json();
-                console.log("Room infos :", data);
                 setRoomInfo(data);
             } else {
                 console.error("Erreur lors de la récupération des données de la salle");

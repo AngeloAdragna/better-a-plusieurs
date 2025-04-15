@@ -4,9 +4,9 @@ class RoomManager {
     static #rooms = [];
 
     static createRoom(name, voteSkip, voteAdd, freeToShare) {
-        const room = new Room(crypto.randomUUID(), name, voteSkip, null, voteAdd, freeToShare);
-        this.#rooms.push(room);
-        return room;
+      const room = new Room(crypto.randomUUID(), name, voteSkip, voteAdd, freeToShare, null);
+      this.#rooms.push(room);
+      return room;
     }
 
     static addRoom(room) {
@@ -26,7 +26,7 @@ class RoomManager {
         return this.#rooms;
     }
 
-    static getRoomById(id) {
+    static getRoomById(id)  {
         return this.#rooms.find((r) => r.getId() === id);
     }
 }
