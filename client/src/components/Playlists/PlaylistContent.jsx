@@ -19,8 +19,8 @@ function PlaylistContent() {
 
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
-        RoomManager.addVideoToPlaylist(roomId, video);
         const room = (RoomManager.getRoomById(roomId));
+        room.addVideoToPlaylist(video);  // Ajout de la vidéo à la playlist de la room
         const updatedPlaylist = room.getVideoPlaylist() || [];
         setVideoPlaylist(updatedPlaylist);  // Mise à jour de la playlist affichée
         //window.location.reload(); // Reload the page to reflect changes
