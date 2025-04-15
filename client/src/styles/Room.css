@@ -61,6 +61,7 @@
 .barIcons{
   padding: 5px;
   border-radius: 15px;
+    height: 60px;
   border: 0.5px solid #1e1e1e92;
   box-shadow: inset 2px 4px 4px #1e1e1ed9;
 }
@@ -257,4 +258,30 @@
     width: 38.5vw; /* Taille pour les grands écrans */
     top: 8vw;
   }
+}
+
+/*--------------------Modal Share Room--------------------*/
+#modalShareRoom {
+    background-color: var(--dark-blue);
+    color: var(--light-text);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+#modalShareRoom .qr-code-container {
+    padding: 10px;
+    background-color: white;
+    border-radius:20px;
+    display: inline-block
+}
+
+#modalShareRoom .row {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+#modalShareRoom h5 {
+    margin-bottom: 3rem;
+    font-size: 3rem;
 }

@@ -6,6 +6,7 @@ import {
   getUsers, createUser, deleteUser, login,
   randomUserId, getUserById
 } from './db.js';
+import RoomManager from "./RoomManager.js";
 
 const app = express();
 app.use(cors());
@@ -45,17 +46,24 @@ app.delete("/users/:id", async (req, res) => {
 });
 
 /**
+ * Route de création d'une route
+ */
+app.post('/create-room', (req, res) => {
+  // TODO : Récupération de l'utilisateur qui a créé la room et ajout de son id dans la room
+  const { roomName, voteSkip, voteAdd, freeToShare} = req.body;
+  const room = RoomManager.createRoom(roomName, voteSkip, voteAdd, freeToShare);
+  res.json({ id: room.getId() });
+});
+
+/**
  * Route de récupération des infos d'une room
  */
-app.get("/room/:roomId", async (req, res) => {
-  const { roomId } = req.params;
-  res.json({
-    id: roomId,
-    name: `Salle ${roomId}`,
-    playlist: [],
-    users: []
-  });
+app.get('/room/:id', (req, res) => {
+  const room = RoomManager.getRoomById(req.params.id);
+  if (!room) return res.status(404).send('Room not found');
+  res.json(room.toJSON());
 });
+
 
 /**
  * Initialisation du serveur

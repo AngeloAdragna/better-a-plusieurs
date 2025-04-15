@@ -14,7 +14,23 @@ function Room() {
     const { roomId } = useParams();
 
     const [socket, setSocket] = React.useState(io("http://localhost:8080"));
+    /**
+     * roomInfo contient les informations de la salle :
+     * {
+     *   id: string,
+     *   name: string,
+     *   voteSkip: boolean,
+     *   voteAdd: boolean,
+     *   freeToShare: boolean,
+     *   ownerClient: string | null
+     * }
+     */
     const [roomInfo, setRoomInfo] = React.useState(null);
+
+    // TODO : connection du client pour definir si c'est le propriétaire ou pas
+    //const clientId = localStorage.getItem("clientId");
+    //const isOwner = roomInfo.ownerClient === clientId;
+
 
     // INITIALISATION DU SOCKET
     React.useEffect(() => {
@@ -36,7 +52,6 @@ function Room() {
             const response = await fetch(`http://localhost:8080/room/${roomId}`);
             if (response.ok) {
                 const data = await response.json();
-                console.log("Room infos :", data);
                 setRoomInfo(data);
             } else {
                 console.error("Erreur lors de la récupération des données de la salle");
@@ -53,10 +68,14 @@ function Room() {
 
     return (
         <div className="room-container row">
-            <BarPage />  {/* Barre de navigation */}
-            <div className="valign-wrapper main-content"> {/* Conteneur principal */}
-                <div className="left-container col s12 m6 l7"> {/* Vidéo et recommandations */}
-                    <div className="video-container "> {/* Vidéo */}
+            <BarPage roomName={roomInfo.name}
+                     isAllowedToShare={
+                    // TODO : vérifier si le client est le propriétaire
+                    roomInfo.freeToShare
+            }/>
+            <div className="valign-wrapper main-content">
+                <div className="left-container col s12 m6 l7">
+                    <div className="video-container">
                         <YoutubeFrame videoId="xiyg1GuXd_Y" socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
