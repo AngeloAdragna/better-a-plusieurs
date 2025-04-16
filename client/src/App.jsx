@@ -5,12 +5,12 @@ import Room from "./components/RoomCreation/Room.jsx";
 import ModalOpenConnection from "./components/RoomCreation/ModalOpenConnection.jsx";
 import ModalJoinRoom from "./components/RoomCreation/ModalJoinRoom.jsx";
 import ModalRoomParameters from "./components/RoomCreation/ModalRoomParameters.jsx";
-import LoginButton from "./components/Login/LoginButton.jsx";
+import LoginButton from "./components/Login/LoginButton.jsx"; // <-- Gardé depuis feat/unit-test
 
 function App() {
     const [modalOpen, setModalOpen] = useState(false);
     const [onlyConnection, setOnlyConnection] = useState(false); // State to control if it's for connection only
-    const isConnected = false; //TODO Remplace ça par un vrai état de connexion
+    const isConnected = false; // TODO: Remplace ça par un vrai état de connexion
 
     return (
         <BrowserRouter>
@@ -51,7 +51,8 @@ function App() {
                                 </a>
                                 {modalOpen && <ModalJoinRoom />}
                             </div>
-                            <LoginButton />
+
+                            <LoginButton /> {/* <-- Gardé depuis feat/unit-test */}
                         </>
                     } />
                     <Route path="/room/:roomId" element={<Room />} />
