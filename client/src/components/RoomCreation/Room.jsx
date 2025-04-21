@@ -6,7 +6,8 @@ import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
 import PlaylistContent from "../Playlists/PlaylistContent.jsx";
 import "../../styles/Room.css";
 import { useParams } from "react-router-dom";
-import YoutubeFrame from "../YoutubeFrame.jsx";
+import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
+import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 import { io } from "socket.io-client"
 
 function Room() {
@@ -71,13 +72,16 @@ function Room() {
         <div className="room-container row">
             <BarPage roomName={roomInfo.name}
                      isAllowedToShare={
-                    // TODO : vérifier si le client est le propriétaire
-                    roomInfo.freeToShare
-            }/>
+                        // TODO : vérifier si le client est le propriétaire
+                        roomInfo.freeToShare
+                     }
+                     roomId={roomId}
+                     socket={socket}
+            />
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
                     <div className="video-container">
-                        <YoutubeFrame roomId={roomId} videoId="CCb_XbmB_iE" socket={socket} />
+                        <YoutubeFrame roomId={roomId} videoId="R2zTNT2YPZE" socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="261173889792-5lnsehpl504t0g1an722duv93n0mfhv1.apps.googleusercontent.com">
