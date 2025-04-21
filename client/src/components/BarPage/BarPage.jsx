@@ -30,7 +30,7 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
                 </div>
                 <div className='col s3'>
 
-                    <YoutubeSearchBar/>
+                    <YoutubeSearchBar roomId={roomId} socket={socket}/>
                 </div>
                 <div className='col s3'>
                     <div className='item'>

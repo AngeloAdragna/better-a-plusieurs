@@ -7,7 +7,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     const [results, setResults] = useState([]);
 
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
-    const API_KEY = 'AIzaSyCXLJRGuMxDY3fnll0xeEE0qKKzzhvxLic';
+    const API_KEY = 'AIzaSyB1ZYkFVIeulVam1c_AzJGkn3dw9SRtrdY';
 
     // Gestion de la recherche lors de la soumission du formulaire
     const handleSearch = async (e) => {
@@ -22,7 +22,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                         part: 'snippet',
                         q: query,           // Texte de la barre de recherche
                         key: API_KEY,       // Utilisation de la clé d'API déclarée plus haut
-                        maxResults: 20,     // Maximum 20 Résulats renvoyés
+                        maxResults: 5,      // Maximum 5 Résulats renvoyés (pour éviter d'arriver à la limite quotidienne trop vite)
                         type: 'video',
                     },
                 }
@@ -36,7 +36,8 @@ const YouTubeSearchBar = ({roomId, socket}) => {
 
     const handleSelectVideo = (videoId, roomId, socket) => {
         // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
-        socket.emit("selectVideo", {videoId: videoId, roomId: roomId})
+        //console.log(socket)   // DEBUG
+        socket.emit("selectVideo", {roomId: roomId, videoId: videoId})
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats

@@ -100,7 +100,7 @@ if (process.env.NODE_ENV !== 'test') {
      * Gestion des événements vidéo (broadcast uniquement dans la room)
      */
     socket.on("pause", ({ roomId, timeCode }) => {
-      console.log(`⏸ Pause dans la salle ${roomId} : ${timeCode}`);
+      console.log(`⏸️ Pause dans la salle ${roomId} : ${timeCode}`);
       socket.to(roomId).emit("pause", timeCode);
     });
 
@@ -112,6 +112,11 @@ if (process.env.NODE_ENV !== 'test') {
     socket.on("sync", ({ roomId, timeCode }) => {
       console.log(`🔄 Sync dans la salle ${roomId} : ${timeCode}`);
       socket.to(roomId).emit("sync", timeCode);
+    });
+
+    socket.on("selectVideo", ({roomId, videoId}) => {
+      console.log(`🔀 Selection d'une vidéo dans la salle ${roomId} : ${videoId}`)
+      socket.to(roomId).emit("selectVideo", videoId)
     });
 
     socket.on("disconnect", () => {
