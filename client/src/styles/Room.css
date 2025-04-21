@@ -286,6 +286,25 @@
     font-size: 3rem;
 }
 
+/* --------------------Suggestions de texte pour recherche--------------------*/
+
+#text-suggestions {
+    position: absolute;
+    top: 100%; /* Juste en dessous de l'input */
+    left: 0;
+    right: 0;
+    z-index: 9999; /* Très important pour qu'elle apparaisse au-dessus du reste */
+    color: black;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: scroll;
+    text-align: left;
+}
+
+
+
+
 /* --------------------Modal searchResultsModal--------------------*/
 #searchResultsModal {
     background-color: #1e1e2f;

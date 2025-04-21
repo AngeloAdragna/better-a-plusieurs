@@ -1,4 +1,5 @@
 import express from "express";
+import axios from "axios";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
@@ -64,6 +65,31 @@ app.get('/room/:id', (req, res) => {
   res.json(room.toJSON());
 });
 
+/**
+ * Route pour les suggestions de recherche (obligé de le faire dans le back)
+ */
+app.get("/suggest", async (req, res) => {
+  const query = req.query.q;
+  if (!query) return res.status(400).json({ error: "Missing query" });
+
+  try {
+    const response = await axios.get("https://suggestqueries.google.com/complete/search", {
+      params: {
+        client: "youtube",
+        ds: "yt",
+        q: query
+      },
+      headers: {
+        "User-Agent": "Mozilla/5.0" // parfois nécessaire pour que Google réponde bien
+      }
+    });
+
+    res.json(response.data); // retourne les suggestions au front
+  } catch (err) {
+    console.error("Erreur suggestion :", err);
+    res.status(500).json({ error: "Erreur lors de la récupération des suggestions" });
+  }
+});
 
 /**
  * Initialisation du serveur
@@ -76,6 +102,8 @@ if (process.env.NODE_ENV !== 'test') {
       methods: ["GET", "POST"]
     }
   });
+
+
 
   io.on("connection", (socket) => {
     console.log(`🔌 Utilisateur connecté : ${socket.id}`);
@@ -116,7 +144,7 @@ if (process.env.NODE_ENV !== 'test') {
 
     socket.on("selectVideo", ({roomId, videoId}) => {
       console.log(`🔀 Selection d'une vidéo dans la salle ${roomId} : ${videoId}`)
-      socket.to(roomId).emit("selectVideo", videoId)
+      io.in(roomId).emit("selectVideo", videoId) // Envoyer à toute la room y compris le client qui a initié le changement
     });
 
     socket.on("disconnect", () => {
@@ -124,7 +152,7 @@ if (process.env.NODE_ENV !== 'test') {
     });
   });
 
-  server.listen(8080, () => {
+  server.listen(8080, '0.0.0.0', () => {
     console.log("Serveur Socket.IO lancé sur http://localhost:8080");
   });
 }

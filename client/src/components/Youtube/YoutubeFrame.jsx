@@ -98,6 +98,11 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
         const changeVideo = (newVideoId) => {
             console.log(`Nouvel Id de video : ${newVideoId}`)
             setCurrentVideoId(newVideoId)
+            if(player) {
+                player.seekTo(0, true)
+            }
+            cancelPeriodicSync()
+
         }
 
         socket.on("pause", handlePause);
