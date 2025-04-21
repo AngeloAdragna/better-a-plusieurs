@@ -2,7 +2,7 @@ import ModalParametersUser from "./ModalParametersUser";
 import ModalHelpUser from "./ModalHelpUser";
 import ModalParametersUserRoom from "./ModalParametersUserRoom";
 import ModalShareRoom from "./ModalShareRoom";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const BarPage = ({roomName, isAllowedToShare}) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -34,7 +34,9 @@ const BarPage = ({roomName, isAllowedToShare}) => {
                                 <a className="modal-trigger" href="#ModalParametersUser"
                                    onClick={() => setModalOpen(true)}>
                                     <img className="barIcons" src='/src/assets/icon_param.svg' alt='Icon Parameters'/>
+
                                 </a>
+
                                 {<ModalParametersUser/>}
                             </div>
                             <div className='col s4'>

@@ -91,10 +91,11 @@ if (process.env.NODE_ENV !== 'test') {
     /**
      * Gestion des messages
      */
-    socket.on("message", (data) => {
-      console.log(`💬 Message reçu : ${data}`);
-      io.emit("message", data);
+    socket.on("message", (msg) => {
+      console.log(`💬 Message reçu : ${msg}`);
+      io.emit("message", { author: socket.id, text: msg });
     });
+
 
     /**
      * Gestion des événements vidéo (broadcast uniquement dans la room)
