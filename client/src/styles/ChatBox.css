@@ -167,6 +167,11 @@
     fill: white;
 }
 
+.big-emoji {
+    font-size: 3rem;
+    line-height: 1.2;
+    display: inline-block;
+}
 
 /* Materialize responsive classes */
 @media screen and (min-width: 600px) {
