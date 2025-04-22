@@ -11,7 +11,7 @@ import "../styles/ChatBox.css";
 const socket = io("http://localhost:8080");
 const gf = new GiphyFetch("Rg2Fql3Wpc2tKQUHOpUTKo0PdG80rmJX"); // TODO: move to .env
 
-const ChatBox = () => {
+const ChatBox = ({roomId}) => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [showPicker, setShowPicker] = useState(false);
@@ -21,6 +21,8 @@ const ChatBox = () => {
     const gifPickerRef = useRef(null);
     const emojiPickerRef = useRef(null);
     const messageListRef = useRef(null);
+
+    const username = localStorage.getItem("username") || "Anonyme";
 
     useEffect(() => {
         socket.on("message", (data) => setMessages((prev) => [...prev, data]));
@@ -55,7 +57,7 @@ const ChatBox = () => {
 
     const handleSend = () => {
         if (message.trim()) {
-            socket.emit("message", message);
+            socket.emit("message", { roomId, author: username, data: message});
             setMessage("");
         }
     };
@@ -73,6 +75,13 @@ const ChatBox = () => {
         const hue = Math.abs(hash) % 360;
         return `hsl(${hue}, 65%, 60%)`;
     };
+
+    useEffect(() => {
+        if (roomId) {
+            socket.emit("joinRoom", roomId);
+        }
+    }, [roomId]);
+
 
     return (
         <section className={`ChatContainer ${isCollapsed ? "collapsed" : ""}`}>
@@ -144,7 +153,7 @@ const ChatBox = () => {
                             fetchGifs={(offset) => gf.trending({ offset, limit: 9 })}
                             onGifClick={(gif, e) => {
                                 e.preventDefault();
-                                socket.emit("message", gif.images.fixed_height.url);
+                                socket.emit("message", { roomId, author: username,  data: gif.images.fixed_height.url });
                                 setShowGifPicker(false);
                             }}
                             noLink
