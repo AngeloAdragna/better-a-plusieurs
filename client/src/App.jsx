@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TestRoomCreation from "./components/RoomCreation/TestRoomCreation.jsx";
 import Room from "./components/RoomCreation/Room.jsx";
-import ModalOpenConnection from "./components/RoomCreation/ModalOpenConnection.jsx";
+import ModalOpenConnection from "./components/Login/ModalOpenConnection.jsx";
 import ModalJoinRoom from "./components/RoomCreation/ModalJoinRoom.jsx";
+import UserCreationModal from "./components/Login/UserCreationModal.jsx";
 import ModalRoomParameters from "./components/RoomCreation/ModalRoomParameters.jsx";
 import LoginButton from "./components/Login/LoginButton.jsx"; // <-- Gardé depuis feat/unit-test
 import { AuthProvider } from "./context/AuthContext"; // adapte le chemin

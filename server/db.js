@@ -82,7 +82,7 @@ export async function createUser(user) {
         // Vérifie les champs requis
         if (!user.name || !user.password) {
             console.error("Erreur : nom ou mot de passe manquant.");
-            return;
+            return false;
         }
 
         // Vérifie si un utilisateur avec le même nom existe déjà
@@ -92,13 +92,14 @@ export async function createUser(user) {
         for (const u of Object.values(users)) {
             if (u.name === user.name) {
                 console.error("Erreur : l'utilisateur existe déjà.");
-                return;
+                return false;
             }
         }
 
         // Ajout de l'utilisateur
         await usersRef.push(user);
         console.log("Utilisateur ajouté avec succès !");
+        return true;
     } catch (error) {
         console.error("Erreur lors de l'ajout de l'utilisateur :", error);
     }

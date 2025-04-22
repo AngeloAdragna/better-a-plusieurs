@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import ModalRoomParameters from "./ModalRoomParameters";
+import ModalRoomParameters from "../RoomCreation/ModalRoomParameters.jsx";
 import M from "materialize-css";
 import axios from "axios";
 import {AuthContext} from "../../context/AuthContext.jsx";

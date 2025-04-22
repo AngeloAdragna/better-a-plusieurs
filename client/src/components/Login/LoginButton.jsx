@@ -1,17 +1,17 @@
 import { useState } from "react";
-import LoginModal from "./LoginModal.jsx";
+import UserCreationModal from "./UserCreationModal.jsx";
 
 const LoginButton = () => {
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
-        <div>
-            <a className="waves-effect waves-light btn modal-trigger" onClick={() => setModalOpen(true)}>
-                Ouvrir le Modal de login
+        <>
+            <a className="waves-effect waves-light btn modal-trigger" href="#modalCreate"
+               onClick={() => setModalOpen(true)}>
+                Créer un compte
             </a>
-
-            {modalOpen && <LoginModal isOpen={modalOpen} onClose={()=>setModalOpen(false)} />}
-        </div>
+            {modalOpen && <UserCreationModal onlyConnection={true} />}
+        </>
     );
 };
 

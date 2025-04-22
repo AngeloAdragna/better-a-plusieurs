@@ -16,10 +16,15 @@ app.use(express.json());
  */
 app.post("/users", async (req, res) => {
   const user = req.body;
+  console.log("User to create:", user);
+  console.log("password :", user.password);
   if (!user.name || !user.password) {
     return res.status(400).json({ error: "Nom ou mot de passe manquant" });
   }
-  await createUser(user);
+  let createUserResult = await createUser(user);
+    if (!createUserResult) {
+        return res.status(400).json({ error: "Utilisateur existe déjà" });
+    }
   res.status(201).json({ message: "Utilisateur créé" });
 });
 
