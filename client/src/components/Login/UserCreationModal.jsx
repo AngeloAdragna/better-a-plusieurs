@@ -26,14 +26,13 @@ const UserCreationModal = () => {
                 console.log("User created:", response.data);
                 setSubmittedData(response.data);
                 alert("Utilisateur créé avec succès !");
+                onClose();
             })
             .catch(error => {
                 console.error("Login failed:", error.response.data);
                 alert("Erreur de connexion : " + error.response.data.error);
-            })
-        onClose();
-    };
-
+                onClose();
+            });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
