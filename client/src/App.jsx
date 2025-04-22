@@ -1,60 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TestRoomCreation from "./components/RoomCreation/TestRoomCreation.jsx";
-import Room from "./components/RoomCreation/Room.jsx";
-import ModalOpenConnection from "./components/Login/ModalOpenConnection.jsx";
-import ModalJoinRoom from "./components/RoomCreation/ModalJoinRoom.jsx";
-import UserCreationModal from "./components/Login/UserCreationModal.jsx";
-import ModalRoomParameters from "./components/RoomCreation/ModalRoomParameters.jsx";
-import LoginButton from "./components/Login/LoginButton.jsx"; // <-- Gardé depuis feat/unit-test
-import { AuthProvider } from "./context/AuthContext"; // adapte le chemin
-import { useContext } from "react";
-import { AuthContext } from "./context/AuthContext";
 
-function AppContent() {
+// Composants liés aux rooms
+import Room from "./components/RoomCreation/Room.jsx";
+import ModalJoinRoom from "./components/RoomCreation/ModalJoinRoom.jsx";
+import ModalRoomParameters from "./components/RoomCreation/ModalRoomParameters.jsx";
+
+// Composants liés à l'authentification
+import ModalOpenConnection from "./components/Login/ModalOpenConnection.jsx";
+
+// Contexte d'authentification
+import { AuthProvider } from "./context/AuthContext";
+import { AuthContext } from "./context/AuthContext";
+import RegisterButton from "./components/Login/RegisterButton.jsx";
+import LoginButton from "./components/Login/LoginButton.jsx";
+
+import "./styles/HomePage.css";
+
+function HomePage() {
     const [modalOpen, setModalOpen] = useState(false);
-    const [onlyConnection, setOnlyConnection] = useState(false);
-    const { isConnected } = useContext(AuthContext); // Récupéré depuis le contexte
+    const [isConnectionOnly, setIsConnectionOnly] = useState(false);
+    const { isConnected } = useContext(AuthContext);
+
+    const openConnectionModal = () => {
+        setModalOpen(true);
+        setIsConnectionOnly(true);
+    };
+
+    const openRoomCreationModal = () => {
+        setModalOpen(true);
+        setIsConnectionOnly(false);
+    };
+
+    const openJoinRoomModal = () => {
+        setModalOpen(true);
+    };
 
     return (
-        <div className="App">
-            <Routes>
-                <Route path="/" element={
-                    <>
-                        <div>
-                            <a className="waves-effect waves-light btn modal-trigger" href="#modalCreate"
-                               onClick={() => {
-                                   setModalOpen(true);
-                                   setOnlyConnection(true);
-                               }}>
-                                Se connecter
-                            </a>
-                            {modalOpen && <ModalOpenConnection onlyConnection={onlyConnection} />}
-                        </div>
-                        <div>
-                            <a className="waves-effect waves-light btn modal-trigger"
-                               href={isConnected ? "#modalRoomParameters" : "#modalCreate"}
-                               onClick={() => {
-                                   setModalOpen(true);
-                                   setOnlyConnection(false);
-                               }}>
-                                Créer Room
-                            </a>
-                            {modalOpen && (isConnected ? <ModalRoomParameters /> : <ModalOpenConnection onlyConnection={onlyConnection} />)}
-                        </div>
-                        <div>
-                            <a className="waves-effect waves-light btn modal-trigger" href="#ModalJoinRoom"
-                               onClick={() => setModalOpen(true)}>
-                                Rejoindre
-                            </a>
-                            {modalOpen && <ModalJoinRoom />}
-                        </div>
-                        <LoginButton />
-                    </>
-                } />
-                <Route path="/room/:roomId" element={<Room />} />
-            </Routes>
+
+        <div className="homepage-container">
+            <div className="header-buttons">
+                <LoginButton />
+                <RegisterButton />
+            </div>
+
+            <div className="CenteredContent">
+                <img src={"src/assets/icon_space.svg"} alt={"logo"}/>
+                <div className={"buttonsCenter"}>
+                    <a
+                        className="waves-effect waves-light btn modal-trigger"
+                        href={isConnected ? "#modalRoomParameters" : "#modalConnection"}
+                        onClick={openRoomCreationModal}
+                    >
+                        Créer Room
+                    </a>
+                    <a
+                        className="waves-effect waves-light btn modal-trigger"
+                        href="#ModalJoinRoom"
+                        onClick={openJoinRoomModal}
+                    >
+                        Rejoindre une Room
+                    </a>
+                </div>
+            </div>
+
+            {/* Modales */}
+            {modalOpen && (
+                isConnected ? <ModalRoomParameters /> : <ModalOpenConnection onlyConnection={isConnectionOnly} />
+            )}
+            {modalOpen && <ModalJoinRoom />}
         </div>
+    );
+}
+
+
+function AppContent() {
+    return (
+        <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/room/:roomId" element={<Room />} />
+        </Routes>
     );
 }
 

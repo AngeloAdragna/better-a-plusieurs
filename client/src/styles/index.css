@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Exo, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -39,4 +39,68 @@ html {
   height: 100%;
   width: 100%;
   overflow: hidden;
+}
+
+/** Style des modales **/
+.modal {
+  background: var(--mid-blue) !important;
+  border-radius: 20px !important;
+  padding: 40px 30px;
+  max-width: 500px;
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(0, 150, 255, 0.2);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.modal h4, .modal h5 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #ffffff;
+}
+
+.modal input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #888;
+  color: white;
+  font-size: 18px;
+}
+
+.modal input:focus {
+  border-bottom: 2px solid #00aaff;
+  box-shadow: none;
+}
+
+.modal label {
+  color: #aaa;
+}
+
+.modal .btn {
+  background-color: var(--mid-blue-btn);
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 5px 10px;
+  margin-top: 10px;
+  transition: 0.3s;
+  text-transform: uppercase;
+  height: auto !important;
+}
+
+.modal .btn:hover {
+  background-color: #0090dd;
+}
+
+.modal form:only-child {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal .switchdiv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }

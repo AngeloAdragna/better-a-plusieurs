@@ -5,7 +5,7 @@ import axios from "axios";
 import {AuthContext} from "../../context/AuthContext.jsx";
 
 
-const ModalOpenConnection = ({ onlyConnection }) => {
+const ModalOpenConnection = () => {
     const { isConnected, setIsConnected } = React.useContext(AuthContext);
     const [formData, setFormData] = useState({ username: '', password: '' });
     const [submittedData, setSubmittedData] = useState(null);
@@ -22,12 +22,10 @@ const ModalOpenConnection = ({ onlyConnection }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Form submitted:", formData);
-        // requête avec axios ou fetch pour envoyer les données au backend
         axios.post( 'http://localhost:8080' + '/login', formData)
             .then(response => {
                 const token = response.data;
                 console.log("Token received:", token);
-                // Stocker le token dans le localStorage
                 localStorage.setItem('token', token);
                 console.log("Login successful:", response.data);
                 setSubmittedData(formData);
@@ -56,8 +54,7 @@ const ModalOpenConnection = ({ onlyConnection }) => {
 
     return (
         <>
-            {/* Premier Modal */}
-            <div id="modalCreate" className="modal" ref={modalRef}>
+            <div id="modalConnection" className="modal" ref={modalRef}>
                 <div className="modal-content black-text">
                     <h5>Connexion</h5>
                     <form onSubmit={handleSubmit}>
@@ -89,7 +86,6 @@ const ModalOpenConnection = ({ onlyConnection }) => {
                 </div>
             </div>
 
-            {/* Deuxième Modal */}
             <ModalRoomParameters />
         </>
     );
