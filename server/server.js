@@ -93,22 +93,22 @@ if (process.env.NODE_ENV !== 'test') {
     /**
      * Gestion des messages
      */
-    socket.on("message", (data) => {
-      console.log(`💬 Message reçu : ${data}`);
-      io.emit("message", data);
+    socket.on("message", ({ roomId, data }) => {
+      console.log(`💬 Message reçu dans la salle ${roomId} : ${data}`);
+      io.to(roomId).emit("message", data);
     });
 
     /**
      * Gestion des événements vidéo (broadcast uniquement dans la room)
      */
-    socket.on("pause", ({ roomId, data }) => {
-      console.log(`⏸ Pause dans la salle ${roomId} : ${data}`);
-      socket.to(roomId).emit("pause", data);
+    socket.on("pause", ({ roomId, timeCode }) => {
+      console.log(`⏸ Pause dans la salle ${roomId} : ${timeCode}`);
+      socket.to(roomId).emit("pause", timeCode);
     });
 
-    socket.on("play", ({ roomId, data }) => {
-      console.log(`▶️ Play dans la salle ${roomId} : ${data}`);
-      socket.to(roomId).emit("play", data);
+    socket.on("play", ({ roomId, timeCode }) => {
+      console.log(`▶️ Play dans la salle ${roomId} : ${timeCode}`);
+      socket.to(roomId).emit("play", timeCode);
     });
 
     socket.on("sync", ({ roomId, timeCode }) => {

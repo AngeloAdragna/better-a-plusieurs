@@ -1,7 +1,6 @@
 import React from "react";
 import WebSocketChat from "../WebSocketChat.jsx";
 import BarPage from "../BarPage/BarPage.jsx";
-import VideoContent from "../VideoContent.jsx";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
 import PlaylistContent from "../Playlists/PlaylistContent.jsx";
@@ -13,7 +12,7 @@ import { io } from "socket.io-client"
 function Room() {
     const { roomId } = useParams();
 
-    const [socket, setSocket] = React.useState(io("http://localhost:8080"));
+    const [socket, setSocket] = React.useState(null);
     /**
      * roomInfo contient les informations de la salle :
      * {
@@ -27,22 +26,24 @@ function Room() {
      */
     const [roomInfo, setRoomInfo] = React.useState(null);
 
-    // TODO : connection du client pour definir si c'est le propriétaire ou pas
+    // TODO : connexion du client pour definir si c'est le propriétaire ou pas
     //const clientId = localStorage.getItem("clientId");
     //const isOwner = roomInfo.ownerClient === clientId;
 
 
     // INITIALISATION DU SOCKET
     React.useEffect(() => {
-        socket.on("connect", () => {
-            console.log("WebSocket connecté");
-            socket.emit("joinRoom", roomId);
+        const newSocket = io("http://localhost:8080");
+        setSocket(newSocket);
+
+        newSocket.on("connect", () => {
+            console.log("✅ WebSocket connecté :", newSocket.id);
+            newSocket.emit("joinRoom", roomId);
         });
 
-        setSocket(socket);
-
         return () => {
-            socket.disconnect();
+            newSocket.disconnect();
+            console.log("❌ Socket déconnecté");
         };
     }, [roomId]);
 
@@ -76,7 +77,7 @@ function Room() {
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
                     <div className="video-container">
-                        <YoutubeFrame videoId="xiyg1GuXd_Y" socket={socket} />
+                        <YoutubeFrame roomId={roomId} videoId="CCb_XbmB_iE" socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="261173889792-5lnsehpl504t0g1an722duv93n0mfhv1.apps.googleusercontent.com">
@@ -88,7 +89,7 @@ function Room() {
                     <PlaylistContent />
                 </div>
                 <div >{/* Chat */}
-                    <WebSocketChat socket={socket} /> {/* Chat */}
+                    <WebSocketChat socket={socket} roomId={roomId}/> {/* Chat */}
                 </div>
             </div>
         </div>
