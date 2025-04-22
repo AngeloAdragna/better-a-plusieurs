@@ -7,6 +7,7 @@ import {authenticateToken} from "./middleware/authenticateToken.js";
 import RoomManager from "./RoomManager.js";
 
 const app = express();
+export default app;
 app.use(cors());
 app.use(express.json());
 
