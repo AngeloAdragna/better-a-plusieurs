@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
+import {AuthContext} from "../../context/AuthContext.jsx";
+
 
 const LoginModal = ({ isOpen, onClose }) => {
+    const {isConnected, setIsConnected} = useContext(AuthContext)
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [submittedData, setSubmittedData] = useState(null);
 
   useEffect(() => {
     if (submittedData) {
       console.log("Login submitted:", submittedData);
-      // ici tu pourrais aussi envoyer ça à un backend ou le stocker localement
     }
   }, [submittedData]);
 
@@ -31,6 +33,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             localStorage.setItem('token', token);
             console.log("Login successful:", response.data);
             setSubmittedData(formData);
+            setIsConnected(true);
         })
         .catch(error => {
             console.error("Login failed:", error.response.data);

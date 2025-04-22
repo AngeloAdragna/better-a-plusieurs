@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import ModalRoomParameters from "./ModalRoomParameters";
 import M from "materialize-css";
 import axios from "axios";
+import {AuthContext} from "../../context/AuthContext.jsx";
+
 
 const ModalOpenConnection = ({ onlyConnection }) => {
+    const { isConnected, setIsConnected } = React.useContext(AuthContext);
     const [formData, setFormData] = useState({ username: '', password: '' });
     const [submittedData, setSubmittedData] = useState(null);
     const modalRef = useRef(null);
@@ -16,26 +19,27 @@ const ModalOpenConnection = ({ onlyConnection }) => {
         }
     }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:8080/login', formData);
-            console.log("Login successful:", response.data);
-            setSubmittedData(formData);
-            onClose();
-
-            if (!onlyConnection) {
-                setTimeout(() => {
-                    const roomModal = M.Modal.getInstance(document.getElementById("modalRoomParameters"));
-                    if (roomModal) roomModal.open();
-                }, 300);
-            }
-
-        } catch (error) {
-            console.error("Login failed:", error.response?.data || error.message);
-            alert("Erreur de connexion : " + (error.response?.data?.error || "Erreur inconnue"));
-        }
+        console.log("Form submitted:", formData);
+        // requête avec axios ou fetch pour envoyer les données au backend
+        axios.post( 'http://localhost:8080' + '/login', formData)
+            .then(response => {
+                const token = response.data;
+                console.log("Token received:", token);
+                // Stocker le token dans le localStorage
+                localStorage.setItem('token', token);
+                console.log("Login successful:", response.data);
+                setSubmittedData(formData);
+                setIsConnected(true);
+            })
+            .catch(error => {
+                console.error("Login failed:", error.response.data);
+                alert("Erreur de connexion : " + error.response.data.error);
+            })
+        onClose();
     };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
