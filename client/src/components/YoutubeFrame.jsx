@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import YouTube from "react-youtube";
 
 
-const VideoPlayer = ({ videoId, socket, height = "390", width = "661" }) => {
+const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" }) => {
     const [player, setPlayer] = useState(null)
     const [_, setIntervalId] = useState(null)
     const [isPlaying, setIsPlaying] = useState(false);
@@ -52,12 +52,12 @@ const VideoPlayer = ({ videoId, socket, height = "390", width = "661" }) => {
             cancelPeriodicSync()
 
             console.log(`Pause : state = ${state}`);
-            socket.emit("pause", player.getCurrentTime());
+            socket.emit("pause", {roomId: roomId, timeCode: player.getCurrentTime()});
 
         } else if (state === 1 && !isPlaying) {
             // If the video is set to play and wasn't playing yet
             //console.log(`Play : state = ${state}`); // DEBUG
-            socket.emit("play", player.getCurrentTime());
+            socket.emit("play", {roomId: roomId, timeCode: player.getCurrentTime()});
             // Enable periodic sync
             setPeriodicSync()
         }
@@ -113,8 +113,8 @@ const VideoPlayer = ({ videoId, socket, height = "390", width = "661" }) => {
         // Set the interval (periodic sync)
         const newIntervalId = setInterval(() => {
             if (player) {
-                // console.log(`Sync : timecode = ${player.getCurrentTime()}`); // DEBUG
-                socket.emit("sync", player.getCurrentTime());
+                console.log(`Sync : timecode = ${player.getCurrentTime()}`); // DEBUG
+                socket.emit("sync", {roomId: roomId, timeCode: player.getCurrentTime()});
             }
         }, syncPeriod);
 

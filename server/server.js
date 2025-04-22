@@ -2,13 +2,12 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import {
-  getUsers, createUser, deleteUser, login,
-  randomUserId, getUserById
-} from './db.js';
+import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from './db.js';
+import {authenticateToken} from "./middleware/authenticateToken.js";
 import RoomManager from "./RoomManager.js";
 
 const app = express();
+export default app;
 app.use(cors());
 app.use(express.json());
 
@@ -17,10 +16,15 @@ app.use(express.json());
  */
 app.post("/users", async (req, res) => {
   const user = req.body;
+  console.log("User to create:", user);
+  console.log("password :", user.password);
   if (!user.name || !user.password) {
     return res.status(400).json({ error: "Nom ou mot de passe manquant" });
   }
-  await createUser(user);
+  let createUserResult = await createUser(user);
+    if (!createUserResult) {
+        return res.status(400).json({ error: "Utilisateur existe déjà" });
+    }
   res.status(201).json({ message: "Utilisateur créé" });
 });
 
@@ -28,13 +32,17 @@ app.post("/users", async (req, res) => {
  * Route de connexion
  */
 app.post("/login", async (req, res) => {
-  const { name, password } = req.body;
-  const success = await login(name, password);
-  if (success) {
-    res.status(200).json({ success: true });
-  } else {
-    res.status(401).json({ success: false });
-  }
+    const { username, password } = req.body;
+    console.log("Login attempt with name:", username);
+    console.log("and password: ", password)
+    const loginResult = await login(username, password);
+
+    if (!loginResult) {
+        return res.status(401).json({ success: false });
+    }
+
+    const { token } = loginResult;
+    res.status(200).json({ success: true, token });
 });
 
 /**
@@ -91,23 +99,23 @@ if (process.env.NODE_ENV !== 'test') {
     /**
      * Gestion des messages
      */
-    socket.on("message", (msg) => {
-      console.log(`💬 Message reçu : ${msg}`);
-      io.emit("message", { author: socket.id, text: msg });
+    socket.on("message", ({ roomId, data }) => {
+      console.log(`💬 Message reçu dans la salle ${roomId} : ${data}`);
+      io.to(roomId).emit("message", { author: socket.id, text: msg });
     });
 
 
     /**
      * Gestion des événements vidéo (broadcast uniquement dans la room)
      */
-    socket.on("pause", ({ roomId, data }) => {
-      console.log(`⏸ Pause dans la salle ${roomId} : ${data}`);
-      socket.to(roomId).emit("pause", data);
+    socket.on("pause", ({ roomId, timeCode }) => {
+      console.log(`⏸ Pause dans la salle ${roomId} : ${timeCode}`);
+      socket.to(roomId).emit("pause", timeCode);
     });
 
-    socket.on("play", ({ roomId, data }) => {
-      console.log(`▶️ Play dans la salle ${roomId} : ${data}`);
-      socket.to(roomId).emit("play", data);
+    socket.on("play", ({ roomId, timeCode }) => {
+      console.log(`▶️ Play dans la salle ${roomId} : ${timeCode}`);
+      socket.to(roomId).emit("play", timeCode);
     });
 
     socket.on("sync", ({ roomId, timeCode }) => {
