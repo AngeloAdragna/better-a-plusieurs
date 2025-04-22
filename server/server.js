@@ -101,8 +101,9 @@ if (process.env.NODE_ENV !== 'test') {
      */
     socket.on("message", ({ roomId, data }) => {
       console.log(`💬 Message reçu dans la salle ${roomId} : ${data}`);
-      io.to(roomId).emit("message", data);
+      io.to(roomId).emit("message", { author: socket.id, text: msg });
     });
+
 
     /**
      * Gestion des événements vidéo (broadcast uniquement dans la room)

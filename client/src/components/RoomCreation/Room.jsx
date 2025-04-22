@@ -1,5 +1,5 @@
 import React from "react";
-import WebSocketChat from "../WebSocketChat.jsx";
+import ChatBox from "../ChatBox.jsx";
 import BarPage from "../BarPage/BarPage.jsx";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
@@ -89,7 +89,7 @@ function Room() {
                     <PlaylistContent />
                 </div>
                 <div >{/* Chat */}
-                    <WebSocketChat socket={socket} roomId={roomId}/> {/* Chat */}
+                    <ChatBox socket={socket} /> {/* Chat */}
                 </div>
             </div>
         </div>
