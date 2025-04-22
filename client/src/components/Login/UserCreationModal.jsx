@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import ModalRoomParameters from "./ModalRoomParameters";
+import ModalRoomParameters from "../RoomCreation/ModalRoomParameters";
 import M from "materialize-css";
 import axios from "axios";
-import {AuthContext} from "../../context/AuthContext.jsx";
 
 
-const ModalOpenConnection = ({ onlyConnection }) => {
-    const { isConnected, setIsConnected } = React.useContext(AuthContext);
-    const [formData, setFormData] = useState({ username: '', password: '' });
+const UserCreationModal = () => {
+    const [formData, setFormData] = useState({ name: '', password: '' });
     const [submittedData, setSubmittedData] = useState(null);
     const modalRef = useRef(null);
 
@@ -23,15 +21,11 @@ const ModalOpenConnection = ({ onlyConnection }) => {
         e.preventDefault();
         console.log("Form submitted:", formData);
         // requête avec axios ou fetch pour envoyer les données au backend
-        axios.post( 'http://localhost:8080' + '/login', formData)
+        axios.post( 'http://localhost:8080' + '/users', formData)
             .then(response => {
-                const token = response.data;
-                console.log("Token received:", token);
-                // Stocker le token dans le localStorage
-                localStorage.setItem('token', token);
-                console.log("Login successful:", response.data);
-                setSubmittedData(formData);
-                setIsConnected(true);
+                console.log("User created:", response.data);
+                setSubmittedData(response.data);
+                alert("Utilisateur créé avec succès !");
             })
             .catch(error => {
                 console.error("Login failed:", error.response.data);
@@ -59,17 +53,17 @@ const ModalOpenConnection = ({ onlyConnection }) => {
             {/* Premier Modal */}
             <div id="modalCreate" className="modal" ref={modalRef}>
                 <div className="modal-content black-text">
-                    <h5>Connexion</h5>
+                    <h5>Créer un utilisateur</h5>
                     <form onSubmit={handleSubmit}>
                         <div className="input-field black-text">
                             <input
                                 type="text"
-                                id="username"
-                                name="username"
-                                value={formData.username}
+                                id="name"
+                                name="name"
+                                value={formData.name}
                                 onChange={handleChange}
                             />
-                            <label htmlFor="username">Nom d'utilisateur</label>
+                            <label htmlFor="name">Nom d'utilisateur</label>
                         </div>
                         <div className="input-field black-text">
                             <input
@@ -95,4 +89,4 @@ const ModalOpenConnection = ({ onlyConnection }) => {
     );
 };
 
-export default ModalOpenConnection;
+export default UserCreationModal;
