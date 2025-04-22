@@ -2,10 +2,8 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import {
-  getUsers, createUser, deleteUser, login,
-  randomUserId, getUserById
-} from './db.js';
+import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from './db.js';
+import {authenticateToken} from "./middleware/authenticateToken.js";
 import RoomManager from "./RoomManager.js";
 
 const app = express();
@@ -28,13 +26,17 @@ app.post("/users", async (req, res) => {
  * Route de connexion
  */
 app.post("/login", async (req, res) => {
-  const { name, password } = req.body;
-  const success = await login(name, password);
-  if (success) {
-    res.status(200).json({ success: true });
-  } else {
-    res.status(401).json({ success: false });
-  }
+    const { username, password } = req.body;
+    console.log("Login attempt with name:", username);
+    console.log("and password: ", password)
+    const loginResult = await login(username, password);
+
+    if (!loginResult) {
+        return res.status(401).json({ success: false });
+    }
+
+    const { token } = loginResult;
+    res.status(200).json({ success: true, token });
 });
 
 /**

@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import admin from "firebase-admin";
 import { readFile } from "fs/promises";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
+import { secret_key } from "./config.js";
 
 let connected_users = [];
 
@@ -142,18 +144,23 @@ export async function login(name, password) {
 
         const users = snapshot.val();
         const hashedPswd = createSHA256Hash(password);
-
-        for (const user of Object.values(users)) {
+        console.log("Login attempt with hashed password:", hashedPswd);
+        for (const [UserId, user] of Object.entries(users)) {
+            console.log(user.password)
             if (user.name === name && user.password === hashedPswd) {
+                const payload = {
+                    id: UserId,
+                    name: user.name,
+                }
+                const token = jwt.sign(payload, secret_key, { expiresIn: '1h' });
                 connected_users.push(user);
-                return true;
+                return {token, user : payload}
             }
         }
-        return false;
+        return null;
     } catch (error) {
         console.error("Login error:", error);
-        return false;
-
+        return null;
     }
 }
 
