@@ -33,6 +33,7 @@ const UserCreationModal = () => {
                 alert("Erreur de connexion : " + error.response.data.error);
                 onClose();
             });
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
