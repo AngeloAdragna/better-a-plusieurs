@@ -71,6 +71,7 @@ const ModalRoomParameters = () => {
             <label htmlFor="roomName">Nom de la Room</label>
           </div>
 
+            <div className="switchdiv">
           <div className="switch">
             <label>
               Vote pour skip
@@ -94,10 +95,10 @@ const ModalRoomParameters = () => {
               <span className="lever"></span>
             </label>
           </div>
+            </div>
 
           <button type="submit" className="btn waves-effect waves-light">Créer</button>
         </form>
-        <button className="modal-close btn red">Fermer</button>
       </div>
     </div>
   );

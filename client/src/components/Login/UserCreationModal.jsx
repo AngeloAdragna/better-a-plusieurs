@@ -20,7 +20,6 @@ const UserCreationModal = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Form submitted:", formData);
-        // requête avec axios ou fetch pour envoyer les données au backend
         axios.post( 'http://localhost:8080' + '/users', formData)
             .then(response => {
                 console.log("User created:", response.data);
@@ -50,8 +49,7 @@ const UserCreationModal = () => {
 
     return (
         <>
-            {/* Premier Modal */}
-            <div id="modalCreate" className="modal" ref={modalRef}>
+            <div id="modalUserCreation" className="modal" ref={modalRef}>
                 <div className="modal-content black-text">
                     <h5>Créer un utilisateur</h5>
                     <form onSubmit={handleSubmit}>
@@ -77,13 +75,12 @@ const UserCreationModal = () => {
                         </div>
 
                         <button type="submit" className="btn waves-effect waves-light">
-                            Se connecter
+                            S'enregistrer
                         </button>
                     </form>
                 </div>
             </div>
 
-            {/* Deuxième Modal */}
             <ModalRoomParameters />
         </>
     );
