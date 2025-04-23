@@ -3,7 +3,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import RecommandationVideo from './RecommandationVideo';
 import { useParams } from "react-router-dom";
 
-function RecommandationContent() {
+function RecommandationContent({roomInfo}) {
   const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
 
   const [accessToken, setAccessToken] = useState(null);  // Gère le token d'accès Google

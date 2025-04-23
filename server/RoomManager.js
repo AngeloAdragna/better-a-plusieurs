@@ -27,7 +27,6 @@ class RoomManager {
     }
 
     static getRoomById(id) {
-        console.log("rooms",this.#rooms)
         return this.#rooms.find((r) => r.getId() === id);
     }
 
