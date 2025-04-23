@@ -127,9 +127,9 @@ if (process.env.NODE_ENV !== 'test') {
     /**
      * Gestion des messages
      */
-    socket.on("message", ({ roomId, data }) => {
+    socket.on("message", ({ roomId, author,  data }) => {
       console.log(`💬 Message reçu dans la salle ${roomId} : ${data}`);
-      io.to(roomId).emit("message", { author: socket.id, text: msg });
+      io.to(roomId).emit("message", { author, text: data });
     });
 
 

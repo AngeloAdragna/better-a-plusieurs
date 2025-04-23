@@ -31,7 +31,6 @@ function Room() {
     //const clientId = localStorage.getItem("clientId");
     //const isOwner = roomInfo.ownerClient === clientId;
 
-
     // INITIALISATION DU SOCKET
     React.useEffect(() => {
         const newSocket = io("http://localhost:8080");
@@ -93,7 +92,7 @@ function Room() {
                     <PlaylistContent roomInfo={roomInfo}/>
                 </div>
                 <div >{/* Chat */}
-                    <ChatBox socket={socket} /> {/* Chat */}
+                    <ChatBox roomId={roomId} /> {/* Chat */}
                 </div>
             </div>
         </div>
