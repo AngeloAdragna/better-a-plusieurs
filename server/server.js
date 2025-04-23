@@ -73,6 +73,14 @@ app.get('/room/:id', (req, res) => {
   res.json(room.toJSON());
 });
 
+app.get('/room-playlist/:id', (req, res) => {
+  const playlist = RoomManager.getRoomById(req.params.id).getVideoPlaylist();
+  if (!playlist) return res.status(404).send('Playlist not found');
+  res.json(playlist);
+});
+
+
+
 /**
  * Route pour les suggestions de recherche (obligé de le faire dans le back)
  */
@@ -132,6 +140,16 @@ if (process.env.NODE_ENV !== 'test') {
       io.to(roomId).emit("message", { author, text: data });
     });
 
+    /**
+     * Gestion ajout vidéo
+     */
+    socket.on("videoAdded", ({ roomId, video }) => {
+      console.log(`📹 Vidéo ajoutée dans la salle ${roomId} : ${video}`);
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) return;
+      room.addVideoToPlaylist(video);
+      io.in(roomId).emit("videoAdded", video);
+    });
 
     /**
      * Gestion des événements vidéo (broadcast uniquement dans la room)
