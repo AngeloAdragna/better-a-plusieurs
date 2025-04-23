@@ -4,6 +4,7 @@ import YouTube from "react-youtube";
 
 const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" }) => {
     const [player, setPlayer] = useState(null)
+    const [currentVideoId, setCurrentVideoId] = useState(videoId)
     const [_, setIntervalId] = useState(null)
     const [isPlaying, setIsPlaying] = useState(false);
     const [syncPeriod] = useState(2000); // 2 seconds
@@ -51,7 +52,7 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
             //console.log(`Disable periodic sync`) // DEBUG
             cancelPeriodicSync()
 
-            console.log(`Pause : state = ${state}`);
+            // console.log(`Pause : state = ${state}`);
             socket.emit("pause", {roomId: roomId, timeCode: player.getCurrentTime()});
 
         } else if (state === 1 && !isPlaying) {
@@ -94,16 +95,28 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
             }
         }
 
+        const changeVideo = (newVideoId) => {
+            console.log(`Nouvel Id de video : ${newVideoId}`)
+            setCurrentVideoId(newVideoId)
+            if(player) {
+                player.seekTo(0, true)
+            }
+            cancelPeriodicSync()
+
+        }
+
         socket.on("pause", handlePause);
         socket.on("play", handlePlay);
         socket.on("sync", syncTimeCode);
+        socket.on("selectVideo", (newVideoId) => changeVideo(newVideoId));
 
         return () => {
             socket.off("pause", handlePause);
             socket.off("play", handlePlay);
-            socket.off("sync", syncTimeCode)
+            socket.off("sync", syncTimeCode);
+            socket.off("selectVideo", (newVideoId) => changeVideo(newVideoId));
         };
-    }, [player]);
+    }, [player, isPlaying, socket]);
 
     useEffect(() => {
         if(!isTimerRunning) return;
@@ -124,7 +137,7 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
 
     }, [isTimerRunning]);
 
-    return <YouTube videoId={videoId} opts={opts} onReady={onReady} onStateChange={onStateChange} />
+    return <YouTube videoId={currentVideoId} opts={opts} onReady={onReady} onStateChange={onStateChange} />
 };
 
 export default VideoPlayer;

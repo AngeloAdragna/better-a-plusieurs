@@ -1,4 +1,5 @@
 import express from "express";
+import axios from "axios";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
@@ -72,6 +73,39 @@ app.get('/room/:id', (req, res) => {
   res.json(room.toJSON());
 });
 
+app.get('/room-playlist/:id', (req, res) => {
+  const playlist = RoomManager.getRoomById(req.params.id).getVideoPlaylist();
+  if (!playlist) return res.status(404).send('Playlist not found');
+  res.json(playlist);
+});
+
+
+
+/**
+ * Route pour les suggestions de recherche (obligé de le faire dans le back)
+ */
+app.get("/suggest", async (req, res) => {
+  const query = req.query.q;
+  if (!query) return res.status(400).json({ error: "Missing query" });
+
+  try {
+    const response = await axios.get("https://suggestqueries.google.com/complete/search", {
+      params: {
+        client: "youtube",
+        ds: "yt",
+        q: query
+      },
+      headers: {
+        "User-Agent": "Mozilla/5.0" // parfois nécessaire pour que Google réponde bien
+      }
+    });
+
+    res.json(response.data); // retourne les suggestions au front
+  } catch (err) {
+    console.error("Erreur suggestion :", err);
+    res.status(500).json({ error: "Erreur lors de la récupération des suggestions" });
+  }
+});
 
 /**
  * Initialisation du serveur
@@ -84,6 +118,8 @@ if (process.env.NODE_ENV !== 'test') {
       methods: ["GET", "POST"]
     }
   });
+
+
 
   io.on("connection", (socket) => {
     console.log(`🔌 Utilisateur connecté : ${socket.id}`);
@@ -104,12 +140,22 @@ if (process.env.NODE_ENV !== 'test') {
       io.to(roomId).emit("message", { author, text: data });
     });
 
+    /**
+     * Gestion ajout vidéo
+     */
+    socket.on("videoAdded", ({ roomId, video }) => {
+      console.log(`📹 Vidéo ajoutée dans la salle ${roomId} : ${video}`);
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) return;
+      room.addVideoToPlaylist(video);
+      io.in(roomId).emit("videoAdded", video);
+    });
 
     /**
      * Gestion des événements vidéo (broadcast uniquement dans la room)
      */
     socket.on("pause", ({ roomId, timeCode }) => {
-      console.log(`⏸ Pause dans la salle ${roomId} : ${timeCode}`);
+      console.log(`⏸️ Pause dans la salle ${roomId} : ${timeCode}`);
       socket.to(roomId).emit("pause", timeCode);
     });
 
@@ -123,12 +169,17 @@ if (process.env.NODE_ENV !== 'test') {
       socket.to(roomId).emit("sync", timeCode);
     });
 
+    socket.on("selectVideo", ({roomId, videoId}) => {
+      console.log(`🔀 Selection d'une vidéo dans la salle ${roomId} : ${videoId}`)
+      io.in(roomId).emit("selectVideo", videoId) // Envoyer à toute la room y compris le client qui a initié le changement
+    });
+
     socket.on("disconnect", () => {
       console.log("❌ Utilisateur déconnecté");
     });
   });
 
-  server.listen(8080, () => {
+  server.listen(8080, '0.0.0.0', () => {
     console.log("Serveur Socket.IO lancé sur http://localhost:8080");
   });
 }

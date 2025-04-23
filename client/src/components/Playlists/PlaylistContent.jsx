@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { use, useState,useEffect } from "react";
+import io from "socket.io-client";
+
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -6,6 +8,8 @@ import 'swiper/css/navigation';
 import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
 import RoomManager from '../../../../server/RoomManager.js';  // Importation du RoomManager
+
+const socket = io("http://localhost:8080");
 
 function PlaylistContent({roomInfo}) {
     const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
@@ -20,14 +24,8 @@ function PlaylistContent({roomInfo}) {
 
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
-        const room = (RoomManager.getRoomById(roomInfo.id));
-        console.log("infoooooo", room);
-        if (room) {
-            room.addVideoToPlaylist(video);  // Ajout de la vidéo à la playlist de la room
-            setVideoPlaylist((prev) => [...prev, video]);  // Met à jour l'état local de la playlist
-        } else {
-            console.error("Room not found. Cannot add video to playlist.");
-        }
+        //Todo verif structure lien bien vid
+        socket.emit("videoAdded", { roomId, video });  // Envoie la vidéo au serveur
     };
 
     // Fonction pour ajouter une vidéo à l'historique
@@ -36,6 +34,19 @@ function PlaylistContent({roomInfo}) {
         room.addVideoToHistory(video);  // Ajout de la vidéo à l'historique de la room
         setVideoHistory((prev) => [...prev, video]);  // Met à jour l'état local de l'historique
     };
+
+
+    useEffect(() => {
+        socket.on("videoAdded", (data)=> setVideoPlaylist((prev => [...prev, data])));
+        return () => socket.off("videoAdded");
+    }, []);
+
+
+    useEffect(() => {
+        if (roomId) {
+            socket.emit("joinRoom", roomId);
+        }
+    }, [roomId]);
 
     return (
         <section className='PlaylistContent'>
@@ -99,7 +110,7 @@ function PlaylistContent({roomInfo}) {
                     ))}
                     </Swiper>
                 {/* Exemple d'ajout d'une vidéo à l'historique */}
-                <button onClick={() => handleAddVideoToHistory({ title: "Vidéo ajoutée à l'historique", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" })}>
+                <button onClick={() => handleAddVideoToHistory({ title: video.title, thumbnail: video.thumbnail, url: video.url })}>
                     Ajouter une vidéo à l'historique
                 </button>
             </div>
