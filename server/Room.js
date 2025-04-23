@@ -17,6 +17,7 @@ class Room {
         this.#freeToShare = freeToShare;
         this.#videoPlaylist = []; // Initialisation de la playlist
         this.#videoHistory = []; // Initialisation de l'historique
+
     }
 
     // Méthodes d’accès aux vidéos
@@ -39,7 +40,6 @@ class Room {
         this.#videoHistory.push(video);
         console.log("Ajout de la vidéo à l'historique :", this.#videoHistory);
     }
-
 
     setOwner(client) {
         this.#ownerClient = client;
@@ -75,9 +75,25 @@ class Room {
         return this.#roomName;
     }
 
+    getOwnerClient() {
+        return this.#ownerClient;
+    }
+
     setName(name) {
         this.#roomName = name;
     }
+
+  toJSON() {
+    return {
+      id: this.#id,
+      name: this.#roomName,
+      voteSkip: this.#voteSkip,
+      voteAdd: this.#voteAdd,
+      freeToShare: this.#freeToShare,
+      ownerClient: this.#ownerClient,
+    };
+  }
+
 }
 
 export default Room;

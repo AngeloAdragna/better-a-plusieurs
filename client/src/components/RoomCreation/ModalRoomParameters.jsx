@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import RoomManager from "../../../../server/RoomManager";
 import { useNavigate } from "react-router-dom";
 import M from "materialize-css";
 
 const ModalRoomParameters = () => {
   const navigate = useNavigate();
 
-  // State for the form data
+
+    // State for the form data
   const [formData, setFormData] = useState({
     roomName: "",
     voteSkip: false,
@@ -23,15 +23,32 @@ const ModalRoomParameters = () => {
   }, []);
 
   // Create a room
-  const onSubmit = (event) => {
-    event.preventDefault();
-    let room = RoomManager.createRoom(formData.voteSkip, formData.voteAdd, formData.freeToShare);
-    if (room && room.getId()) {
-      navigate(`/room/${room.getId()}`);
-    } else {
-      M.toast({ html: "Erreur lors de la création de la salle" });
-    }
-  };
+    const onSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            formData.ownerClient = localStorage.getItem("clientId");
+            const response = await fetch('http://localhost:8080/create-room', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (data.id) {
+                navigate(`/room/${data.id}`);
+            } else {
+                M.toast({ html: "Erreur lors de la création de la salle" });
+            }
+        } catch (error) {
+            console.error("Erreur lors de la création de la room :", error);
+            M.toast({ html: "Erreur serveur" });
+        }
+    };
+
 
   // Handle the change of the switches
   const handleChange = (event) => {
@@ -54,6 +71,7 @@ const ModalRoomParameters = () => {
             <label htmlFor="roomName">Nom de la Room</label>
           </div>
 
+            <div className="switchdiv">
           <div className="switch">
             <label>
               Vote pour skip
@@ -77,10 +95,10 @@ const ModalRoomParameters = () => {
               <span className="lever"></span>
             </label>
           </div>
+            </div>
 
           <button type="submit" className="btn waves-effect waves-light">Créer</button>
         </form>
-        <button className="modal-close btn red">Fermer</button>
       </div>
     </div>
   );

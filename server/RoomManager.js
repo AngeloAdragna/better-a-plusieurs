@@ -3,10 +3,10 @@ import Room from './Room.js';
 class RoomManager {
     static #rooms = [];
 
-    static createRoom(name, voteSkip, voteAdd, freeToShare) {
-        const room = new Room(crypto.randomUUID(), name, voteSkip, null, voteAdd, freeToShare);
-        this.#rooms.push(room);
-        return room;
+    static createRoom(name, voteSkip, voteAdd, freeToShare, ownerClient) {
+      const room = new Room(crypto.randomUUID(), name, voteSkip, voteAdd, freeToShare, ownerClient);
+      this.#rooms.push(room);
+      return room;
     }
 
     static addRoom(room) {
@@ -26,10 +26,9 @@ class RoomManager {
         return this.#rooms;
     }
 
-    static getRoomById(id) {
+    static getRoomById(id)  {
         return this.#rooms.find((r) => r.getId() === id);
     }
-
 }
 
 export default RoomManager;
