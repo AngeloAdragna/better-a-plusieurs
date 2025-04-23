@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import admin from "firebase-admin";
 import { readFile } from "fs/promises";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
+import { secret_key } from "./config.js";
 
 let connected_users = [];
 
@@ -80,7 +82,7 @@ export async function createUser(user) {
         // Vérifie les champs requis
         if (!user.name || !user.password) {
             console.error("Erreur : nom ou mot de passe manquant.");
-            return;
+            return false;
         }
 
         // Vérifie si un utilisateur avec le même nom existe déjà
@@ -90,13 +92,14 @@ export async function createUser(user) {
         for (const u of Object.values(users)) {
             if (u.name === user.name) {
                 console.error("Erreur : l'utilisateur existe déjà.");
-                return;
+                return false;
             }
         }
 
         // Ajout de l'utilisateur
         await usersRef.push(user);
         console.log("Utilisateur ajouté avec succès !");
+        return true;
     } catch (error) {
         console.error("Erreur lors de l'ajout de l'utilisateur :", error);
     }
@@ -142,18 +145,23 @@ export async function login(name, password) {
 
         const users = snapshot.val();
         const hashedPswd = createSHA256Hash(password);
-
-        for (const user of Object.values(users)) {
+        console.log("Login attempt with hashed password:", hashedPswd);
+        for (const [UserId, user] of Object.entries(users)) {
+            console.log(user.password)
             if (user.name === name && user.password === hashedPswd) {
+                const payload = {
+                    id: UserId,
+                    name: user.name,
+                }
+                const token = jwt.sign(payload, secret_key, { expiresIn: '1h' });
                 connected_users.push(user);
-                return true;
+                return {token, user : payload}
             }
         }
-        return false;
+        return null;
     } catch (error) {
         console.error("Login error:", error);
-        return false;
-
+        return null;
     }
 }
 
