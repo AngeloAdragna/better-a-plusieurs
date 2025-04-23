@@ -7,11 +7,12 @@ import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
 import RoomManager from '../../../../server/RoomManager.js';  // Importation du RoomManager
 
-function PlaylistContent() {
+function PlaylistContent({roomInfo}) {
     const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
     const [isSelected, setIsSelected] = useState(true);
-    const [videoPlaylist, setVideoPlaylist] = useState(RoomManager.getRoomById(roomId)?.videoPlaylist || []);  // Récupère la playlist de la room
-    const [videoHistory, setVideoHistory] = useState(RoomManager.getRoomById(roomId)?.videoHistory || []);  // Récupère la playlist de la room
+    const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
+    const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []); 
+    //console.log("PlaylistContent", videoPlaylist);
 
     const handleLinkClick = () => {
         setIsSelected((prev) => !prev);
@@ -19,20 +20,21 @@ function PlaylistContent() {
 
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
-        const room = (RoomManager.getRoomById(roomId));
-        room.addVideoToPlaylist(video);  // Ajout de la vidéo à la playlist de la room
-        const updatedPlaylist = room.getVideoPlaylist() || [];
-        setVideoPlaylist(updatedPlaylist);  // Mise à jour de la playlist affichée
-        //window.location.reload(); // Reload the page to reflect changes
+        const room = (RoomManager.getRoomById(roomInfo.id));
+        console.log("infoooooo", room);
+        if (room) {
+            room.addVideoToPlaylist(video);  // Ajout de la vidéo à la playlist de la room
+            setVideoPlaylist((prev) => [...prev, video]);  // Met à jour l'état local de la playlist
+        } else {
+            console.error("Room not found. Cannot add video to playlist.");
+        }
     };
 
     // Fonction pour ajouter une vidéo à l'historique
     const handleAddVideoToHistory = (video) => {
-        RoomManager.addVideoToHistory(roomId, video);
-        const room = (RoomManager.getRoomById(roomId));
-        const updatedHistory = room.getVideoHistory() || [];
-        setVideoHistory(updatedHistory);  // Mise à jour de l'historique affiché
-        //window.location.reload(); // Reload the page to reflect changes
+        const room = (RoomManager.getRoomById(roomInfo.id));
+        room.addVideoToHistory(video);  // Ajout de la vidéo à l'historique de la room
+        setVideoHistory((prev) => [...prev, video]);  // Met à jour l'état local de l'historique
     };
 
     return (
