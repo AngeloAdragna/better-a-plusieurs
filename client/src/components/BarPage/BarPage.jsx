@@ -3,8 +3,9 @@ import ModalHelpUser from "./ModalHelpUser";
 import ModalParametersUserRoom from "./ModalParametersUserRoom";
 import ModalShareRoom from "./ModalShareRoom";
 import React, { useState } from "react";
+import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 
-const BarPage = ({roomName, isAllowedToShare}) => {
+const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const isConnected = false; //TODO Remplace ça par un vrai état de connexion
     return (
@@ -20,23 +21,25 @@ const BarPage = ({roomName, isAllowedToShare}) => {
                         </div>
                     </div>
                 </div>
-                <div className='col s5'>
+                <div className='col s3'>
                     <div className='item center-align'>
                         <p className='roomNameBar'>
                             {roomName}
                         </p>
                     </div>
                 </div>
-                <div className='col s4'>
+                <div className='col s3'>
+
+                    <YoutubeSearchBar roomId={roomId} socket={socket}/>
+                </div>
+                <div className='col s3'>
                     <div className='item'>
                         <div className='valign-wrapper iconBar'>
                             <div className='col s4'>
                                 <a className="modal-trigger" href="#ModalParametersUser"
                                    onClick={() => setModalOpen(true)}>
                                     <img className="barIcons" src='/src/assets/icon_param.svg' alt='Icon Parameters'/>
-
                                 </a>
-
                                 {<ModalParametersUser/>}
                             </div>
                             <div className='col s4'>
