@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
 import RoomManager from '../../../../server/RoomManager.js';  // Importation du RoomManager
+import axios from "axios";
 
 const socket = io("http://localhost:8080");
 
@@ -37,15 +38,31 @@ function PlaylistContent({roomInfo}) {
 
 
     useEffect(() => {
-        socket.on("videoAdded", (data)=> setVideoPlaylist((prev => [...prev, data])));
+        socket.on("videoAdded", (data)=> {
+            setVideoPlaylist((prev) => [...prev, data] );
+            console.log("Video added to playlist :", data)
+            console.log("Playlist :", videoPlaylist)
+        });
         return () => socket.off("videoAdded");
     }, []);
+    
+    useEffect(() => {
+        socket.on("selectVideo", (data)=> setVideoHistory((prev => [data,...prev])));
+        return () => socket.off("selectVideo");
+    }, []);
+
 
 
     useEffect(() => {
         if (roomId) {
             socket.emit("joinRoom", roomId);
+            axios.get(`http://localhost:8080/room-playlist/${roomId}`).then((response) => {
+                console.log("Response :", response.data);
+                setVideoPlaylist(videoPlaylist);
+                console.log("Playlist :", videoPlaylist);
+            });
         }
+
     }, [roomId]);
 
     return (

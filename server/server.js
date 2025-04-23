@@ -148,6 +148,7 @@ if (process.env.NODE_ENV !== 'test') {
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
       room.addVideoToPlaylist(video);
+      console.log("Ajout de la vidéo à la playlist :", room.getVideoPlaylist());
       io.in(roomId).emit("videoAdded", video);
     });
 
