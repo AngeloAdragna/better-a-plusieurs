@@ -37,12 +37,16 @@ function PlaylistContent({roomInfo}) {
 
 
     useEffect(() => {
-        socket.on("videoAdded", (data) => setVideoPlaylist((prev) => [...prev, data]));
-        console.log("videoAdded", videoPlaylist);
+        socket.on("videoAdded", (data)=> setVideoPlaylist((prev => [...prev, data])));
         return () => socket.off("videoAdded");
     }, []);
 
 
+    useEffect(() => {
+        if (roomId) {
+            socket.emit("joinRoom", roomId);
+        }
+    }, [roomId]);
 
     return (
         <section className='PlaylistContent'>
@@ -106,7 +110,7 @@ function PlaylistContent({roomInfo}) {
                     ))}
                     </Swiper>
                 {/* Exemple d'ajout d'une vidéo à l'historique */}
-                <button onClick={() => handleAddVideoToHistory({ title: "Vidéo ajoutée à l'historique", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" })}>
+                <button onClick={() => handleAddVideoToHistory({ title: video.title, thumbnail: video.thumbnail, url: video.url })}>
                     Ajouter une vidéo à l'historique
                 </button>
             </div>
