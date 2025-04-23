@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 import { io } from "socket.io-client"
+import VideoCall from "../VideoCall/VideoCall.jsx";
 
 function Room() {
     const { roomId } = useParams();
@@ -87,6 +88,13 @@ function Room() {
                             <RecommandationContent />
                         </GoogleOAuthProvider>
                     </div>
+                </div>
+                <div className="room-container row" style={{ display: 'flex' }}>
+                    <div style={{ flex: 1 }}>
+                        Vidéo
+                    </div>
+
+                    <VideoCall roomId={roomId} userId={localStorage.getItem("clientId")} />
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
                     <PlaylistContent roomInfo={roomInfo}/>

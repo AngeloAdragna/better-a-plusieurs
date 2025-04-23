@@ -42,8 +42,8 @@ app.post("/login", async (req, res) => {
         return res.status(401).json({ success: false });
     }
 
-    const { token } = loginResult;
-    res.status(200).json({ success: true, token });
+    const { token,user } = loginResult;
+    res.status(200).json({ success: true, token, user});
 });
 
 /**
