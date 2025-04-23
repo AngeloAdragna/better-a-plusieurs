@@ -90,7 +90,7 @@ function Room() {
                     </div>
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
-                    <PlaylistContent />
+                    <PlaylistContent roomInfo={roomInfo}/>
                 </div>
                 <div >{/* Chat */}
                     <ChatBox socket={socket} /> {/* Chat */}
