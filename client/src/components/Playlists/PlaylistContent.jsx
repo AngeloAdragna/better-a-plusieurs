@@ -7,8 +7,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
-import RoomManager from '../../../../server/RoomManager.js';  // Importation du RoomManager
-import axios from "axios";
+import axios from 'axios';
+
 
 const socket = io("http://localhost:8080");
 
@@ -17,7 +17,6 @@ function PlaylistContent({roomInfo}) {
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
     const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []); 
-    //console.log("PlaylistContent", videoPlaylist);
 
     const handleLinkClick = () => {
         setIsSelected((prev) => !prev);
@@ -31,9 +30,7 @@ function PlaylistContent({roomInfo}) {
 
     // Fonction pour ajouter une vidéo à l'historique
     const handleAddVideoToHistory = (video) => {
-        const room = (RoomManager.getRoomById(roomInfo.id));
-        room.addVideoToHistory(video);  // Ajout de la vidéo à l'historique de la room
-        setVideoHistory((prev) => [...prev, video]);  // Met à jour l'état local de l'historique
+       // TODO : verif structure lien bien vide
     };
 
 
@@ -56,14 +53,20 @@ function PlaylistContent({roomInfo}) {
     useEffect(() => {
         if (roomId) {
             socket.emit("joinRoom", roomId);
-            axios.get(`http://localhost:8080/room-playlist/${roomId}`).then((response) => {
-                console.log("Response :", response.data);
-                setVideoPlaylist(videoPlaylist);
-                console.log("Playlist :", videoPlaylist);
-            });
+            axios.get(`http://localhost:8080/room-playlist/${roomId}`)
+                .then((response) => {
+                    setVideoPlaylist(response.data);
+                    console.log("Playlist récupérée :", response.data);
+                    console.log("test : " + videoPlaylist);
+                })
+                .catch((error) => {
+                    console.error("Erreur lors de la récupération de la playlist :", error);
+                });
+
         }
 
     }, [roomId]);
+
 
     return (
         <section className='PlaylistContent'>
@@ -78,13 +81,13 @@ function PlaylistContent({roomInfo}) {
                     spaceBetween={10}
                     slidesPerView="auto"
                     pagination={{ clickable: true }}
-                    freeMode={true} // permet de scroller librement
+                    freeMode={true}
                 >
                     {videoPlaylist.map((video, i) => (
                         <SwiperSlide
                             key={i}
                             style={{
-                                height: "auto", // important pour s’adapter au contenu
+                                height: "auto",
                                 paddingBottom: "10px"
                             }}
                         >
