@@ -79,6 +79,13 @@ app.get('/room-playlist/:id', (req, res) => {
   res.json(playlist);
 });
 
+app.get('/room-history/:id', (req, res) => {
+  const history = RoomManager.getRoomById(req.params.id).getVideoHistory();
+  if (!history) return res.status(404).send('History not found');
+  res.json(history);
+}
+);
+
 
 
 /**
@@ -143,13 +150,22 @@ if (process.env.NODE_ENV !== 'test') {
     /**
      * Gestion ajout vidéo
      */
-    socket.on("videoAdded", ({ roomId, video }) => {
+    socket.on("videoAddedPlaylist", ({ roomId, video }) => {
       console.log(`📹 Vidéo ajoutée dans la salle ${roomId} : ${video}`);
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
       room.addVideoToPlaylist(video);
       console.log("Ajout de la vidéo à la playlist :", room.getVideoPlaylist());
-      io.in(roomId).emit("videoAdded", video);
+      io.in(roomId).emit("videoAddedPlaylist", video);
+    });
+
+    socket.on("videoAddedHistory", ({ roomId, video }) => {
+      console.log(`📜 Vidéo ajoutée à l'historique dans la salle ${roomId} : ${video}`);
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) return;
+      room.addVideoToHistory(video);
+      console.log("Ajout de la vidéo à l'historique :", room.getVideoHistory());
+      io.in(roomId).emit("videoAddedHistory", video);
     });
 
     /**

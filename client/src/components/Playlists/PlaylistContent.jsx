@@ -25,31 +25,34 @@ function PlaylistContent({roomInfo}) {
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
         //Todo verif structure lien bien vid
-        socket.emit("videoAdded", { roomId, video });  // Envoie la vidéo au serveur
+        socket.emit("videoAddedPlaylist", { roomId, video });  // Envoie la vidéo au serveur
     };
 
     // Fonction pour ajouter une vidéo à l'historique
     const handleAddVideoToHistory = (video) => {
-       // TODO : verif structure lien bien vide
+        socket.emit("videoAddedHistory", { roomId, video });  // Envoie la vidéo au serveur
     };
 
 
+    // Ecouteur d'événement pour la réception de la vidéo ajoutée à la playlist
     useEffect(() => {
-        socket.on("videoAdded", (data)=> {
+        socket.on("videoAddedPlaylist", (data)=> {
             setVideoPlaylist((prev) => [...prev, data] );
-            console.log("Video added to playlist :", data)
             console.log("Playlist :", videoPlaylist)
         });
-        return () => socket.off("videoAdded");
+        return () => socket.off("videoAddedPlaylist");
     }, []);
     
+    // Ecouteur d'événement pour la réception de la vidéo ajoutée à l'historique
     useEffect(() => {
-        socket.on("selectVideo", (data)=> setVideoHistory((prev => [data,...prev])));
-        return () => socket.off("selectVideo");
+        socket.on("videoAddedHistory", (data)=>{ 
+            setVideoHistory((prev => [data,...prev]));  
+            console.log("History :", videoHistory)
+            });
+        return () => socket.off("videoAddedHistory");
     }, []);
 
-
-
+    // Récupération de la playlist depuis le serveur lors du chargement du composant
     useEffect(() => {
         if (roomId) {
             socket.emit("joinRoom", roomId);
@@ -57,14 +60,27 @@ function PlaylistContent({roomInfo}) {
                 .then((response) => {
                     setVideoPlaylist(response.data);
                     console.log("Playlist récupérée :", response.data);
-                    console.log("test : " + videoPlaylist);
                 })
                 .catch((error) => {
                     console.error("Erreur lors de la récupération de la playlist :", error);
                 });
-
         }
 
+    }, [roomId]);
+
+    // Récupération de l'historique depuis le serveur lors du chargement du composant
+    useEffect(() => {
+        if (roomId) {
+            socket.emit("joinRoom", roomId);
+            axios.get(`http://localhost:8080/room-history/${roomId}`)
+                .then((response) => {
+                    setVideoHistory(response.data);
+                    console.log("Historique récupéré :", response.data);
+                })
+                .catch((error) => {
+                    console.error("Erreur lors de la récupération de l'historique :", error);
+                });
+        }
     }, [roomId]);
 
 
@@ -130,7 +146,7 @@ function PlaylistContent({roomInfo}) {
                     ))}
                     </Swiper>
                 {/* Exemple d'ajout d'une vidéo à l'historique */}
-                <button onClick={() => handleAddVideoToHistory({ title: video.title, thumbnail: video.thumbnail, url: video.url })}>
+                <button onClick={() => handleAddVideoToHistory({ title: "Vidéo ajoutée", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" })}>
                     Ajouter une vidéo à l'historique
                 </button>
             </div>
