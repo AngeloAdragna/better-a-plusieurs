@@ -35,15 +35,24 @@ function PlaylistContent({roomInfo}) {
 
 
     useEffect(() => {
-        socket.on("videoAdded", (data)=> setVideoPlaylist((prev => [...prev, data])));
+        socket.on("videoAdded", (data)=> {
+            setVideoPlaylist((prev) => [...prev, data] );
+            console.log("Video added to playlist :", data)
+            console.log("Playlist :", videoPlaylist)
+        });
         return () => socket.off("videoAdded");
     }, []);
+    
+    useEffect(() => {
+        socket.on("selectVideo", (data)=> setVideoHistory((prev => [data,...prev])));
+        return () => socket.off("selectVideo");
+    }, []);
+
 
 
     useEffect(() => {
         if (roomId) {
             socket.emit("joinRoom", roomId);
-
             axios.get(`http://localhost:8080/room-playlist/${roomId}`)
                 .then((response) => {
                     setVideoPlaylist(response.data);
@@ -53,7 +62,9 @@ function PlaylistContent({roomInfo}) {
                 .catch((error) => {
                     console.error("Erreur lors de la récupération de la playlist :", error);
                 });
+
         }
+
     }, [roomId]);
 
 
