@@ -10,9 +10,7 @@ import PlaylistVideo from "./PlaylistVideo.jsx";
 import axios from 'axios';
 
 
-const socket = io("http://localhost:8080");
-
-function PlaylistContent({roomInfo}) {
+function PlaylistContent({roomInfo, socket}) {
     const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room

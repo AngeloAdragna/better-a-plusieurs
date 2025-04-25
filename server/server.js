@@ -176,9 +176,9 @@ if (process.env.NODE_ENV !== 'test') {
       socket.to(roomId).emit("pause", timeCode);
     });
 
-    socket.on("play", ({ roomId, timeCode }) => {
-      console.log(`▶️ Play dans la salle ${roomId} : ${timeCode}`);
-      socket.to(roomId).emit("play", timeCode);
+    socket.on("play", ({ roomId, timeCode, videoId}) => {
+      console.log(`▶️ Play dans la salle ${roomId} : ${timeCode} => videoId = ${videoId}`);
+      socket.to(roomId).emit("play", timeCode, videoId);
     });
 
     socket.on("sync", ({ roomId, timeCode }) => {

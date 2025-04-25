@@ -89,10 +89,10 @@ function Room() {
                     </div>
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
-                    <PlaylistContent roomInfo={roomInfo}/>
+                    <PlaylistContent roomInfo={roomInfo} socket={socket}/>
                 </div>
                 <div >{/* Chat */}
-                    <ChatBox roomId={roomId} /> {/* Chat */}
+                    <ChatBox roomId={roomId} socket={socket} /> {/* Chat */}
                 </div>
             </div>
         </div>
