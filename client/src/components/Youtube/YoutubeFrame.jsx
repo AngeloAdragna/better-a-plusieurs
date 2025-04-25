@@ -81,7 +81,7 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
         };
 
         const handlePlay = (time, videoId) => {
-            console.log(`ID DE LA VIDEO : ${videoId}`)
+            //console.log(`ID DE LA VIDEO : ${videoId}`)    // DEBUG
             if (player && !isPlaying) {
                 setPeriodicSync()           // We want to restart the periodic synchronization
                 player.playVideo()

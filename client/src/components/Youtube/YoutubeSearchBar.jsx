@@ -196,7 +196,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                                         />
                                         <p>{video.snippet.title}</p>
                                     </div>
-                                    <button onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, url: "https://www.youtube.com/watch?v=" + video.id.videoId })}>
+                                    <button onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId })}>
                                         Ajouter à la playlist
                                     </button>
                                 </div>
