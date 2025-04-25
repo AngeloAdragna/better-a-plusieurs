@@ -1,18 +1,12 @@
 import React from 'react';
 import VideoTile from './VideoTile'; // ou adapte le chemin selon ton projet
+import '../../styles/VideoSideBar.css';
 
 export default function VisioSidebar({ localStream, remoteStreams }) {
     return (
-        <div style={{
-            width: '250px',
-            padding: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            backgroundColor: '#f0f0f0',
-            borderLeft: '1px solid #ddd',
-            overflowY: 'auto'
-        }}>
+        <div className="video-sidebar">
+            <VideoTile stream={localStream} muted />
+            <VideoTile stream={localStream} muted />
             <VideoTile stream={localStream} muted />
             {Object.entries(remoteStreams).map(([uid, stream]) => (
                 <VideoTile key={uid} stream={stream} muted={false} />

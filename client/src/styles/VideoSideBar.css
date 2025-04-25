@@ -1,0 +1,16 @@
+.video-sidebar {
+    position: fixed; /* Fixée en bas de l'écran */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20%; /* Tu peux définir une hauteur fixe ici si besoin, ex: 80px */
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    z-index: 1000;
+    background: var(--mid-blue); /* Ou une couleur personnalisée */
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3);
+}
+
