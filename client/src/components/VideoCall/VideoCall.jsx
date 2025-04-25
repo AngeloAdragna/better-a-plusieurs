@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {db} from "../../firebase.js";
-import { onValue, ref, set, push } from "firebase/database";
+import { onValue, ref, set, push, remove, off } from "firebase/database";
 import VideoTile from "./VideoTile.jsx";
 import VisioSidebar from "./VideoSideBar.jsx";
 
@@ -14,6 +14,15 @@ export default function VideoCall({ roomId, userId }) {
   const peerConnections = useRef({});
   const [remoteUsers, setRemoteUsers] = useState([]);
   const [localStream, setLocalStream] = useState(null);
+
+  const cleanupPeerConnections = () => {
+    Object.entries(peerConnections.current).forEach(([uid, pc]) => {
+      pc.close();
+      delete peerConnections.current[uid];
+    });
+
+    setRemoteStreams({});
+  };
 
   useEffect(() => {
     // Obtenir le flux local
@@ -39,17 +48,27 @@ export default function VideoCall({ roomId, userId }) {
     const signalingRef = ref(db, `rooms/${roomId}/signaling`);
     onValue(signalingRef, snapshot => {
       const data = snapshot.val() || {};
-      Object.entries(data).forEach(([key, msg]) => {
+      Object.entries(data).forEach(async ([key, msg]) => {
         const [from, to] = key.split("_to_");
         if (to !== userId) return;
 
-        if (msg.offer) handleOffer(from, msg.offer);
-        if (msg.answer) handleAnswer(from, msg.answer);
+        if (msg.offer) await handleOffer(from, msg.offer);
+        if (msg.answer) await handleAnswer(from, msg.answer);
         if (msg.candidates) {
-          msg.candidates.forEach(c => handleCandidate(from, c));
+          for (const c of msg.candidates) {
+            await handleCandidate(from, c);
+          }
         }
+
+        // 🔥 Supprimer le message traité
+        await remove(ref(db, `rooms/${roomId}/signaling/${key}`));
       });
     });
+    return () => {
+        cleanupPeerConnections(); // Nettoyer les connexions
+        off(usersRef); // Désabonner l'écouteur des utilisateurs
+        off(signalingRef); // Désabonner l'écouteur des signaux
+    };
   }, []);
 
   useEffect(() => {
@@ -102,23 +121,35 @@ export default function VideoCall({ roomId, userId }) {
       }
     };
 
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    await set(ref(db, `rooms/${roomId}/signaling/${userId}_to_${from}/answer`), answer);
+    try {
+      await pc.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      await set(ref(db, `rooms/${roomId}/signaling/${userId}_to_${from}/answer`), answer);
+    } catch (err) {
+      console.error(`Erreur dans handleOffer avec ${from}:`, err);
+    }
   };
 
   const handleAnswer = async (from, answer) => {
     const pc = peerConnections.current[from];
     if (pc) {
-      await pc.setRemoteDescription(new RTCSessionDescription(answer));
+      try {
+        await pc.setRemoteDescription(new RTCSessionDescription(answer));
+      } catch (err) {
+        console.error(`Erreur dans handleAnswer avec ${from}:`, err);
+      }
     }
   };
 
   const handleCandidate = async (from, candidate) => {
     const pc = peerConnections.current[from];
     if (pc) {
-      await pc.addIceCandidate(new RTCIceCandidate(candidate));
+      try {
+        await pc.addIceCandidate(new RTCIceCandidate(candidate));
+      } catch (err) {
+        console.warn(`Erreur en ajoutant ICE candidate de ${from}:`, err);
+      }
     }
   };
 

@@ -6,8 +6,6 @@ export default function VisioSidebar({ localStream, remoteStreams }) {
     return (
         <div className="video-sidebar">
             <VideoTile stream={localStream} muted />
-            <VideoTile stream={localStream} muted />
-            <VideoTile stream={localStream} muted />
             {Object.entries(remoteStreams).map(([uid, stream]) => (
                 <VideoTile key={uid} stream={stream} muted={false} />
             ))}

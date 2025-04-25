@@ -10,12 +10,14 @@ export default function VideoTile({ stream, muted }) {
     }, [stream]);
 
     return (
-        <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted={muted}
-            style={{ width: '100%', height: 'auto', borderRadius: 8 }}
-        />
+        <div className="video-tile">
+            <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted={muted}
+                style={{ width: '100%', height: 'auto', borderRadius: 8 }}
+            />
+        </div>
     );
 }
