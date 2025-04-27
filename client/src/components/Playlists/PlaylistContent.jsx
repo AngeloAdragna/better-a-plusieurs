@@ -8,12 +8,11 @@ import 'swiper/css/navigation';
 import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
 import axios from 'axios';
+import room from "../RoomCreation/Room.jsx";
 
 
-const socket = io("http://localhost:8080");
-
-function PlaylistContent({roomInfo}) {
-    const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
+function PlaylistContent({roomInfo, roomId, socket}) {
+    //const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
     const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []); 
@@ -55,7 +54,7 @@ function PlaylistContent({roomInfo}) {
     // Récupération de la playlist depuis le serveur lors du chargement du composant
     useEffect(() => {
         if (roomId) {
-            socket.emit("joinRoom", roomId);
+            //socket.emit("joinRoom", roomId);
             axios.get(`http://localhost:8080/room-playlist/${roomId}`)
                 .then((response) => {
                     setVideoPlaylist(response.data);
@@ -71,7 +70,7 @@ function PlaylistContent({roomInfo}) {
     // Récupération de l'historique depuis le serveur lors du chargement du composant
     useEffect(() => {
         if (roomId) {
-            socket.emit("joinRoom", roomId);
+            //socket.emit("joinRoom", roomId);
             axios.get(`http://localhost:8080/room-history/${roomId}`)
                 .then((response) => {
                     setVideoHistory(response.data);
@@ -110,13 +109,15 @@ function PlaylistContent({roomInfo}) {
                             <PlaylistVideo
                                 title={video.title}
                                 thumbnail={video.thumbnail}
-                                url={video.url}
+                                videoId={video.id}
+                                roomId={roomId}
+                                socket={socket}
                             />
                         </SwiperSlide>
                     ))}
                 </Swiper>
                 {/* Exemple d'ajout d'une vidéo à la playlist */}
-                <button onClick={() => handleAddVideoToPlaylist({ title: "Vidéo ajoutée", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" })}>
+                <button onClick={() => handleAddVideoToPlaylist({ title: "Vidéo ajoutée", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", id: "PI9yKr39vGI" })}>
                     Ajouter une vidéo à la playlist
                 </button>
             </div>
@@ -140,13 +141,15 @@ function PlaylistContent({roomInfo}) {
                             <PlaylistVideo
                                 title={video.title}
                                 thumbnail={video.thumbnail}
-                                url={video.url}
+                                videoId={video.id}
+                                roomId={roomId}
+                                socket={socket}
                             />
                         </SwiperSlide>
                     ))}
                     </Swiper>
                 {/* Exemple d'ajout d'une vidéo à l'historique */}
-                <button onClick={() => handleAddVideoToHistory({ title: "Vidéo ajoutée", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" })}>
+                <button onClick={() => handleAddVideoToHistory({ title: "Vidéo ajoutée", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", id: "PI9yKr39vGI" })}>
                     Ajouter une vidéo à l'historique
                 </button>
             </div>
