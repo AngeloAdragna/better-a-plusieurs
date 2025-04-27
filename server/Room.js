@@ -5,14 +5,27 @@ class Room {
     #voteSkip; // Systeme de vote pour passer à la vidéo suivante
     #voteAdd; // systeme de vote pour ajouter une vidéo à la playlist
     #freeToShare; // Tout les participants a la room peuvent la partager
-    #voteOuiToSkip; // Nombre de votes pour passer à la vidéo suivante
-    #voteNonToSkip; // Nombre de votes pour ne pas passer à la vidéo suivante
-    #voteOuiToAdd; // Nombre de votes pour ajouter une vidéo à la playlist
-    #voteNonToAdd; // Nombre de votes pour ne pas ajouter une vidéo à la playlist
-    #currentVoteType; // Type de vote en cours (skip ou add)
-    #currentVotedVideo; // Vidéo sur laquelle le vote est en cours
     #videoPlaylist;   // Vidéos de la playlist
     #videoHistory;   // Historique des vidéos jouées
+
+    /**
+     * [
+     * id : string, // ID unique du vote
+     * voteType: "add" | "skip" | null, // Type de vote : "add" pour ajouter une vidéo, "skip" pour passer une vidéo, null si aucun vote
+     * author: string,         // Nom ou identifiant de l'utilisateur qui a lancé le vote
+     * nbrVotesYes: number,    // Nombre de votes "oui"
+     * nbrVotesNo: number,     // Nombre de votes "non"
+     * videoName: string | null // Nom de la vidéo concernée (uniquement pour un vote "add"), null sinon
+     * ]
+     */
+    #currentVoteInfos = {
+        id: null,
+        voteType: null,
+        author: "",
+        nbrVotesYes: 0,
+        nbrVotesNo: 0,
+        videoName: null,
+    };
 
     constructor(id, name, voteSkip, ownerClient, voteAdd, freeToShare) {
         this.#id = id;
@@ -21,10 +34,6 @@ class Room {
         this.#ownerClient = ownerClient;
         this.#voteAdd = voteAdd;
         this.#freeToShare = freeToShare;
-        this.#voteOuiToSkip = 0; // Nombre de votes pour passer à la vidéo suivante
-        this.#voteNonToSkip = 0; // Nombre de votes pour ne pas passer à la vidéo suivante
-        this.#voteOuiToAdd = 0; // Nombre de votes pour ajouter une vidéo à la playlist
-        this.#voteNonToAdd = 0; // Nombre de votes pour ne pas ajouter une vidéo à la playlist
         this.#videoPlaylist = [];
         this.#videoHistory = [];
     }
@@ -92,55 +101,54 @@ class Room {
         this.#roomName = name;
     }
 
-    startVote(voteType, video = null) {
-        if (this.#currentVoteType) {
-            console.log("Un vote est déjà en cours");
-            return;
-        }
-
-        if (!["skip", "add"].includes(voteType)) {
-            console.log("Type de vote invalide");
-            return;
-        }
-
-        if (voteType === "skip" && !this.#voteSkip) {
-            console.log("Le vote pour passer à la vidéo suivante n'est pas activé");
-            return;
-        }
-
-        if (voteType === "add") {
-            if (!this.#voteAdd) {
-                console.log("Le vote pour ajouter une vidéo à la playlist n'est pas activé");
-                return;
-            }
-            if (!video) {
-                console.log("Aucune vidéo à ajouter");
-                return;
-            }
-            this.#currentVotedVideo = video;
-        } else {
-            this.#currentVotedVideo = null;
-        }
-        this.#currentVoteType = voteType;
+    getCurrentVoteInfos() {
+        return this.#currentVoteInfos;
     }
 
-
-    getVoteStats() {
-        if (this.#currentVoteType === "skip") {
-            return {
-                voteType: this.#currentVoteType,
-                oui: this.#voteOuiToSkip,
-                non: this.#voteNonToSkip,
-            };
-        } else if (this.#currentVoteType === "add") {
-            return {
-                voteType: this.#currentVoteType,
-                oui: this.#voteOuiToAdd,
-                non: this.#voteNonToAdd,
-            };
-        } else {
-            return null;
+    startVote(id, voteType, author, video = null) {
+        if (this.#currentVoteInfos.voteType !== null) {
+            console.log("Un vote est déjà en cours.");
+            return false;
         }
+
+        this.#currentVoteInfos.id = id;
+        this.#currentVoteInfos.voteType = voteType;
+        this.#currentVoteInfos.author = author
+        this.#currentVoteInfos.videoName = video;
+        this.#currentVoteInfos.nbrVotesYes = 0;
+        this.#currentVoteInfos.nbrVotesNo = 0;
+
+        return true;
+    }
+
+    vote(id, vote) {
+        if (this.#currentVoteInfos.id !== id) {
+            return false;
+        }
+        if (vote === "oui") {
+            this.#currentVoteInfos.nbrVotesYes++;
+        } else if (vote === "non") {
+            this.#currentVoteInfos.nbrVotesNo++;
+        }
+        return true;
+    }
+
+    // Vérifie si la majorité de OUI est atteinte pour le vote
+    isMajority() {
+        const totalVotes = this.#currentVoteInfos.nbrVotesYes + this.#currentVoteInfos.nbrVotesNo;
+        const majority = Math.floor(totalVotes / 2) + 1;
+        return this.#currentVoteInfos.nbrVotesYes >= majority;
+    }
+
+    endVote(id) {
+        let result = this.isMajority()
+        this.#currentVoteInfos.id = null;
+        this.#currentVoteInfos.voteType = null;
+        this.#currentVoteInfos.author = "";
+        this.#currentVoteInfos.nbrVotesYes = 0;
+        this.#currentVoteInfos.nbrVotesNo = 0;
+        this.#currentVoteInfos.videoName = null;
+        return result;
     }
 
   toJSON() {

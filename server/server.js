@@ -86,8 +86,6 @@ app.get('/room-history/:id', (req, res) => {
 }
 );
 
-
-
 /**
  * Route pour les suggestions de recherche (obligé de le faire dans le back)
  */
@@ -147,23 +145,40 @@ if (process.env.NODE_ENV !== 'test') {
       io.to(roomId).emit("message", { author, text: data });
     });
 
-    socket.on("startVote", ({ roomId, voteType }) => {
-        console.log(`🗳️ Vote lancé dans la salle ${roomId} : ${voteType}`);
-        const room = RoomManager.getRoomById(roomId);
-        if (!room) return;
-        room.startVote(voteType);
-        console.log("Vote en cours :", room.getVote());
-        io.to(roomId).emit("startVote", voteType);
+    socket.on("startVote", ({ roomId, author, voteType, video = null }) => {
+      console.log(`🗳️ Vote lancé dans la salle ${roomId} : ${voteType}`);
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) return;
+
+      let id = Math.random().toString(36).substring(2, 9);
+
+      if (room.startVote(id, voteType, author, video)) {
+        io.to(roomId).emit("voteStarted", {id, voteType, author, video});
+        console.log("Vote lancé :", room.getCurrentVoteInfos());
+
+        setTimeout(() => {
+          console.log(`⌛ Vote terminé dans la salle ${roomId}`);
+          const result = room.endVote();
+          io.to(roomId).emit("voteEnded", { id, result });
+        }, 15000);
+      } else {
+        console.log("Impossible de lancer le vote, une autre action est déjà en cours.");
+      }
     });
 
-    socket.on("voteToSkip", ({ roomId, clientId }) => {
-        console.log(`🗳️ Vote pour passer dans la salle ${roomId} : ${clientId}`);
+
+    socket.on("vote", ({roomId, id, vote}) => {
+        console.log(`🗳️ Vote reçu : ${vote} pour le vote ${id}`);
         const room = RoomManager.getRoomById(roomId);
         if (!room) return;
-        room.addVoteToSkip(clientId);
-        console.log("Votes pour passer :", room.getVotesToSkip());
-        io.to(roomId).emit("voteToSkip", clientId);
+        if (room.vote(id, vote)) {
+          console.log("Votes mis à jour :", room.getCurrentVoteInfos());
+          io.to(roomId).emit("newVote", { id, vote });
+        } else {
+          console.log("Impossible de voter, le vote n'existe pas ou est déjà terminé.");
+        }
     });
+
 
     /**
      * Gestion ajout vidéo

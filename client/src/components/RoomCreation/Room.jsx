@@ -63,6 +63,11 @@ function Room() {
         getData();
     }, [roomId]);
 
+    const startVoteTest = () => {
+        socket.emit("startVote", { roomId, author: "test", voteType: "skip"})
+        console.log ("Vote lancé");
+    }
+
     // c'est invisible mais c'est pour éviter d'afficher la salle alors qu'elle n'est pas encore chargée
     if (!socket || !roomInfo) {
         return <div>Chargement de la salle...</div>;
@@ -97,6 +102,7 @@ function Room() {
                 </div>
             </div>
             <VoteBox roomId={roomId} socket={socket} />
+            <button onClick={startVoteTest}></button>
         </div>
     );
 }
