@@ -50,7 +50,8 @@ const ModalRoomParameters = () => {
     };
 
 
-  // Handle the change of the switches
+
+    // Handle the change of the switches
   const handleChange = (event) => {
     const { name, checked } = event.target;
     setFormData((prev) => ({ ...prev, [name]: checked }));

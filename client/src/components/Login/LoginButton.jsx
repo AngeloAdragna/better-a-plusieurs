@@ -2,7 +2,7 @@ import { useState } from "react";
 import UserCreationModal from "./UserCreationModal.jsx";
 import ModalOpenConnection from "./ModalOpenConnection.jsx";
 
-const LoginButton = () => {
+const LoginButton = ({socket}) => {
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
@@ -11,7 +11,7 @@ const LoginButton = () => {
                onClick={() => setModalOpen(true)}>
                 Se connecter
             </a>
-            {modalOpen && <ModalOpenConnection />}
+            {modalOpen && <ModalOpenConnection socket={socket} />}
         </>
     );
 };

@@ -5,7 +5,7 @@ import axios from "axios";
 import {AuthContext} from "../../context/AuthContext.jsx";
 
 
-const ModalOpenConnection = () => {
+const ModalOpenConnection = ({socket}) => {
     const { isConnected, setIsConnected } = React.useContext(AuthContext);
     const [formData, setFormData] = useState({ username: '', password: '' });
     const [submittedData, setSubmittedData] = useState(null);
@@ -30,6 +30,8 @@ const ModalOpenConnection = () => {
                 console.log("Login successful:", response.data);
                 setSubmittedData(formData);
                 setIsConnected(true);
+                localStorage.setItem("username", formData.username);
+                socket.emit("userConnected", formData.username);
             })
             .catch(error => {
                 console.error("Login failed:", error.response.data);
@@ -86,7 +88,7 @@ const ModalOpenConnection = () => {
                 </div>
             </div>
 
-            <ModalRoomParameters />
+            <ModalRoomParameters/>
         </>
     );
 };
