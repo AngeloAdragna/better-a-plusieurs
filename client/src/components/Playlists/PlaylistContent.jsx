@@ -70,6 +70,10 @@ function PlaylistContent({roomInfo, roomId, socket}) {
         }
     }, [roomId]);
 
+    const handleDeleteVideoFromPlaylist = (video) => {
+        socket.emit("videoDeletedPlaylist", {roomId: roomId, video: video})
+    }
+
 
     return (
         <section className='PlaylistContent'>
@@ -79,22 +83,33 @@ function PlaylistContent({roomInfo, roomId, socket}) {
             </div>
             <div className={`ContentPlaylistHistory ${isSelected ? 'desactived' : ''}`}>
                 <div className="playlist-container">
-                    {videoPlaylist.map((video, i) => (
-                        <div key={i}>
-                            <PlaylistVideo
-                                title={video.title}
-                                thumbnail={video.thumbnail}
-                                video={video}
-                                roomId={roomId}
-                                socket={socket}
-                            />
-                        </div>
-                    ))}
+                    {videoPlaylist.length === 0 ? (
+                        <p>La playlist est vide</p> // Message si la playlist est vide
+                    ) : (
+                        videoPlaylist.map((video, i) => (
+                            <div key={i} className="playlist-video-item">
+                                <PlaylistVideo
+                                    title={video.title}
+                                    thumbnail={video.thumbnail}
+                                    video={video}
+                                    roomId={roomId}
+                                    socket={socket}
+                                />
+                                <button className="del-from-playlist-btn" onClick={() => handleDeleteVideoFromPlaylist(video)}>
+                                    Supprimer de la playlist
+                                </button>
+                            </div>
+                        ))
+                    )}
                 </div>
+
             </div>
             <div className={`ContentPlaylistHistory ${isSelected ? '' : 'desactived'}`}>
                 <div className="history-container">
-                    {videoHistory.map((video, i) => (
+                    {videoHistory.length === 0 ? (
+                            <p>Aucune vidéo n'a été lue pour le moment</p> // Message si la playlist est vide
+                        ) : (
+                        videoHistory.map((video, i) => (
                         <div key={i}>
                             <PlaylistVideo
                                 title={video.title}
@@ -104,7 +119,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                                 socket={socket}
                             />
                         </div>
-                    ))}
+                    )))}
                 </div>
             </div>
         </section>

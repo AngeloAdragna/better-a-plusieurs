@@ -171,6 +171,17 @@ if (process.env.NODE_ENV !== 'test') {
     });
 
     /**
+     * Gestion suppression vidéo
+     */
+    socket.on("videoDeletedPlaylist", ({roomId, video}) => {
+      console.log(`📹 Vidéo supprimée dans la salle ${roomId} : ${video}`);
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) return;
+      //console.log("Actualisation de la playlist")
+      io.in(roomId).emit("videoAddedPlaylist", room.removeVideoFromPlaylist(video));
+    })
+
+    /**
      * Gestion de la fin de lecture de la vidéo dans la room pour chaque client
      */
     socket.on("videoEnded", async (roomId) => {
