@@ -271,7 +271,8 @@
 
 #searchResultsModal .video-result {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     margin-bottom: 1rem;
     text-decoration: none;
     color: #fff;
@@ -290,4 +291,19 @@
     border-radius: 4px;
 }
 
+#searchResultsModal .add-to-playlist {
+    flex-grow: 1;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0, 0, 255, 0.25);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#searchResultsModal .add-to-playlist:hover {
+    background: rgba(0, 125, 255, 1);
+}
 

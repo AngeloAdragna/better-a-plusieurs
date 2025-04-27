@@ -202,19 +202,21 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                         <div>
                             {results.map((video) => (
                                 <div>
-                                    <div
-                                        key={video.id.videoId}
-                                        onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
-                                        className="video-result modal-close">
-                                        <img
-                                            src={video.snippet.thumbnails.medium.url}
-                                            alt="thumbnail"
-                                        />
-                                        <p>{video.snippet.title}</p>
+                                    <div className="video-result">
+                                        <div
+                                            key={video.id.videoId}
+                                            onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
+                                            className="modal-close">
+                                            <img
+                                                src={video.snippet.thumbnails.medium.url}
+                                                alt="thumbnail"
+                                            />
+                                            <p>{video.snippet.title}</p>
+                                        </div>
+                                        <button className="add-to-playlist" onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId })}>
+                                            Ajouter à la playlist
+                                        </button>
                                     </div>
-                                    <button onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId })}>
-                                        Ajouter à la playlist
-                                    </button>
                                 </div>
                             ))}
                         </div>
