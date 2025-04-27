@@ -1,0 +1,45 @@
+.vote-box {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 250px;
+    padding: 20px;
+    background-color: var(--light-grey);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 9999;
+}
+
+.vote-progress {
+    display: flex;
+    background-color: #e0e0e0;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 12px;
+}
+
+.vote-progress-bar {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+    font-weight: bold;
+    transition: width 0.3s ease;
+}
+
+.vote-progress-text {
+    padding: 0 5px;
+    white-space: nowrap;
+}
+
+.vote-buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.vote-button {
+    margin: 5px;
+}

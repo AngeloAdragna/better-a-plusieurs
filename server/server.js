@@ -147,6 +147,24 @@ if (process.env.NODE_ENV !== 'test') {
       io.to(roomId).emit("message", { author, text: data });
     });
 
+    socket.on("startVote", ({ roomId, voteType }) => {
+        console.log(`🗳️ Vote lancé dans la salle ${roomId} : ${voteType}`);
+        const room = RoomManager.getRoomById(roomId);
+        if (!room) return;
+        room.startVote(voteType);
+        console.log("Vote en cours :", room.getVote());
+        io.to(roomId).emit("startVote", voteType);
+    });
+
+    socket.on("voteToSkip", ({ roomId, clientId }) => {
+        console.log(`🗳️ Vote pour passer dans la salle ${roomId} : ${clientId}`);
+        const room = RoomManager.getRoomById(roomId);
+        if (!room) return;
+        room.addVoteToSkip(clientId);
+        console.log("Votes pour passer :", room.getVotesToSkip());
+        io.to(roomId).emit("voteToSkip", clientId);
+    });
+
     /**
      * Gestion ajout vidéo
      */

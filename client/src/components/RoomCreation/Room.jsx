@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 import { io } from "socket.io-client"
+import VoteBox from "../VoteBox.jsx";
 
 function Room() {
     const { roomId } = useParams();
@@ -95,6 +96,7 @@ function Room() {
                     <ChatBox roomId={roomId} socket={socket} /> {/* Chat */}
                 </div>
             </div>
+            <VoteBox roomId={roomId} socket={socket} />
         </div>
     );
 }
