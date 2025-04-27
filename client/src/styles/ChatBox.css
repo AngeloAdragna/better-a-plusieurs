@@ -1,0 +1,189 @@
+.ChatContainer {
+    background-color: var(--dark-blue);
+    position: fixed;
+    z-index: 1;
+    right: 0;
+    bottom: 5vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    border-radius: 15px 0 0 15px;
+    border: 0.5px solid #1e1e1e84;
+    box-shadow: -2px 0px 3px #1e1e1e;
+    transition: transform 0.4s ease-in-out; /* Transition avec Materialize */
+}
+
+.ChatContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.ChatContainer.collapsed {
+    transform: translateX(100%);
+}
+
+.arrow, .rotate {
+    position: absolute;
+    left: -4.8%;
+    background: var(--dark-blue);
+    width: 5%;
+    height: 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px 0 0 10px;
+    border-left: 0.5px solid #1e1e1e53;
+    box-shadow: -2px 3px 3px #1e1e1e;
+    cursor: pointer;
+}
+
+.rotate {
+    left: -10%;
+    border-radius: 0 10px 10px 0;
+    transform: rotate(180deg);
+    width: 10%;
+    box-shadow: 2px -3px 3px #1e1e1e;
+}
+
+.ChatContent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+}
+
+.message {
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+    display: flex;
+}
+
+.message .author {
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.message .gifChat {
+    max-height: 100px;
+    max-width: 100px;
+}
+
+.ChatInputArea {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.ChatInputArea input {
+    flex: 1;
+}
+
+.emoji-button,
+.gif-button {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.emoji-button img,
+.gif-button img {
+    display: block;
+}
+
+.emoji-button img {
+    height: 36px;
+}
+
+.gif-button img {
+    height: 30px;
+}
+
+.emoji-picker-container,
+.gif-picker-container {
+    position: absolute;
+    bottom: 80px;
+    z-index: 1000;
+}
+
+.gif-picker-container {
+    height: 300px;
+    overflow-y: auto;
+    background-color: #111;
+    border-radius: 8px;
+}
+
+.material-tooltip {
+    border-radius: 10px !important;
+    background-color: var(--dark-blue) !important;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.MessageList {
+    scroll-behavior: smooth;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+    padding-right: 5px;
+}
+
+.MessageList::-webkit-scrollbar {
+    width: 8px;
+}
+
+.MessageList::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.MessageList::-webkit-scrollbar-thumb {
+    background: var(--light-grey);
+    border-radius: 10px;
+}
+
+.ChatHeader {
+    height: 100%;
+    width: 100%;
+    background: var(--mid-dark-blue);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+}
+
+.sendMessageButton {
+    background: var(--mid-blue-btn);
+    border-radius: 10px;
+    padding: 5px 10px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+}
+
+.sendMessageButton svg {
+    width: 25px;
+    height: 25px;
+    fill: white;
+}
+
+.big-emoji {
+    font-size: 3rem;
+    line-height: 1.2;
+    display: inline-block;
+}
+
+/* Materialize responsive classes */
+@media screen and (min-width: 600px) {
+    .ChatContainer {
+        width: 46vw; /* Taille sur les écrans moyens */
+        top: 13vw;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .ChatContainer {
+        width: 30vw; /* Taille pour les grands écrans */
+        top: 8vw;
+    }
+}

@@ -43,3 +43,6 @@ Then('the response should contain {string}: {word}', function (key, expectedValu
     const expected = expectedValue === 'true';
     expect(response.body).to.have.property(key, expected);
 });
+Then('the response should contain a token', function () {
+    expect(response.body).to.have.property('token').that.is.a('string').and.is.not.empty;
+});
