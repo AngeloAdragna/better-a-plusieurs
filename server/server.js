@@ -155,8 +155,8 @@ if (process.env.NODE_ENV !== 'test') {
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
       room.addVideoToPlaylist(video);
-      console.log("Ajout de la vidéo à la playlist :", room.getVideoPlaylist());
-      io.in(roomId).emit("videoAddedPlaylist", video);
+      //console.log("Ajout de la vidéo à la playlist :", room.getVideoPlaylist());
+      io.in(roomId).emit("videoAddedPlaylist", room.getVideoPlaylist());
     });
 
     socket.on("videoAddedHistory", ({ roomId, video }) => {
@@ -164,8 +164,8 @@ if (process.env.NODE_ENV !== 'test') {
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
       room.addVideoToHistory(video);
-      console.log("Ajout de la vidéo à l'historique :", room.getVideoHistory());
-      io.in(roomId).emit("videoAddedHistory", video);
+      //console.log("Ajout de la vidéo à l'historique :", room.getVideoHistory());
+      io.in(roomId).emit("videoAddedHistory", room.getVideoHistory());
     });
 
     /**
@@ -176,9 +176,9 @@ if (process.env.NODE_ENV !== 'test') {
       socket.to(roomId).emit("pause", timeCode);
     });
 
-    socket.on("play", ({ roomId, timeCode, videoId}) => {
-      console.log(`▶️ Play dans la salle ${roomId} : ${timeCode} => videoId = ${videoId}`);
-      socket.to(roomId).emit("play", timeCode, videoId);
+    socket.on("play", ({ roomId, timeCode, video}) => {
+      console.log(`▶️ Play dans la salle ${roomId} : ${timeCode} => videoId = ${video.id}`);
+      socket.to(roomId).emit("play", timeCode, video);
     });
 
     socket.on("sync", ({ roomId, timeCode }) => {
@@ -186,9 +186,9 @@ if (process.env.NODE_ENV !== 'test') {
       socket.to(roomId).emit("sync", timeCode);
     });
 
-    socket.on("selectVideo", ({roomId, videoId}) => {
-      console.log(`🔀 Selection d'une vidéo dans la salle ${roomId} : ${videoId}`)
-      io.in(roomId).emit("selectVideo", videoId) // Envoyer à toute la room y compris le client qui a initié le changement
+    socket.on("selectVideo", ({roomId, video}) => {
+      console.log(`🔀 Selection d'une vidéo dans la salle ${roomId} : ${video.id}`)
+      io.in(roomId).emit("selectVideo", video) // Envoyer à toute la room y compris le client qui a initié le changement
     });
 
     socket.on("disconnect", () => {

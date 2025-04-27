@@ -36,7 +36,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
     // Ecouteur d'événement pour la réception de la vidéo ajoutée à la playlist
     useEffect(() => {
         socket.on("videoAddedPlaylist", (data)=> {
-            setVideoPlaylist((prev) => [...prev, data] );
+            setVideoPlaylist(data);
             console.log("Playlist :", videoPlaylist)
         });
         return () => socket.off("videoAddedPlaylist");
@@ -45,7 +45,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
     // Ecouteur d'événement pour la réception de la vidéo ajoutée à l'historique
     useEffect(() => {
         socket.on("videoAddedHistory", (data)=>{ 
-            setVideoHistory((prev => [data,...prev]));  
+            setVideoHistory(data);
             console.log("History :", videoHistory)
             });
         return () => socket.off("videoAddedHistory");
@@ -109,7 +109,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                             <PlaylistVideo
                                 title={video.title}
                                 thumbnail={video.thumbnail}
-                                videoId={video.id}
+                                video={video}
                                 roomId={roomId}
                                 socket={socket}
                             />
@@ -141,7 +141,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                             <PlaylistVideo
                                 title={video.title}
                                 thumbnail={video.thumbnail}
-                                videoId={video.id}
+                                video={video}
                                 roomId={roomId}
                                 socket={socket}
                             />

@@ -91,10 +91,10 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     };
 
 
-    const handleSelectVideo = (videoId, roomId, socket) => {
+    const handleSelectVideo = (video, roomId, socket) => {
         // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
         //console.log(socket)   // DEBUG
-        socket.emit("selectVideo", {roomId: roomId, videoId: videoId})
+        socket.emit("selectVideo", {roomId: roomId, video: video})
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats
@@ -121,7 +121,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
         //Todo verif structure lien bien vid
-        socket.emit("videoAdded", { roomId, video });  // Envoie la vidéo au serveur
+        socket.emit("videoAddedPlaylist", { roomId, video });  // Envoie la vidéo au serveur
     };
 
     return (
@@ -188,7 +188,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                                 <div>
                                     <div
                                         key={video.id.videoId}
-                                        onClick={() => handleSelectVideo(video.id.videoId, roomId, socket)}
+                                        onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
                                         className="video-result modal-close">
                                         <img
                                             src={video.snippet.thumbnails.medium.url}
