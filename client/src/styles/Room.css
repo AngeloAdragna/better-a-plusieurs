@@ -158,6 +158,16 @@
   overflow-y: auto; /* Ajoute du scroll si le contenu déborde */
 }
 
+.playlist-container, .history-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;    /* Scroll vertical */
+    max-height: 80vh;    /* Ajuste comme tu veux la hauteur max visible */
+    gap: 10px;          /* Espace entre les vidéos */
+    padding-right: 10px;  /* Un peu d'espace pour éviter que le scroll cache les vidéos */
+    padding-bottom: 10px;
+}
+
 .desactived{
   display: none;
 }
@@ -279,3 +289,5 @@
     margin-right: 1rem;
     border-radius: 4px;
 }
+
+

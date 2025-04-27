@@ -13,6 +13,12 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
 
+    function decodeHtmlEntities(text) {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = text;
+        return textarea.value;
+    }
+
     // Gestion de la recherche lors de la soumission du formulaire
     const handleSearch = async (e) => {
         e.preventDefault();     // Empêche la soumission automatique par défaut
@@ -31,8 +37,18 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                     },
                 }
             );
-            setIsFormSubmitted(true)
-            setResults(response.data.items);
+
+            // Décodage html des titres pour pouvoir les afficher correctement
+            const decodedResults = response.data.items.map(video => ({
+                ...video,
+                snippet: {
+                    ...video.snippet,
+                    title: decodeHtmlEntities(video.snippet.title),
+                }
+            }));
+
+            setIsFormSubmitted(true);
+            setResults(decodedResults);
         } catch (error) {
             console.error('Erreur lors de la recherche :', error);
         }
