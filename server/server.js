@@ -127,6 +127,8 @@ if (process.env.NODE_ENV !== 'test') {
   });
 
 
+  const videoEndedCounter = {}  // Tableau à deux dimensions pour compter le nombre de clients ayant terminé la
+                                // lecture de la vidéo courante dans la room
 
   io.on("connection", (socket) => {
     console.log(`🔌 Utilisateur connecté : ${socket.id}`);
@@ -167,6 +169,37 @@ if (process.env.NODE_ENV !== 'test') {
       //console.log("Ajout de la vidéo à l'historique :", room.getVideoHistory());
       io.in(roomId).emit("videoAddedHistory", room.getVideoHistory());
     });
+
+    /**
+     * Gestion de la fin de lecture de la vidéo dans la room pour chaque client
+     */
+    socket.on("videoEnded", async (roomId) => {
+      console.log(`⏹️ Vidéo terminée dans la room : ${roomId}`)
+      const room = RoomManager.getRoomById(roomId)
+      if (!room) return
+
+      if (!videoEndedCounter[roomId]) {
+        videoEndedCounter[roomId] = 0
+      }
+      videoEndedCounter[roomId]++    // On compte un client de plus ayant terminé la vidéo
+
+      // Récupération du nombre de clients dans la room
+      const clients = await io.in(roomId).fetchSockets();
+      const clientsCount = clients.length;
+
+      if (videoEndedCounter[roomId] >= clientsCount) {
+        const playlist = room.getVideoPlaylist()
+        if (playlist.length > 0) {
+          console.log(`Tous les clients de la room ${roomId} ont terminé leur vidéo, passage à la suivante`)
+          const nextVideo = playlist[0]
+          room.removeVideoFromPlaylist(nextVideo)
+          io.in(roomId).emit("videoAddedPlaylist",room.removeVideoFromPlaylist(nextVideo))
+          io.in(roomId).emit("selectVideo", nextVideo)
+
+          videoEndedCounter[roomId] = 0   // Réinitialisation du compteur pour la prochaine vidéo
+        }
+      }
+    })
 
     /**
      * Gestion des événements vidéo (broadcast uniquement dans la room)

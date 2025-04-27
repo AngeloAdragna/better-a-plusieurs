@@ -60,6 +60,7 @@ const VideoPlayer = ({ roomId, video, socket, height = "390", width = "661" }) =
             console.log("Vidéo terminée");
             cancelPeriodicSync();
             setIsPlaying(false);
+            socket.emit("videoEnded", roomId)
         }
         if (state === 2) {
             // If the video is set to pause
