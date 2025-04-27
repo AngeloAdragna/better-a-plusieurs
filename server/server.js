@@ -145,15 +145,15 @@ if (process.env.NODE_ENV !== 'test') {
       io.to(roomId).emit("message", { author, text: data });
     });
 
-    socket.on("startVote", ({ roomId, author, voteType, video = null }) => {
+    socket.on("startVote", ({ roomId, author, voteType, videoName = null }) => {
       console.log(`🗳️ Vote lancé dans la salle ${roomId} : ${voteType}`);
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
 
       let id = Math.random().toString(36).substring(2, 9);
 
-      if (room.startVote(id, voteType, author, video)) {
-        io.to(roomId).emit("voteStarted", {id, voteType, author, video});
+      if (room.startVote(id, voteType, author, videoName)) {
+        io.to(roomId).emit("voteStarted", {id, voteType, author, videoName});
         console.log("Vote lancé :", room.getCurrentVoteInfos());
 
         setTimeout(() => {

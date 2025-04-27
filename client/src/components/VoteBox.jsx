@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import "../styles/VoteBox.css";
 import M from "materialize-css";
 
+// TODO : limiter a un vote par utilisateur !
+
 const VoteBox = ({roomId, socket}) => {
     /**
      * Objet `currentVoteInfos`
@@ -57,14 +59,13 @@ const VoteBox = ({roomId, socket}) => {
         return () => clearInterval(interval);
     }, [timeLeft]);
 
-
     useEffect(() => {
-        const handleVoteStarted = ({ id, voteType, author, video }) => {
+        const handleVoteStarted = ({ id, voteType, author, videoName }) => {
             setCurrentVoteInfos({
                 id,
                 voteType,
                 author,
-                videoName: video,
+                videoName: videoName,
                 nbrVotesYes: 0,
                 nbrVotesNo: 0,
             });
@@ -84,18 +85,11 @@ const VoteBox = ({roomId, socket}) => {
             });
         };
 
-        useEffect(() => {
-            if (voteResult !== null) {
-                console.log("✅ Nouveau résultat de vote :", voteResult);
-            }
-        }, [voteResult]);
-
-
         const handleVoteEnded = ({ id, result }) => {
             if (currentVoteInfos.id === id) {
                 setTimeLeft(0);
                 setVoteResult({
-                    success: result.success,
+                    success: result,
                     voteType: currentVoteInfos.voteType,
                     videoName: currentVoteInfos.videoName,
                 })
@@ -107,6 +101,10 @@ const VoteBox = ({roomId, socket}) => {
                     nbrVotesNo: 0,
                     videoName: null,
                 });
+                setTimeout(() => {
+                    setVoteResult(null);
+                    setIsVisible(false);
+                }, 3000);
             }
         };
 
@@ -152,11 +150,11 @@ const VoteBox = ({roomId, socket}) => {
                     <h5 className="vote-title">
                         {voteResult.success
                             ? voteResult.voteType === "skip"
-                                ? "✅ La vidéo a été passée !"
-                                : `✅ La vidéo "${voteResult.videoName}" a été ajoutée à la playlist !`
+                                ? "La vidéo a été passée !"
+                                : `La vidéo "${voteResult.videoName}" a été ajoutée à la playlist !`
                             : voteResult.voteType === "skip"
-                                ? "❌ La vidéo n'a pas été passée."
-                                : `❌ La vidéo "${voteResult.videoName}" n'a pas été ajoutée.`}
+                                ? "La vidéo n'a pas été passée."
+                                : `La vidéo "${voteResult.videoName}" n'a pas été ajoutée.`}
                     </h5>
                 </div>
             ) : (
@@ -168,7 +166,9 @@ const VoteBox = ({roomId, socket}) => {
                             ? `Vote pour ajouter "${currentVoteInfos.videoName}" à la playlist`
                             : "Vote pour passer la vidéo"}
                     </h5>
-
+                    <p className="vote-author">
+                        Proposé par : {currentVoteInfos.author}
+                    </p>
                     <div className="vote-progress">
                         <div
                             className="vote-progress-bar green"

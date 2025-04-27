@@ -64,7 +64,7 @@ function Room() {
     }, [roomId]);
 
     const startVoteTest = () => {
-        socket.emit("startVote", { roomId, author: "test", voteType: "skip"})
+        socket.emit("startVote", { roomId, author: "test", voteType: "add", videoName: "Michou" });
         console.log ("Vote lancé");
     }
 
