@@ -8,6 +8,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     const [results, setResults] = useState([]);
     const [suggestions, setSuggestions] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
@@ -30,7 +31,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                     },
                 }
             );
-
+            setIsFormSubmitted(true)
             setResults(response.data.items);
         } catch (error) {
             console.error('Erreur lors de la recherche :', error);
@@ -111,6 +112,18 @@ const YouTubeSearchBar = ({roomId, socket}) => {
         }
     }, [results]);
 
+    const openResultsModalManually = () => {
+        const modal = document.querySelector('.modal');
+        const instance = M.Modal.getInstance(modal);
+        instance.open();
+    }
+
+    // Fonction pour ajouter une vidéo à la playlist
+    const handleAddVideoToPlaylist = (video) => {
+        //Todo verif structure lien bien vid
+        socket.emit("videoAdded", { roomId, video });  // Envoie la vidéo au serveur
+    };
+
     return (
         <div className="container">
             <form onSubmit={handleSearch} className="center-align">
@@ -124,7 +137,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                                 const value = e.target.value
                                 setQuery(value);
                                 handleInputChange(e);  // à chaque changement, on actualise les suggestions
-                                }
+                            }
                             }
                             onFocus={() => setShowSuggestions(true)}
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 100)} // Délai pour laisser le temps de cliquer sur une suggestion
@@ -153,6 +166,11 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                         <button className="btn green" type="submit" style={{ padding: '0 12px' }}>
                             🔍
                         </button>
+                        {isFormSubmitted && (
+                            <button className="btn green" style={{ padding: '0 12px' }} onClick={openResultsModalManually}>
+                                ⬇️
+                            </button>)
+                        }
                     </div>
                 </div>
             </form>
@@ -163,19 +181,24 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                     <button id="closeResultsModal" className="modal-close btn-flat" >
                         ✖
                     </button>
-                <h5>Résultats de la recherche</h5>
+                    <h5>Résultats de la recherche</h5>
                     {results.length > 0 && (
                         <div>
                             {results.map((video) => (
-                                <div
-                                    key={video.id.videoId}
-                                    onClick={() => handleSelectVideo(video.id.videoId, roomId, socket)}
-                                    className="video-result modal-close">
-                                    <img
-                                        src={video.snippet.thumbnails.medium.url}
-                                        alt="thumbnail"
-                                    />
-                                    <p>{video.snippet.title}</p>
+                                <div>
+                                    <div
+                                        key={video.id.videoId}
+                                        onClick={() => handleSelectVideo(video.id.videoId, roomId, socket)}
+                                        className="video-result modal-close">
+                                        <img
+                                            src={video.snippet.thumbnails.medium.url}
+                                            alt="thumbnail"
+                                        />
+                                        <p>{video.snippet.title}</p>
+                                    </div>
+                                    <button onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId })}>
+                                        Ajouter à la playlist
+                                    </button>
                                 </div>
                             ))}
                         </div>

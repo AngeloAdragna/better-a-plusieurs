@@ -19,7 +19,7 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
         playerVars: {
             autoplay: 1,        // Auto
             //mute: 1           // the only way to enable autoplay in your navigator if you don't want
-                                // to enable it manually
+            // to enable it manually
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // !!!!! You have to enable "video and audio" into your navigator to enable autoplay with sound !!!!!
             // !!!!! without doing this, it won't work                                                      !!!!!
@@ -46,6 +46,12 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
         if (!player) return;
 
         const state = event.data;
+        if (state === 0) {
+            // La vidéo est terminée
+            console.log("Vidéo terminée");
+            cancelPeriodicSync();
+            setIsPlaying(false);
+        }
         if (state === 2) {
             // If the video is set to pause
             // Disable periodic sync
@@ -57,8 +63,8 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
 
         } else if (state === 1 && !isPlaying) {
             // If the video is set to play and wasn't playing yet
-            //console.log(`Play : state = ${state}`); // DEBUG
-            socket.emit("play", {roomId: roomId, timeCode: player.getCurrentTime()});
+            //console.log(`Play : state = ${state}, ID DE VIDEO = ${currentVideoId}`); // DEBUG
+            socket.emit("play", {roomId: roomId, timeCode: player.getCurrentTime(), videoId: currentVideoId});
             // Enable periodic sync
             setPeriodicSync()
         }
@@ -74,12 +80,16 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
             }
         };
 
-        const handlePlay = (time) => {
+        const handlePlay = (time, videoId) => {
+            //console.log(`ID DE LA VIDEO : ${videoId}`)    // DEBUG
             if (player && !isPlaying) {
                 setPeriodicSync()           // We want to restart the periodic synchronization
                 player.playVideo()
                 player.seekTo(time, true)   // Sync timecodes
                 setIsPlaying(true)
+                if (videoId !== currentVideoId) {
+                    changeVideo(videoId)
+                }
             }
         };
 
@@ -108,13 +118,13 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
         socket.on("pause", handlePause);
         socket.on("play", handlePlay);
         socket.on("sync", syncTimeCode);
-        socket.on("selectVideo", (newVideoId) => changeVideo(newVideoId));
+        socket.on("selectVideo", changeVideo);
 
         return () => {
             socket.off("pause", handlePause);
             socket.off("play", handlePlay);
             socket.off("sync", syncTimeCode);
-            socket.off("selectVideo", (newVideoId) => changeVideo(newVideoId));
+            socket.off("selectVideo", changeVideo);
         };
     }, [player, isPlaying, socket]);
 
