@@ -1,159 +1,125 @@
-import React, { useEffect, useRef, useState } from "react";
-import {db} from "../../firebase.js";
-import { onValue, ref, set, push, remove, off } from "firebase/database";
-import VideoTile from "./VideoTile.jsx";
-import VisioSidebar from "./VideoSideBar.jsx";
+import React, { useEffect, useRef, useState } from 'react';
+import { db } from '../../firebase';
+import { ref, onChildAdded, push, set, get } from 'firebase/database';
+import VideoSideBar from './VideoSideBar';
 
+const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
 
-const servers = {
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-};
+const VideoCall = ({ roomId, userId }) => {
+    const localStreamRef = useRef();
+    const peerConnections = useRef({});
 
-export default function VideoCall({ roomId, userId }) {
-  const [remoteStreams, setRemoteStreams] = useState({});
-  const peerConnections = useRef({});
-  const [remoteUsers, setRemoteUsers] = useState([]);
-  const [localStream, setLocalStream] = useState(null);
+    const createPeerConnection = (remoteUserId) => {
+        const pc = new RTCPeerConnection({ iceServers });
 
-  const cleanupPeerConnections = () => {
-    Object.entries(peerConnections.current).forEach(([uid, pc]) => {
-      pc.close();
-      delete peerConnections.current[uid];
-    });
-
-    setRemoteStreams({});
-  };
-
-  useEffect(() => {
-    // Obtenir le flux local
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-      setLocalStream(stream);
-      registerUser();
-    });
-
-    // Enregistrer l'utilisateur dans la room
-    const registerUser = () => {
-      set(ref(db, `rooms/${roomId}/users/${userId}`), true);
-    };
-
-    // Écouter les autres utilisateurs de la room
-    const usersRef = ref(db, `rooms/${roomId}/users`);
-    onValue(usersRef, snapshot => {
-      const users = snapshot.val() || {};
-      const others = Object.keys(users).filter(uid => uid !== userId);
-      setRemoteUsers(others);
-    });
-
-    // Écouter les offres entrantes
-    const signalingRef = ref(db, `rooms/${roomId}/signaling`);
-    onValue(signalingRef, snapshot => {
-      const data = snapshot.val() || {};
-      Object.entries(data).forEach(async ([key, msg]) => {
-        const [from, to] = key.split("_to_");
-        if (to !== userId) return;
-
-        if (msg.offer) await handleOffer(from, msg.offer);
-        if (msg.answer) await handleAnswer(from, msg.answer);
-        if (msg.candidates) {
-          for (const c of msg.candidates) {
-            await handleCandidate(from, c);
-          }
+        if (localStreamRef.current && localStreamRef.current.srcObject) {
+            localStreamRef.current.srcObject.getTracks().forEach((track) => pc.addTrack(track, localStreamRef.current.srcObject));
         }
 
-        // 🔥 Supprimer le message traité
-        await remove(ref(db, `rooms/${roomId}/signaling/${key}`));
-      });
-    });
-    return () => {
-        cleanupPeerConnections(); // Nettoyer les connexions
-        off(usersRef); // Désabonner l'écouteur des utilisateurs
-        off(signalingRef); // Désabonner l'écouteur des signaux
-    };
-  }, []);
+        pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                const candidatesRef = ref(db, `rooms/${roomId}/signaling/iceCandidates`);
+                push(candidatesRef, { candidate: event.candidate.toJSON(), from: userId });
+            }
+        };
 
-  useEffect(() => {
-    // Initier connexions pour chaque utilisateur distant
-    remoteUsers.forEach(remoteUserId => {
-      if (peerConnections.current[remoteUserId]) return;
+        pc.ontrack = (event) => {
+            const remoteVideo = document.getElementById(`video-${remoteUserId}`);
+            if (remoteVideo) {
+                remoteVideo.srcObject = event.streams[0];
+            }
+        };
 
-      const pc = new RTCPeerConnection(servers);
-      peerConnections.current[remoteUserId] = pc;
-
-      // Ajouter les tracks
-      localStream?.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-      // Gérer les flux entrants
-      pc.ontrack = event => {
-        setRemoteStreams(prev => ({ ...prev, [remoteUserId]: event.streams[0] }));
-      };
-
-      // Gérer les ICE candidates
-      pc.onicecandidate = event => {
-        if (event.candidate) {
-          const path = `rooms/${roomId}/signaling/${userId}_to_${remoteUserId}`;
-          const entryRef = ref(db, path + "/candidates");
-          push(entryRef, event.candidate.toJSON());
-        }
-      };
-
-      // Créer et envoyer une offre
-      pc.createOffer().then(offer => {
-        pc.setLocalDescription(offer);
-        set(ref(db, `rooms/${roomId}/signaling/${userId}_to_${remoteUserId}/offer`), offer);
-      });
-    });
-  }, [remoteUsers, localStream]);
-
-  const handleOffer = async (from, offer) => {
-    const pc = new RTCPeerConnection(servers);
-    peerConnections.current[from] = pc;
-
-    localStream?.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-    pc.ontrack = event => {
-      setRemoteStreams(prev => ({ ...prev, [from]: event.streams[0] }));
+        peerConnections.current[remoteUserId] = pc;
+        return pc;
     };
 
-    pc.onicecandidate = event => {
-      if (event.candidate) {
-        const entryRef = ref(db, `rooms/${roomId}/signaling/${userId}_to_${from}/candidates`);
-        push(entryRef, event.candidate.toJSON());
-      }
-    };
+    const [localStream, setLocalStream] = useState(null);
 
-    try {
-      await pc.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      await set(ref(db, `rooms/${roomId}/signaling/${userId}_to_${from}/answer`), answer);
-    } catch (err) {
-      console.error(`Erreur dans handleOffer avec ${from}:`, err);
-    }
-  };
+    useEffect(() => {
+        const startLocalStream = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            setLocalStream(stream);
+            localStreamRef.current.srcObject = stream;
+            stream.getTracks().forEach((track) => track.enabled = true);
+        };
 
-  const handleAnswer = async (from, answer) => {
-    const pc = peerConnections.current[from];
-    if (pc) {
-      try {
-        await pc.setRemoteDescription(new RTCSessionDescription(answer));
-      } catch (err) {
-        console.error(`Erreur dans handleAnswer avec ${from}:`, err);
-      }
-    }
-  };
+        startLocalStream();
+    }, []);
 
-  const handleCandidate = async (from, candidate) => {
-    const pc = peerConnections.current[from];
-    if (pc) {
-      try {
-        await pc.addIceCandidate(new RTCIceCandidate(candidate));
-      } catch (err) {
-        console.warn(`Erreur en ajoutant ICE candidate de ${from}:`, err);
-      }
-    }
-  };
+    useEffect(() => {
+        if (!localStream) return;
+
+        const offersRef = ref(db, `rooms/${roomId}/signaling/offers`);
+        const answersRef = ref(db, `rooms/${roomId}/signaling/answers`);
+        const candidatesRef = ref(db, `rooms/${roomId}/signaling/iceCandidates`);
+
+        // Quand quelqu'un envoie une offre
+        onChildAdded(offersRef, async (snapshot) => {
+            const { offer, from } = snapshot.val();
+            if (from === userId) return;
+
+            let peerConnection = peerConnections.current[from];
+            if (!peerConnection) {
+                peerConnection = createPeerConnection(from);
+            }
+
+            if (
+                peerConnection.signalingState === "stable" ||
+                peerConnection.signalingState === "have-remote-offer"
+            ) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                await push(answersRef, { answer: peerConnection.localDescription.toJSON(), from: userId });
+            } else {
+                console.warn("❗ Ignored setting offer because signalingState is", peerConnection.signalingState);
+            }
+        });
+
+        // Quand quelqu'un envoie une réponse
+        onChildAdded(answersRef, async (snapshot) => {
+            const { answer, from } = snapshot.val();
+            const pc = peerConnections.current[from];
+            if (pc) {
+                if (pc.signalingState === "have-local-offer") {
+                    await pc.setRemoteDescription(new RTCSessionDescription(answer));
+                } else {
+                    console.warn("❗ Ignored setting answer because signalingState is", pc.signalingState);
+                }
+            }
+        });
+
+        // Quand quelqu'un envoie un candidat ICE
+        onChildAdded(candidatesRef, async (snapshot) => {
+            const { candidate, from } = snapshot.val();
+            const pc = peerConnections.current[from];
+            if (pc && pc.remoteDescription && pc.remoteDescription.type) {
+                await pc.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+        });
+
+        const createOffer = async () => {
+            const offersSnapshot = await get(offersRef);
+            if (offersSnapshot.exists()) {
+                console.log("⚠️ Une offre existe déjà, j'attends.");
+                return;
+            }
+            const peerConnection = createPeerConnection(userId);
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            await push(offersRef, { offer: peerConnection.localDescription.toJSON(), from: userId });
+            console.log("📤 Nouvelle offre envoyée !");
+        };
+
+        createOffer();
+    }, [localStream, roomId, userId]);
 
     return (
-        <VisioSidebar localStream={localStream} remoteStreams={remoteStreams} />
+        <>
+            <VideoSideBar roomId={roomId} localStreamRef={localStreamRef} localUserId={userId} />
+        </>
     );
-}
+};
+
+export default VideoCall;

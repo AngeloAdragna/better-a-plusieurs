@@ -1,4 +1,6 @@
 import React from "react";
+import { joinRoom } from '../../service/roomService';
+import { AuthContext } from '../../context/AuthContext';
 import ChatBox from "../ChatBox.jsx";
 import BarPage from "../BarPage/BarPage.jsx";
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -29,14 +31,31 @@ function Room() {
      */
     const [roomInfo, setRoomInfo] = React.useState(null);
 
+    const clientId = React.useMemo(() => {
+        let id = localStorage.getItem("clientId");
+        if (!id) {
+            id = crypto.randomUUID(); // Génère un ID unique
+            localStorage.setItem("clientId", id);
+        }
+        return id;
+    }, []);
+
     // TODO : connexion du client pour definir si c'est le propriétaire ou pas
     //const clientId = localStorage.getItem("clientId");
     //const isOwner = roomInfo.ownerClient === clientId;
+
+    const { isConnected } = React.useContext(AuthContext);
 
     React.useEffect(() => {
         if (!socket) return;
         localStorage.setItem("roomId", roomId);
         socket.emit("joinRoom", roomId);
+
+        const username = localStorage.getItem("username") || "Anonyme";
+        const clientId = localStorage.getItem("clientId");
+        if (clientId && username) {
+            joinRoom(roomId, clientId, username);
+        }
     }, [roomId, socket]);
 
 
@@ -90,8 +109,7 @@ function Room() {
                     <div style={{ flex: 1 }}>
                         Vidéo
                     </div>
-
-                    <VideoCall roomId={roomId} userId={localStorage.getItem("clientId")} />
+                    <VideoCall roomId={roomId} userId={clientId} />
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
                     <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket}/>
