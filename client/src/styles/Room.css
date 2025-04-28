@@ -259,13 +259,14 @@
 
 .skip-video {
     position: fixed;
-    z-index: 9999;
+    z-index: 999;
     bottom: 20px;
 }
 
 .skip-video button {
-    padding: 10px;
+    padding: 15px;
     border-radius: 8px;
+    border: none;
     width: 100%;
     background-color: #37359a;
     cursor: pointer;
@@ -320,6 +321,7 @@
     max-height: 200px;
     overflow-y: scroll;
     text-align: left;
+    font-family: inherit;
 }
 
 
@@ -333,6 +335,7 @@
     width: 100vh;
     max-width: 150vh !important;
     overflow-y: auto;
+    font-family: inherit;
 }
 
 #searchResultsModal #closeResultsModal {
@@ -383,6 +386,7 @@
     text-align: center;
     cursor: pointer;
     margin: 10px;
+    font-family: inherit;
 }
 
 #searchResultsModal .add-to-playlist:hover {

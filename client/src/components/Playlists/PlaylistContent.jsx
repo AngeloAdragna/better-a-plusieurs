@@ -123,7 +123,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                             />
                         ))
                     )}
-                    {videoPlaylist.length >= 0 && (
+                    {videoPlaylist.length > 0 && (
                         <div className="skip-video">
                             <button onClick={handleSkipVideo}>Vidéo suivante ⏭️</button>
                         </div>
