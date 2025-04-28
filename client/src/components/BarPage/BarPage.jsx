@@ -21,10 +21,10 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
                         </div>
                     </div>
                 </div>
-                <div className='col s5'>
+                <div className='col s6'>
                     <YoutubeSearchBar roomId={roomId} socket={socket}/>
                 </div>
-                <div className='col s5 item'>
+                <div className='col s4 item'>
                     <div className='valign-wrapper iconBar'>
                         <div className='col s4'>
                             <a className="modal-trigger" href="#ModalParametersUser"
