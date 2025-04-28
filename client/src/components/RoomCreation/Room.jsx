@@ -45,6 +45,7 @@ function Room() {
             const response = await fetch(`http://localhost:8080/room/${roomId}`);
             if (response.ok) {
                 const data = await response.json();
+                console.log("Données reçues de la room :", data);
                 setRoomInfo(data);
             } else {
                 console.error("Erreur lors de la récupération des données de la salle");
@@ -66,12 +67,12 @@ function Room() {
     return (
         <div className="room-container row">
             <BarPage roomName={roomInfo.name}
-                     isAllowedToShare={
-                        // TODO : vérifier si le client est le propriétaire
-                        roomInfo.freeToShare
-                     }
                      roomId={roomId}
                      socket={socket}
+                     isAllowedToShare={
+                         // TODO : vérifier si le client est le propriétaire
+                         roomInfo.freeToShare
+                     }
             />
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">

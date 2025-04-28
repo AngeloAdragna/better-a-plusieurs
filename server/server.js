@@ -140,7 +140,7 @@ if (process.env.NODE_ENV !== 'test') {
 
     socket.on("userConnected", (username) => {
       socket.username = username;
-      socket.emit("userConnected", username);
+      socket.emit("username", username);
       console.log(`👤 Username associé à ${socket.id} : ${socket.username}`);
     });
 

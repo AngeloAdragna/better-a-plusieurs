@@ -65,21 +65,36 @@ function HomePage() {
         };
     }, [socket]);
 
+    const handleDisconnect = () => {
+        if (socket) {
+            socket.emit("disconnectUser", username);
+            socket.disconnect();
+        }
+        localStorage.removeItem("username");
+        setUsername(null);
+    };
+
+
     return (
         <div className="homepage-container">
-            <div className="header-buttons">
+
                 {username ? (
-                    <div className="connected-info">
-                        Connecté en tant que <strong>{username}</strong>
+                    <div className="header-buttons-connected">
+                        <div className="connected-info">
+                            Connecté en tant que <strong>{username}</strong>
+                        </div>
+                        <div className="disconect-btn">
+                            <a onClick={handleDisconnect}>
+                                Déconnexion
+                            </a>
+                        </div>
                     </div>
                 ) : (
-                    <>
+                    <div className="header-buttons-unconnected">
                         <LoginButton socket={socket} />
                         <RegisterButton socket={socket} />
-                    </>
+                    </div>
                 )}
-            </div>
-
             <div className="CenteredContent">
                 <img src={"src/assets/icon_space.svg"} alt={"logo"} />
                 <div className={"buttonsCenter"}>

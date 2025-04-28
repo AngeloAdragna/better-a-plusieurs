@@ -27,7 +27,7 @@ class Room {
         videoName: null,
     };
 
-    constructor(id, name, voteSkip, ownerClient, voteAdd, freeToShare) {
+    constructor(id, name, voteSkip, voteAdd, freeToShare, ownerClient = null) {
         this.#id = id;
         this.#roomName = name;
         this.#voteSkip = voteSkip;
