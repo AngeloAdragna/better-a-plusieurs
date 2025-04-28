@@ -143,7 +143,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     return (
         <div className="container">
             <form onSubmit={handleSearch} className="center-align">
-                <div className="row valign-wrapper">
+                <div className=" valign-wrapper">
                     <div className="input-field col s10 text-suggestions-wrapper">
                         <input
                             type="text"
