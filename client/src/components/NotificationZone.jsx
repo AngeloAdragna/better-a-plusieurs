@@ -10,6 +10,7 @@ const NotificationZone = ({ socket, roomId }) => {
         const handleJoin = (username) => {
             if (!username) return;
             if (notification.includes(`🔜  ${username} a rejoint la room`)) return;
+            console.log("🚪 Rejoindre la room :", username);
             setNotification((prev) => [...prev, `🔜  ${username} a rejoint la room` ]);
             setIsVisible(true);
             setTimeout(() => {
@@ -22,6 +23,8 @@ const NotificationZone = ({ socket, roomId }) => {
 
         const handleLeave = (username) => {
             if (!username) return;
+            if (notification.includes(`🔙 ${username} a quitté la room`)) return;
+            console.log("🚪 Quitter la room :", username);
             setNotification((prev) => [...prev, `🔙 ${username} a quitté la room` ]);
             setIsVisible(true);
             setTimeout(() => {
@@ -37,6 +40,7 @@ const NotificationZone = ({ socket, roomId }) => {
 
         return () => {
             socket.off("userJoined", handleJoin);
+            socket.off("userLeft", handleLeave);
         };
     }, [socket]);
 
