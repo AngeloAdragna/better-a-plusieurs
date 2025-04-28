@@ -3,7 +3,7 @@
     position: fixed;
     z-index: 1;
     right: 0;
-    bottom: 5vh;
+    bottom: 1.5vh;
     display: flex;
     flex-direction: column;
     padding: 1%;
@@ -50,7 +50,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 1rem;
+ 
 }
 
 .message {
@@ -147,8 +147,9 @@
     width: 100%;
     background: var(--mid-dark-blue);
     border-radius: 10px;
-    margin-bottom: 15px;
     padding: 20px;
+    margin-bottom: 15px;
+
 }
 
 .sendMessageButton {
@@ -176,14 +177,14 @@
 /* Materialize responsive classes */
 @media screen and (min-width: 600px) {
     .ChatContainer {
-        width: 46vw; /* Taille sur les écrans moyens */
-        top: 13vw;
+        width: 48vw; /* Taille sur les écrans moyens */
+        top: 15vh;
     }
 }
 
 @media screen and (min-width: 992px) {
     .ChatContainer {
-        width: 30vw; /* Taille pour les grands écrans */
-        top: 8vw;
+        width: 45vw; /* Taille pour les grands écrans */
+        top: 17vh;
     }
 }

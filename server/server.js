@@ -60,8 +60,8 @@ app.delete("/users/:id", async (req, res) => {
 app.post('/create-room', (req, res) => {
   // TODO : Récupération de l'utilisateur qui a créé la room et ajout de son id dans la room
   const { roomName, voteSkip, voteAdd, freeToShare} = req.body;
-  const room = RoomManager.createRoom(roomName, voteSkip, voteAdd, freeToShare);
-  res.json({ id: room.getId() });
+  const room = RoomManager.createRoom(roomName, voteSkip, voteAdd, freeToShare);//
+  res.json({ id: room.getId() }); 
 });
 
 /**

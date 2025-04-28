@@ -11,17 +11,17 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
     return (
         <section className='BarPage'>
             <div className='valign-wrapper'>
-                <div className='col s2'>
+                <div className='col s4'>
                     <div className='item'>
                         <div className='valign-wrapper'>
-                            <div className='col s6 valign-wrapper'>
+                            <div className='col s4 valign-wrapper'>
                                 <img src='/src/assets/icon_space.svg' alt='Icon Space' href='/' />
                             </div>
-                            <div className='col s6 nameAppliBar'> {roomName}</div>
+                            <div className='col s8 nameAppliBar'> {roomName}</div>
                         </div>
                     </div>
                 </div>
-                <div className='col s6'>
+                <div className='col s4'>
                     <YoutubeSearchBar roomId={roomId} socket={socket}/>
                 </div>
                 <div className='col s4 item'>
@@ -32,14 +32,6 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
                                 <img className="barIcons" src='/src/assets/icon_param.svg' alt='Icon Parameters'/>
                             </a>
                             {<ModalParametersUser/>}
-                        </div>
-                        <div className='col s4'>
-                            <a className="modal-trigger" href="#ModalParametersUserRoom"
-                                onClick={() => setModalOpen(true)}>
-                                <img className="barIcons" src='/src/assets/icon_chat.svg'
-                                        alt='Icon Chat Parameters'/>
-                            </a>
-                            {<ModalParametersUserRoom/>}
                         </div>
                         <div className='col s4'>
                             <a className="modal-trigger" href="#ModalHelpUser"

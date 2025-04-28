@@ -1,6 +1,5 @@
 import React, { use, useState,useEffect } from "react";
 import io from "socket.io-client";
-
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';

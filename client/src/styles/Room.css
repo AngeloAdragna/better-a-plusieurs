@@ -310,6 +310,11 @@
     width: 100vh;
     max-width: 150vh !important;
     overflow-y: auto;
+
+}
+
+#searchResultsModal::-webkit-scrollbar {
+   background: transparent;
 }
 
 #searchResultsModal #closeResultsModal {

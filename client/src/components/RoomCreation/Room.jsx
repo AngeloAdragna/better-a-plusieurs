@@ -30,7 +30,8 @@ function Room() {
 
     // TODO : connexion du client pour definir si c'est le propriétaire ou pas
     //const clientId = localStorage.getItem("clientId");
-    //const isOwner = roomInfo.ownerClient === clientId;
+    //const isOwner = roomInfo;
+
 
     React.useEffect(() => {
         if (!socket) return;

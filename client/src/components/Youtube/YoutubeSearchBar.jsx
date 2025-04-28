@@ -141,10 +141,10 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     };
 
     return (
-        <div className="container">
-            <form onSubmit={handleSearch} className="center-align">
-                <div className=" valign-wrapper">
-                    <div className="input-field col s10 text-suggestions-wrapper">
+        <div>
+            <form onSubmit={handleSearch}>
+                <div className="valign-wrapper">
+                    <div className="input-field col s11 text-suggestions-wrapper">
                         <input
                             type="text"
                             placeholder="Rechercher sur YouTube..."
@@ -179,11 +179,11 @@ const YouTubeSearchBar = ({roomId, socket}) => {
 
                     </div>
                     <div className="col s2">
-                        <button className="btn green" type="submit" style={{ padding: '0 12px' }}>
+                        <button className="btn green" type="submit" style={{ padding: '0 10px' }}>
                             🔍
                         </button>
                         {isFormSubmitted && (
-                            <button className="btn green" style={{ padding: '0 12px' }} onClick={openResultsModalManually}>
+                            <button className="btn green" style={{ padding: '0 10px' }} onClick={openResultsModalManually}>
                                 ⬇️
                             </button>)
                         }
