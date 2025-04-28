@@ -257,7 +257,30 @@
     background: rgba(255, 255, 255, 0.25);
 }
 
-/*--------------------Modal Share Room--------------------*/
+.skip-video {
+    position: fixed;
+    z-index: 9999;
+    bottom: 20px;
+}
+
+.skip-video button {
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    background-color: #37359a;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.skip-video button:hover{
+    background: rgba(0, 125, 255, 1);
+}
+
+.skip-video button:active{
+    background: rgba(0, 200, 255, 1);
+}
+
+    /*--------------------Modal Share Room--------------------*/
 #modalShareRoom {
     background-color: var(--dark-blue);
     color: var(--light-text);
@@ -366,3 +389,6 @@
     background: rgba(0, 125, 255, 1);
 }
 
+#searchResultsModal .add-to-playlist:active{
+    background: rgba(0, 200, 255, 1);
+}

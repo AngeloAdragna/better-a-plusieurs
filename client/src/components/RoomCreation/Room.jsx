@@ -75,11 +75,6 @@ function Room() {
         getData();
     }, [roomId]);
 
-    const startVoteTest = () => {
-        socket.emit("startVote", { roomId, author: "test", voteType: "add", videoName: "Michou" });
-        console.log ("Vote lancé");
-    }
-
     // c'est invisible mais c'est pour éviter d'afficher la salle alors qu'elle n'est pas encore chargée
     if (!socket || !roomInfo) {
         return <div>Chargement de la salle...</div>;
@@ -94,6 +89,7 @@ function Room() {
                          // TODO : vérifier si le client est le propriétaire
                          roomInfo.freeToShare
                      }
+                     isAllowedToAdd={!roomInfo.voteAdd}
             />
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
@@ -107,7 +103,7 @@ function Room() {
                     </div>
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
-                    <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket}/>
+                    <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket} isAllowedToAdd={!roomInfo.voteAdd} isAllowedToSkip={!roomInfo.voteSkip}/>
                 </div>
                 <div >{/* Chat */}
                     <ChatBox roomId={roomId} socket={socket} /> {/* Chat */}
@@ -115,7 +111,6 @@ function Room() {
             </div>
             <VoteBox roomId={roomId} socket={socket} />
             <NotificationZone socket={socket} />
-            <button onClick={startVoteTest}></button>
         </div>
     );
 }

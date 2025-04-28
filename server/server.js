@@ -178,7 +178,7 @@ if (process.env.NODE_ENV !== 'test') {
         setTimeout(() => {
           console.log(`⌛ Vote terminé dans la salle ${roomId}`);
           const result = room.endVote();
-          io.to(roomId).emit("voteEnded", { id, result });
+          io.in(roomId).emit("voteEnded", { id, result });
         }, 15000);
       } else {
         console.log("Impossible de lancer le vote, une autre action est déjà en cours.");
@@ -253,12 +253,23 @@ if (process.env.NODE_ENV !== 'test') {
         if (playlist.length > 0) {
           console.log(`Tous les clients de la room ${roomId} ont terminé leur vidéo, passage à la suivante`)
           const nextVideo = playlist[0]
-          room.removeVideoFromPlaylist(nextVideo)
           io.in(roomId).emit("videoAddedPlaylist",room.removeVideoFromPlaylist(nextVideo))
           io.in(roomId).emit("selectVideo", nextVideo)
 
           videoEndedCounter[roomId] = 0   // Réinitialisation du compteur pour la prochaine vidéo
         }
+      }
+    })
+
+
+    socket.on("nextVideo", ({roomId}) => {
+      const room = RoomManager.getRoomById(roomId)
+      if (!room) return
+      const playlist = room.getVideoPlaylist()
+      if (playlist.length > 0) {
+        const nextVideo = playlist[0]
+        io.in(roomId).emit("videoAddedPlaylist",room.removeVideoFromPlaylist(nextVideo))
+        io.in(roomId).emit("selectVideo", nextVideo)
       }
     })
 
