@@ -35,9 +35,19 @@ class Room {
         console.log("Ajout de la vidéo à la playlist :", this.#videoPlaylist);
     }
 
+    removeVideoFromPlaylist(video) {
+        // Suppression de la première occurrence de la vidéo dans la playlist
+        const index = this.#videoPlaylist.findIndex(v => v.id === video.id);
+        if (index !== -1) {
+            this.#videoPlaylist.splice(index, 1);
+        }
+        return this.#videoPlaylist
+    }
+
     // Ajout d’une vidéo à l’historique
     addVideoToHistory(video) {
-        this.#videoHistory.push(video);
+        this.#videoHistory = this.#videoHistory.filter(v => v.id !== video.id);
+        this.#videoHistory.unshift(video);      // Ajout au début de l'historique (les plus récentes en premier)
         console.log("Ajout de la vidéo à l'historique :", this.#videoHistory);
     }
 
