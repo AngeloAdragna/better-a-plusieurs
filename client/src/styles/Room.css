@@ -158,6 +158,16 @@
   overflow-y: auto; /* Ajoute du scroll si le contenu déborde */
 }
 
+.playlist-container, .history-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;    /* Scroll vertical */
+    max-height: 80vh;    /* Ajuste comme tu veux la hauteur max visible */
+    gap: 10px;          /* Espace entre les vidéos */
+    padding-right: 10px;  /* Un peu d'espace pour éviter que le scroll cache les vidéos */
+    padding-bottom: 10px;
+}
+
 .desactived{
   display: none;
 }
@@ -190,6 +200,40 @@
   background: var(--mid-blue-btn);
   box-shadow: inset 2px 3px 4px #1e1e1e92;
   pointer-events: none;
+}
+
+
+.playlist-video-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    gap: 10px;
+}
+
+.del-from-playlist-btn {
+    flex-grow: 1;
+    width: 100%;
+    padding: 5px;
+    background-color: rgba(0, 0, 255, 0.25);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.del-from-playlist-btn:hover {
+    background: rgba(255, 0, 0, 1);
+}
+
+.video_playlist:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /*--------------------Modal Share Room--------------------*/
@@ -261,7 +305,8 @@
 
 #searchResultsModal .video-result {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     margin-bottom: 1rem;
     text-decoration: none;
     color: #fff;
@@ -279,3 +324,20 @@
     margin-right: 1rem;
     border-radius: 4px;
 }
+
+#searchResultsModal .add-to-playlist {
+    flex-grow: 1;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(0, 0, 255, 0.25);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#searchResultsModal .add-to-playlist:hover {
+    background: rgba(0, 125, 255, 1);
+}
+

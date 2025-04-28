@@ -10,6 +10,7 @@ import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 import { io } from "socket.io-client"
 import {useSocket} from "../SocketContext.jsx";
+import VoteBox from "../VoteBox.jsx";
 
 function Room() {
     const { roomId } = useParams();
@@ -52,6 +53,11 @@ function Room() {
         getData();
     }, [roomId]);
 
+    const startVoteTest = () => {
+        socket.emit("startVote", { roomId, author: "test", voteType: "add", videoName: "Michou" });
+        console.log ("Vote lancé");
+    }
+
     // c'est invisible mais c'est pour éviter d'afficher la salle alors qu'elle n'est pas encore chargée
     if (!socket || !roomInfo) {
         return <div>Chargement de la salle...</div>;
@@ -70,7 +76,7 @@ function Room() {
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
                     <div className="video-container">
-                        <YoutubeFrame roomId={roomId} videoId="PI9yKr39vGI" socket={socket} />
+                        <YoutubeFrame roomId={roomId} video={{ title: "Fatal Bazooka &quot;Fous Ta Cagoule&quot; HD", thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="261173889792-5lnsehpl504t0g1an722duv93n0mfhv1.apps.googleusercontent.com">
@@ -85,6 +91,8 @@ function Room() {
                     <ChatBox roomId={roomId} socket={socket} /> {/* Chat */}
                 </div>
             </div>
+            <VoteBox roomId={roomId} socket={socket} />
+            <button onClick={startVoteTest}></button>
         </div>
     );
 }

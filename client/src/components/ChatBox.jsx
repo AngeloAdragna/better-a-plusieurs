@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
 import M from "materialize-css";
 import { IoIosArrowForward, IoIosSend } from "react-icons/io";
 import Picker from "@emoji-mart/react";
