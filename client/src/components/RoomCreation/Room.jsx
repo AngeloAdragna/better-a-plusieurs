@@ -5,16 +5,16 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
 import PlaylistContent from "../Playlists/PlaylistContent.jsx";
 import "../../styles/Room.css";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
-import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
-import { io } from "socket.io-client"
-import {useSocket} from "../SocketContext.jsx";
+import {useSocket} from "../../context/SocketContext.jsx";
 import VoteBox from "../VoteBox.jsx";
+import NotificationZone from "../NotificationZone.jsx";
 
 function Room() {
     const { roomId } = useParams();
     const socket = useSocket();
+    const navigate = useNavigate();
     /**
      * roomInfo contient les informations de la salle :
      * {
@@ -37,6 +37,27 @@ function Room() {
         localStorage.setItem("roomId", roomId);
         socket.emit("joinRoom", roomId);
     }, [roomId, socket]);
+
+
+    React.useEffect(() => {
+        if (!socket) return;
+
+        const leaveRoom = () => {
+            if (socket && roomId) {
+                socket.emit("leaveRoom", roomId);
+                console.log("🚪 Quitte la room :", roomId);
+            }
+        };
+
+        window.addEventListener("beforeunload", leaveRoom);
+
+        return () => {
+            leaveRoom();
+            window.removeEventListener("beforeunload", leaveRoom);
+        };
+    }, [location.pathname, socket, roomId]);
+
+
 
 
     // RÉCUPÉRATION DES INFOS DE LA SALLE
@@ -93,6 +114,7 @@ function Room() {
                 </div>
             </div>
             <VoteBox roomId={roomId} socket={socket} />
+            <NotificationZone socket={socket} />
             <button onClick={startVoteTest}></button>
         </div>
     );

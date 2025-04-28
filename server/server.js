@@ -135,7 +135,14 @@ if (process.env.NODE_ENV !== 'test') {
      */
     socket.on("joinRoom", (roomId) => {
       socket.join(roomId);
-      console.log(`✅ ${socket.id} a rejoint la salle : ${roomId}`);
+      io.in(roomId).emit("userJoined", socket.username);
+      console.log(`✅ ${socket.username} a rejoint la salle !!!!! : ${roomId}`);
+    });
+
+    socket.on("leaveRoom", (roomId) => {
+        socket.leave(roomId);
+        io.in(roomId).emit("userLeft", socket.username);
+        console.log(`❌ ${socket.username} a quitté la salle : ${roomId}`);
     });
 
     socket.on("userConnected", (username) => {
