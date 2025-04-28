@@ -1,7 +1,7 @@
 import { useState } from "react";
 import UserCreationModal from "./UserCreationModal.jsx";
 
-const Register = () => {
+const Register = ({socket}) => {
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
@@ -10,7 +10,7 @@ const Register = () => {
                onClick={() => setModalOpen(true)}>
                 Créer un compte
             </a>
-            {modalOpen && <UserCreationModal/>}
+            {modalOpen && <UserCreationModal socket={socket}/>}
         </>
     );
 };

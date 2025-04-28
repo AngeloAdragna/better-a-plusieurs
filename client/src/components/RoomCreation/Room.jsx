@@ -9,12 +9,12 @@ import { useParams } from "react-router-dom";
 import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 import { io } from "socket.io-client"
+import {useSocket} from "../SocketContext.jsx";
 import VoteBox from "../VoteBox.jsx";
 
 function Room() {
     const { roomId } = useParams();
-
-    const [socket, setSocket] = React.useState(null);
+    const socket = useSocket();
     /**
      * roomInfo contient les informations de la salle :
      * {
@@ -32,21 +32,12 @@ function Room() {
     //const clientId = localStorage.getItem("clientId");
     //const isOwner = roomInfo.ownerClient === clientId;
 
-    // INITIALISATION DU SOCKET
     React.useEffect(() => {
-        const newSocket = io("http://localhost:8080");
-        setSocket(newSocket);
+        if (!socket) return;
+        localStorage.setItem("roomId", roomId);
+        socket.emit("joinRoom", roomId);
+    }, [roomId, socket]);
 
-        newSocket.on("connect", () => {
-            console.log("✅ WebSocket connecté :", newSocket.id);
-            newSocket.emit("joinRoom", roomId);
-        });
-
-        return () => {
-            newSocket.disconnect();
-            console.log("❌ Socket déconnecté");
-        };
-    }, [roomId]);
 
     // RÉCUPÉRATION DES INFOS DE LA SALLE
     React.useEffect(() => {
@@ -59,7 +50,6 @@ function Room() {
                 console.error("Erreur lors de la récupération des données de la salle");
             }
         }
-
         getData();
     }, [roomId]);
 

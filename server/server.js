@@ -130,13 +130,22 @@ if (process.env.NODE_ENV !== 'test') {
 
   io.on("connection", (socket) => {
     console.log(`🔌 Utilisateur connecté : ${socket.id}`);
-
     /**
      * Gestion des rooms
      */
     socket.on("joinRoom", (roomId) => {
       socket.join(roomId);
       console.log(`✅ ${socket.id} a rejoint la salle : ${roomId}`);
+    });
+
+    socket.on("userConnected", (username) => {
+      socket.username = username;
+      socket.emit("userConnected", username);
+      console.log(`👤 Username associé à ${socket.id} : ${socket.username}`);
+    });
+
+    socket.on("getUsername", () => {
+      socket.emit("username", socket.username);
     });
 
     /**

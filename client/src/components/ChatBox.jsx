@@ -74,12 +74,6 @@ const ChatBox = ({roomId, socket}) => {
         return `hsl(${hue}, 65%, 60%)`;
     };
 
-    useEffect(() => {
-        if (roomId) {
-            socket.emit("joinRoom", roomId);
-        }
-    }, [roomId]);
-
 
     return (
         <section className={`ChatContainer ${isCollapsed ? "collapsed" : ""}`}>
