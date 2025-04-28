@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
 import M from "materialize-css";
 import { IoIosArrowForward, IoIosSend } from "react-icons/io";
 import Picker from "@emoji-mart/react";
@@ -74,12 +73,6 @@ const ChatBox = ({roomId, socket}) => {
         const hue = Math.abs(hash) % 360;
         return `hsl(${hue}, 65%, 60%)`;
     };
-
-    useEffect(() => {
-        if (roomId) {
-            socket.emit("joinRoom", roomId);
-        }
-    }, [roomId]);
 
 
     return (

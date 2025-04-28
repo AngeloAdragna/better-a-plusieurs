@@ -10,11 +10,12 @@ import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 import { io } from "socket.io-client"
 import VideoCall from "../VideoCall/VideoCall.jsx";
+import {useSocket} from "../SocketContext.jsx";
+import VoteBox from "../VoteBox.jsx";
 
 function Room() {
     const { roomId } = useParams();
-
-    const [socket, setSocket] = React.useState(null);
+    const socket = useSocket();
     /**
      * roomInfo contient les informations de la salle :
      * {
@@ -32,21 +33,12 @@ function Room() {
     //const clientId = localStorage.getItem("clientId");
     //const isOwner = roomInfo.ownerClient === clientId;
 
-    // INITIALISATION DU SOCKET
     React.useEffect(() => {
-        const newSocket = io("http://localhost:8080");
-        setSocket(newSocket);
+        if (!socket) return;
+        localStorage.setItem("roomId", roomId);
+        socket.emit("joinRoom", roomId);
+    }, [roomId, socket]);
 
-        newSocket.on("connect", () => {
-            console.log("✅ WebSocket connecté :", newSocket.id);
-            newSocket.emit("joinRoom", roomId);
-        });
-
-        return () => {
-            newSocket.disconnect();
-            console.log("❌ Socket déconnecté");
-        };
-    }, [roomId]);
 
     // RÉCUPÉRATION DES INFOS DE LA SALLE
     React.useEffect(() => {
@@ -54,14 +46,19 @@ function Room() {
             const response = await fetch(`http://localhost:8080/room/${roomId}`);
             if (response.ok) {
                 const data = await response.json();
+                console.log("Données reçues de la room :", data);
                 setRoomInfo(data);
             } else {
                 console.error("Erreur lors de la récupération des données de la salle");
             }
         }
-
         getData();
     }, [roomId]);
+
+    const startVoteTest = () => {
+        socket.emit("startVote", { roomId, author: "test", voteType: "add", videoName: "Michou" });
+        console.log ("Vote lancé");
+    }
 
     // c'est invisible mais c'est pour éviter d'afficher la salle alors qu'elle n'est pas encore chargée
     if (!socket || !roomInfo) {
@@ -71,17 +68,17 @@ function Room() {
     return (
         <div className="room-container row">
             <BarPage roomName={roomInfo.name}
-                     isAllowedToShare={
-                        // TODO : vérifier si le client est le propriétaire
-                        roomInfo.freeToShare
-                     }
                      roomId={roomId}
                      socket={socket}
+                     isAllowedToShare={
+                         // TODO : vérifier si le client est le propriétaire
+                         roomInfo.freeToShare
+                     }
             />
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
                     <div className="video-container">
-                        <YoutubeFrame roomId={roomId} videoId="PI9yKr39vGI" socket={socket} />
+                        <YoutubeFrame roomId={roomId} video={{ title: "Fatal Bazooka &quot;Fous Ta Cagoule&quot; HD", thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="261173889792-5lnsehpl504t0g1an722duv93n0mfhv1.apps.googleusercontent.com">
@@ -103,6 +100,8 @@ function Room() {
                     <ChatBox roomId={roomId} socket={socket} /> {/* Chat */}
                 </div>
             </div>
+            <VoteBox roomId={roomId} socket={socket} />
+            <button onClick={startVoteTest}></button>
         </div>
     );
 }

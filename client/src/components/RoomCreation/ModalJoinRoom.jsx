@@ -22,13 +22,9 @@ const ModalJoinParameters = () => {
   // Create a room
   const onSubmit = (event) => {
     event.preventDefault();
-    //TODO Si la room existe, rediriger vers la room avec son url
-    /*
-    if (room && room.getUrl()) {
-      navigate(`/room/${room.getUrl()}`);
-    } else {
-      M.toast({ html: "Erreur pour rejoindre  la salle" });
-    }*/
+      if (formData.url) {
+          navigate(`/room/${formData.url}`);
+      }
   };
  
   return (

@@ -16,11 +16,15 @@ import RegisterButton from "./components/Login/RegisterButton.jsx";
 import LoginButton from "./components/Login/LoginButton.jsx";
 
 import "./styles/HomePage.css";
+import {io} from "socket.io-client";
+import {SocketProvider, useSocket} from "./components/SocketContext.jsx";
 
 function HomePage() {
+    const socket = useSocket();
     const [modalOpen, setModalOpen] = useState(false);
     const [isConnectionOnly, setIsConnectionOnly] = useState(false);
     const { isConnected } = useContext(AuthContext);
+    const [username, setUsername] = useState(localStorage.getItem("username"));
 
     const openConnectionModal = () => {
         setModalOpen(true);
@@ -36,16 +40,63 @@ function HomePage() {
         setModalOpen(true);
     };
 
+    React.useEffect(() => {
+        if (!socket) return;
+        if (localStorage.getItem("roomId")) {
+            localStorage.removeItem("roomId");
+        }
+        socket.on("connect", () => {
+            console.log("✅ WebSocket connecté :", socket.id);
+        });
+
+        return () => {};
+    }, [socket]);
+
+
+    React.useEffect(() => {
+        if (!socket) return;
+
+        socket.on("username", (username) => {
+            setUsername(username);
+        });
+
+        return () => {
+            socket.off("username");
+        };
+    }, [socket]);
+
+    const handleDisconnect = () => {
+        if (socket) {
+            socket.emit("disconnectUser", username);
+            socket.disconnect();
+        }
+        localStorage.removeItem("username");
+        setUsername(null);
+    };
+
+
     return (
-
         <div className="homepage-container">
-            <div className="header-buttons">
-                <LoginButton />
-                <RegisterButton />
-            </div>
 
+                {username ? (
+                    <div className="header-buttons-connected">
+                        <div className="connected-info">
+                            Connecté en tant que <strong>{username}</strong>
+                        </div>
+                        <div className="disconect-btn">
+                            <a onClick={handleDisconnect}>
+                                Déconnexion
+                            </a>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="header-buttons-unconnected">
+                        <LoginButton socket={socket} />
+                        <RegisterButton socket={socket} />
+                    </div>
+                )}
             <div className="CenteredContent">
-                <img src={"src/assets/icon_space.svg"} alt={"logo"}/>
+                <img src={"src/assets/icon_space.svg"} alt={"logo"} />
                 <div className={"buttonsCenter"}>
                     <a
                         className="waves-effect waves-light btn modal-trigger"
@@ -68,10 +119,11 @@ function HomePage() {
             {modalOpen && (
                 isConnected ? <ModalRoomParameters /> : <ModalOpenConnection onlyConnection={isConnectionOnly} />
             )}
-            {modalOpen && <ModalJoinRoom />}
+            {modalOpen && <ModalJoinRoom/>}
         </div>
     );
 }
+
 
 
 function AppContent() {
@@ -86,9 +138,11 @@ function AppContent() {
 function App() {
     return (
         <AuthProvider>
-            <BrowserRouter>
-                <AppContent />
-            </BrowserRouter>
+            <SocketProvider>
+                <BrowserRouter>
+                    <AppContent />
+                </BrowserRouter>
+            </SocketProvider>
         </AuthProvider>
     );
 }

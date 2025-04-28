@@ -21,22 +21,10 @@ function PlaylistContent({roomInfo, roomId, socket}) {
         setIsSelected((prev) => !prev);
     };
 
-    // Fonction pour ajouter une vidéo à la playlist
-    const handleAddVideoToPlaylist = (video) => {
-        //Todo verif structure lien bien vid
-        socket.emit("videoAddedPlaylist", { roomId, video });  // Envoie la vidéo au serveur
-    };
-
-    // Fonction pour ajouter une vidéo à l'historique
-    const handleAddVideoToHistory = (video) => {
-        socket.emit("videoAddedHistory", { roomId, video });  // Envoie la vidéo au serveur
-    };
-
-
     // Ecouteur d'événement pour la réception de la vidéo ajoutée à la playlist
     useEffect(() => {
         socket.on("videoAddedPlaylist", (data)=> {
-            setVideoPlaylist((prev) => [...prev, data] );
+            setVideoPlaylist(data);
             console.log("Playlist :", videoPlaylist)
         });
         return () => socket.off("videoAddedPlaylist");
@@ -45,7 +33,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
     // Ecouteur d'événement pour la réception de la vidéo ajoutée à l'historique
     useEffect(() => {
         socket.on("videoAddedHistory", (data)=>{ 
-            setVideoHistory((prev => [data,...prev]));  
+            setVideoHistory(data);
             console.log("History :", videoHistory)
             });
         return () => socket.off("videoAddedHistory");
@@ -82,6 +70,10 @@ function PlaylistContent({roomInfo, roomId, socket}) {
         }
     }, [roomId]);
 
+    const handleDeleteVideoFromPlaylist = (video) => {
+        socket.emit("videoDeletedPlaylist", {roomId: roomId, video: video})
+    }
+
 
     return (
         <section className='PlaylistContent'>
@@ -90,68 +82,45 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                 <span onClick={handleLinkClick} className={`button ${isSelected ? 'up' : 'down'}`}>Playlist</span>
             </div>
             <div className={`ContentPlaylistHistory ${isSelected ? 'desactived' : ''}`}>
-                <Swiper
-                    modules={[Pagination]}
-                    direction="vertical"
-                    spaceBetween={10}
-                    slidesPerView="auto"
-                    pagination={{ clickable: true }}
-                    freeMode={true}
-                >
-                    {videoPlaylist.map((video, i) => (
-                        <SwiperSlide
-                            key={i}
-                            style={{
-                                height: "auto",
-                                paddingBottom: "10px"
-                            }}
-                        >
-                            <PlaylistVideo
-                                title={video.title}
-                                thumbnail={video.thumbnail}
-                                videoId={video.id}
-                                roomId={roomId}
-                                socket={socket}
-                            />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-                {/* Exemple d'ajout d'une vidéo à la playlist */}
-                <button onClick={() => handleAddVideoToPlaylist({ title: "Vidéo ajoutée", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", id: "PI9yKr39vGI" })}>
-                    Ajouter une vidéo à la playlist
-                </button>
+                <div className="playlist-container">
+                    {videoPlaylist.length === 0 ? (
+                        <p>La playlist est vide</p> // Message si la playlist est vide
+                    ) : (
+                        videoPlaylist.map((video, i) => (
+                            <div key={i} className="playlist-video-item">
+                                <PlaylistVideo
+                                    title={video.title}
+                                    thumbnail={video.thumbnail}
+                                    video={video}
+                                    roomId={roomId}
+                                    socket={socket}
+                                />
+                                <button className="del-from-playlist-btn" onClick={() => handleDeleteVideoFromPlaylist(video)}>
+                                    Supprimer de la playlist
+                                </button>
+                            </div>
+                        ))
+                    )}
+                </div>
+
             </div>
             <div className={`ContentPlaylistHistory ${isSelected ? '' : 'desactived'}`}>
-                <Swiper
-                    modules={[Pagination]}
-                    direction="vertical"
-                    spaceBetween={10}
-                    slidesPerView="auto"
-                    pagination={{ clickable: true }}
-                    freeMode={true} // permet de scroller librement
-                    >
-                    {videoHistory.map((video, i) => (
-                        <SwiperSlide
-                            key={i}
-                            style={{
-                                height: "auto", // important pour s’adapter au contenu
-                                paddingBottom: "10px"
-                            }}
-                        >
+                <div className="history-container">
+                    {videoHistory.length === 0 ? (
+                            <p>Aucune vidéo n'a été lue pour le moment</p> // Message si la playlist est vide
+                        ) : (
+                        videoHistory.map((video, i) => (
+                        <div key={i}>
                             <PlaylistVideo
                                 title={video.title}
                                 thumbnail={video.thumbnail}
-                                videoId={video.id}
+                                video={video}
                                 roomId={roomId}
                                 socket={socket}
                             />
-                        </SwiperSlide>
-                    ))}
-                    </Swiper>
-                {/* Exemple d'ajout d'une vidéo à l'historique */}
-                <button onClick={() => handleAddVideoToHistory({ title: "Vidéo ajoutée", thumbnail: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", id: "PI9yKr39vGI" })}>
-                    Ajouter une vidéo à l'historique
-                </button>
+                        </div>
+                    )))}
+                </div>
             </div>
         </section>
     );

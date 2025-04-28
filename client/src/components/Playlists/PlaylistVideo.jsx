@@ -1,11 +1,11 @@
-const PlaylistVideo = ({ title, thumbnail, videoId, roomId, socket }) => {
+const PlaylistVideo = ({ title, thumbnail, video, roomId, socket }) => {
     const truncate = (str, maxLength) => {
         return str.length > maxLength ? str.slice(0, maxLength - 3) + '...' : str;
     };
 
     return (
-        <div className="video_playlist valign-wrapper" style={{ padding: "0px", margin: 0 }} onClick={() => socket.emit("selectVideo", {roomId: roomId, videoId: videoId})}>
-            <div className="col s3" style={{padding: "0px"}}>
+        <div className="video_playlist valign-wrapper" style={{ padding: "0px", margin: 0 , cursor: "pointer"}} onClick={() => socket.emit("selectVideo", {roomId: roomId, video: video})}>
+            <div className="col s3" style={{padding: "5px"}}>
                 <img
                     src={thumbnail}
                     alt={title}

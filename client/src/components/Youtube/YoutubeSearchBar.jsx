@@ -13,6 +13,12 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
 
+    function decodeHtmlEntities(text) {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = text;
+        return textarea.value;
+    }
+
     // Gestion de la recherche lors de la soumission du formulaire
     const handleSearch = async (e) => {
         e.preventDefault();     // Empêche la soumission automatique par défaut
@@ -31,8 +37,18 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                     },
                 }
             );
-            setIsFormSubmitted(true)
-            setResults(response.data.items);
+
+            // Décodage html des titres pour pouvoir les afficher correctement
+            const decodedResults = response.data.items.map(video => ({
+                ...video,
+                snippet: {
+                    ...video.snippet,
+                    title: decodeHtmlEntities(video.snippet.title),
+                }
+            }));
+
+            setIsFormSubmitted(true);
+            setResults(decodedResults);
         } catch (error) {
             console.error('Erreur lors de la recherche :', error);
         }
@@ -91,10 +107,10 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     };
 
 
-    const handleSelectVideo = (videoId, roomId, socket) => {
+    const handleSelectVideo = (video, roomId, socket) => {
         // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
         //console.log(socket)   // DEBUG
-        socket.emit("selectVideo", {roomId: roomId, videoId: videoId})
+        socket.emit("selectVideo", {roomId: roomId, video: video})
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats
@@ -121,7 +137,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
         //Todo verif structure lien bien vid
-        socket.emit("videoAdded", { roomId, video });  // Envoie la vidéo au serveur
+        socket.emit("videoAddedPlaylist", { roomId, video });  // Envoie la vidéo au serveur
     };
 
     return (
@@ -186,19 +202,21 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                         <div>
                             {results.map((video) => (
                                 <div>
-                                    <div
-                                        key={video.id.videoId}
-                                        onClick={() => handleSelectVideo(video.id.videoId, roomId, socket)}
-                                        className="video-result modal-close">
-                                        <img
-                                            src={video.snippet.thumbnails.medium.url}
-                                            alt="thumbnail"
-                                        />
-                                        <p>{video.snippet.title}</p>
+                                    <div className="video-result">
+                                        <div
+                                            key={video.id.videoId}
+                                            onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
+                                            className="modal-close">
+                                            <img
+                                                src={video.snippet.thumbnails.medium.url}
+                                                alt="thumbnail"
+                                            />
+                                            <p>{video.snippet.title}</p>
+                                        </div>
+                                        <button className="add-to-playlist" onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId })}>
+                                            Ajouter à la playlist
+                                        </button>
                                     </div>
-                                    <button onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId })}>
-                                        Ajouter à la playlist
-                                    </button>
                                 </div>
                             ))}
                         </div>
