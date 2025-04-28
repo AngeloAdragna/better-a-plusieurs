@@ -86,8 +86,6 @@ app.get('/room-history/:id', (req, res) => {
 }
 );
 
-
-
 /**
  * Route pour les suggestions de recherche (obligé de le faire dans le back)
  */
@@ -148,6 +146,41 @@ if (process.env.NODE_ENV !== 'test') {
       console.log(`💬 Message reçu dans la salle ${roomId} : ${data}`);
       io.to(roomId).emit("message", { author, text: data });
     });
+
+    socket.on("startVote", ({ roomId, author, voteType, videoName = null }) => {
+      console.log(`🗳️ Vote lancé dans la salle ${roomId} : ${voteType}`);
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) return;
+
+      let id = Math.random().toString(36).substring(2, 9);
+
+      if (room.startVote(id, voteType, author, videoName)) {
+        io.to(roomId).emit("voteStarted", {id, voteType, author, videoName});
+        console.log("Vote lancé :", room.getCurrentVoteInfos());
+
+        setTimeout(() => {
+          console.log(`⌛ Vote terminé dans la salle ${roomId}`);
+          const result = room.endVote();
+          io.to(roomId).emit("voteEnded", { id, result });
+        }, 15000);
+      } else {
+        console.log("Impossible de lancer le vote, une autre action est déjà en cours.");
+      }
+    });
+
+
+    socket.on("vote", ({roomId, id, vote}) => {
+        console.log(`🗳️ Vote reçu : ${vote} pour le vote ${id}`);
+        const room = RoomManager.getRoomById(roomId);
+        if (!room) return;
+        if (room.vote(id, vote)) {
+          console.log("Votes mis à jour :", room.getCurrentVoteInfos());
+          io.to(roomId).emit("newVote", { id, vote });
+        } else {
+          console.log("Impossible de voter, le vote n'existe pas ou est déjà terminé.");
+        }
+    });
+
 
     /**
      * Gestion ajout vidéo
