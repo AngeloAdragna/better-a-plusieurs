@@ -202,14 +202,15 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                         <div>
                             {results.map((video) => (
                                 <div>
-                                    <div className="video-result">
+                                    <div className="video-result row">
                                         <div
                                             key={video.id.videoId}
                                             onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
-                                            className="modal-close">
+                                            className="modal-close col">
                                             <img
                                                 src={video.snippet.thumbnails.medium.url}
                                                 alt="thumbnail"
+                                                className="col"
                                             />
                                             <p>{video.snippet.title}</p>
                                         </div>

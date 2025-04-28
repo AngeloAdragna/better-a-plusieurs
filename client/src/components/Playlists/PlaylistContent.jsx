@@ -87,18 +87,14 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                         <p>La playlist est vide</p> // Message si la playlist est vide
                     ) : (
                         videoPlaylist.map((video, i) => (
-                            <div key={i} className="playlist-video-item">
-                                <PlaylistVideo
-                                    title={video.title}
-                                    thumbnail={video.thumbnail}
-                                    video={video}
-                                    roomId={roomId}
-                                    socket={socket}
-                                />
-                                <button className="del-from-playlist-btn" onClick={() => handleDeleteVideoFromPlaylist(video)}>
-                                    Supprimer de la playlist
-                                </button>
-                            </div>
+                            <PlaylistVideo
+                                title={video.title}
+                                thumbnail={video.thumbnail}
+                                video={video}
+                                roomId={roomId}
+                                socket={socket}
+                                isPlaylistItem={!isSelected}
+                            />
                         ))
                     )}
                 </div>
@@ -110,15 +106,14 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                             <p>Aucune vidéo n'a été lue pour le moment</p> // Message si la playlist est vide
                         ) : (
                         videoHistory.map((video, i) => (
-                        <div key={i}>
                             <PlaylistVideo
                                 title={video.title}
                                 thumbnail={video.thumbnail}
                                 video={video}
                                 roomId={roomId}
                                 socket={socket}
+                                isPlaylistItem={!isSelected}
                             />
-                        </div>
                     )))}
                 </div>
             </div>
