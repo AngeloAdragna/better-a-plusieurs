@@ -9,7 +9,11 @@ import RoomManager from "./RoomManager.js";
 
 const app = express();
 export default app;
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // URL de votre frontend React
+  methods: ['GET', 'POST'],
+  credentials: true,  // Si vous avez besoin de gérer les cookies / sessions
+}));
 app.use(express.json());
 
 /**
@@ -72,6 +76,18 @@ app.get('/room/:id', (req, res) => {
   if (!room) return res.status(404).send('Room not found');
   res.json(room.toJSON());
 });
+
+app.post('/room/:id', (req, res) => {
+  const roomId = req.params.id;
+  const { accessToken } = req.body;
+
+  const room = RoomManager.getRoomById(roomId);
+  if (!room) {
+    return res.status(404).json({ error: 'Room not found' });
+  }
+
+});
+
 
 app.get('/room-playlist/:id', (req, res) => {
   const playlist = RoomManager.getRoomById(req.params.id).getVideoPlaylist();
