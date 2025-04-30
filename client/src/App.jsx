@@ -99,14 +99,14 @@ function HomePage() {
                 <img src={"src/assets/icon_space.svg"} alt={"logo"} />
                 <div className={"buttonsCenter"}>
                     <a
-                        className="waves-effect waves-light btn modal-trigger"
+                        className="btnHover modal-trigger"
                         href={isConnected ? "#modalRoomParameters" : "#modalConnection"}
                         onClick={openRoomCreationModal}
                     >
                         Créer Room
                     </a>
                     <a
-                        className="waves-effect waves-light btn modal-trigger"
+                        className="btnHover modal-trigger"
                         href="#ModalJoinRoom"
                         onClick={openJoinRoomModal}
                     >

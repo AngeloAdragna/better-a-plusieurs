@@ -7,7 +7,7 @@ const LoginButton = ({socket}) => {
 
     return (
         <>
-            <a className="waves-effect waves-light btn modal-trigger" href="#modalConnection"
+            <a className="modal-trigger btnHover" href="#modalConnection"
                onClick={() => setModalOpen(true)}>
                 Se connecter
             </a>

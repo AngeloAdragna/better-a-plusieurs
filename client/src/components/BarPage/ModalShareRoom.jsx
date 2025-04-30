@@ -18,40 +18,30 @@ const ModalShareRoom = () => {
     }, [location]);
 
     return (
-        <div id="modalShareRoom" className="modal card-panel z-depth-1">
+        <div id="modalShareRoom" className="modal">
             <div className="modal-content">
-                <h5 className="center-align">Partager cette room</h5>
-
+                <h5>Partager cette room</h5>
+                <div style={{ backgroundColor: "white", borderRadius: "12px", padding: "10px", display: "inline-block" }}>
+                    <QRCodeSVG value={url} size={200} />
+                </div>
                 <div>
-                    <div className="row">
-                        <div className="col s12 m5 center-align">
-                            <div className="qr-code-container" style={{ backgroundColor: "white", borderRadius: "12px", padding: "10px", display: "inline-block" }}>
-                                <QRCodeSVG value={url} size={200} />
-                            </div>
-                        </div>
-
-                        <div className="col s12 m7">
-                            <div>
-                                <p style={{ fontWeight: "bold" }}>Partage le lien :</p>
-                                <div className="input-field">
-                                    <input
-                                        type="text"
-                                        readOnly
-                                        value={url}
-                                        onClick={(e) => e.target.select()}
-                                        className="browser-default"
-                                        style={{
-                                            borderRadius: "8px",
-                                            padding: "8px",
-                                            width: "100%",
-                                            backgroundColor: "#f1f1f1",
-                                            color: "#333",
-                                            border: "1px solid #ccc"
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                    <p style={{ fontWeight: "bold" }}>Partage le lien :</p>
+                    <div className="input-field">
+                        <input
+                            type="text"
+                            readOnly
+                            value={url}
+                            onClick={(e) => e.target.select()}
+                            className="browser-default"
+                            style={{
+                                borderRadius: "8px",
+                                padding: "8px",
+                                width: "100%",
+                                backgroundColor: "#f1f1f1",
+                                color: "#333",
+                                border: "1px solid #ccc"
+                            }}
+                        />
                     </div>
                 </div>
             </div>

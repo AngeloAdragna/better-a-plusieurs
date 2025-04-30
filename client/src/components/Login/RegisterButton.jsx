@@ -6,7 +6,7 @@ const Register = ({socket}) => {
 
     return (
         <>
-            <a className="waves-effect waves-light btn modal-trigger" href="#modalUserCreation"
+            <a className="btnHover modal-trigger" href="#modalUserCreation"
                onClick={() => setModalOpen(true)}>
                 Créer un compte
             </a>
