@@ -15,6 +15,8 @@ function Room() {
     const { roomId } = useParams();
     const socket = useSocket();
     const navigate = useNavigate();
+    const serverIP = import.meta.env.VITE_SERVER_IP;
+    //console.log(`Adresse IP du serveur : ${serverIP}`)
     /**
      * roomInfo contient les informations de la salle :
      * {
@@ -63,7 +65,7 @@ function Room() {
     // RÉCUPÉRATION DES INFOS DE LA SALLE
     React.useEffect(() => {
         async function getData() {
-            const response = await fetch(`http://localhost:8080/room/${roomId}`);
+            const response = await fetch(`http://${serverIP}:8080/room/${roomId}`);
             if (response.ok) {
                 const data = await response.json();
                 console.log("Données reçues de la room :", data);

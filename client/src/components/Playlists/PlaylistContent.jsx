@@ -15,7 +15,8 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
     const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []);
-    const [isSkipVote, setIsSkipVote] = useState(false)
+    const [isSkipVote, setIsSkipVote] = useState(false);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     const handleLinkClick = () => {
         setIsSelected((prev) => !prev);
@@ -43,7 +44,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
     useEffect(() => {
         if (roomId) {
             //socket.emit("joinRoom", roomId);
-            axios.get(`http://localhost:8080/room-playlist/${roomId}`)
+            axios.get(`http://${serverIP}:8080/room-playlist/${roomId}`)
                 .then((response) => {
                     setVideoPlaylist(response.data);
                     console.log("Playlist récupérée :", response.data);
@@ -59,7 +60,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
     useEffect(() => {
         if (roomId) {
             //socket.emit("joinRoom", roomId);
-            axios.get(`http://localhost:8080/room-history/${roomId}`)
+            axios.get(`http://${serverIP}:8080/room-history/${roomId}`)
                 .then((response) => {
                     setVideoHistory(response.data);
                     console.log("Historique récupéré :", response.data);

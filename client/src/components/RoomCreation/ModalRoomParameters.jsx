@@ -4,6 +4,7 @@ import M from "materialize-css";
 
 const ModalRoomParameters = () => {
   const navigate = useNavigate();
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
 
     // State for the form data
@@ -28,7 +29,7 @@ const ModalRoomParameters = () => {
 
         try {
             formData.ownerClient = localStorage.getItem("clientId");
-            const response = await fetch('http://localhost:8080/create-room', {
+            const response = await fetch(`http://${serverIP}:8080/create-room`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

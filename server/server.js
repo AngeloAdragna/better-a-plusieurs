@@ -6,13 +6,38 @@ import cors from "cors";
 import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from './db.js';
 import {authenticateToken} from "./middleware/authenticateToken.js";
 import RoomManager from "./RoomManager.js";
+import getLocalIP from "./utils/getLocalIP.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+/**
+  * Récupération de l'ip locale du serveur et écriture dans un fichier .env
+  */
+const serverIP = getLocalIP;
+const clientIP = serverIP;
+console.log(`Adresse IP du serveur : ${serverIP}`)
+
+const envContent = `VITE_SERVER_IP=${serverIP}
+VITE_CLIENT_IP=${clientIP}`;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.join(__dirname, "../client/.env") // Racine du projet
+fs.writeFileSync(envPath, envContent);
+
+console.log(`✅ Fichier .env généré avec :
+- VITE_SERVER_IP=${serverIP}
+- VITE_CLIENT_IP=${clientIP}`);
+
+
 
 const app = express();
 export default app;
 app.use(cors({
-  origin: 'http://localhost:5173', // URL de votre frontend React
+  origin: ['http://localhost:5173', `http://${serverIP}:5173`], // URL du frontend React
   methods: ['GET', 'POST'],
-  credentials: true,  // Si vous avez besoin de gérer les cookies / sessions
+  credentials: true,  // Si besoin de gérer les cookies / sessions
 }));
 app.use(express.json());
 
@@ -318,6 +343,6 @@ if (process.env.NODE_ENV !== 'test') {
   });
 
   server.listen(8080, '0.0.0.0', () => {
-    console.log("Serveur Socket.IO lancé sur http://localhost:8080");
+    console.log(`Serveur Socket.IO lancé sur http://${serverIP}:8080`);
   });
 }
