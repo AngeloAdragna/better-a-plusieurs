@@ -19,7 +19,6 @@
   --mid-blue-btn:#393767; /* #btn in playlist */
   --mid-blue: #393766; /* #playlist */
   --mid-blue: #403D73; /* #playlist */
-
   --bg-color: #4A4459;
   
 }
@@ -103,4 +102,26 @@ html {
   flex-direction: row;
   align-items: center;
   gap: 10px;
+}
+
+.btnHover{
+  color: var(--light-text);
+  background: var(--mid-blue-btn);
+  color: #fff;
+  text-align: center;
+  letter-spacing: .5px;
+  box-shadow: 2px 3px 2px #1e1e1ed9;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 2px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 16px;
+  text-transform: uppercase;
+}
+
+.btnHover:hover {
+  background: var(--light-grey);
+  box-shadow: 2px 3px 2px #1e1e1ed9;
+  transition: all 0.2s ease-in-out;
 }

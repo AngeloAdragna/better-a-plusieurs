@@ -2,6 +2,8 @@ import React, {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import M from "materialize-css";
 import debounce from 'lodash.debounce';
+import { IoSearchSharp } from "react-icons/io5";
+import { FaArrowCircleDown } from "react-icons/fa";
 
 const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     const [query, setQuery] = useState('');
@@ -165,10 +167,10 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     };
 
     return (
-        <div className="container">
-            <form onSubmit={handleSearch} className="center-align">
-                <div className="row valign-wrapper">
-                    <div className="input-field col s10 text-suggestions-wrapper">
+        <div>
+            <form onSubmit={handleSearch}>
+                <div className="valign-wrapper">
+                    <div className="input-field col s11 text-suggestions-wrapper">
                         <input
                             type="text"
                             placeholder="Rechercher sur YouTube..."
@@ -203,13 +205,10 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
                     </div>
                     <div className="col s2">
-                        <button className="btn green" type="submit" style={{ padding: '0 12px' }}>
-                            🔍
-                        </button>
+                        <IoSearchSharp  className="searchIconBar" onClick={handleSearch} />
                         {isFormSubmitted && (
-                            <button className="btn green" style={{ padding: '0 12px' }} onClick={openResultsModalManually}>
-                                ⬇️
-                            </button>)
+                            <FaArrowCircleDown className="searchIconBar" onClick={openResultsModalManually}/>
+                        )
                         }
                     </div>
                 </div>

@@ -46,7 +46,6 @@
 .item {
   background-color: var(--light-blue);
   text-align: center;
-
 }
 
 .nameAppliBar {
@@ -57,15 +56,52 @@
 
 .iconBar{
   padding-top: 5px;
+
 }
 .barIcons{
   padding: 5px;
-  border-radius: 15px;
-    height: 60px;
-  border: 0.5px solid #1e1e1e92;
-  box-shadow: inset 2px 4px 4px #1e1e1ed9;
+  border-radius: 10px;
+  height: 4vw;
+  width: 4vw;
+  color: var(--light-text);
+  border: 1px solid #1e1e1ed9;
+  box-shadow: inset 2px 3px 2px #1e1e1ed9;
 }
 
+.barIcons:hover{
+  background: var(--mid-blue-btn);
+  box-shadow: 2px 3px 2px #1e1e1ed9;
+  transition: all 0.2s ease-in-out;
+}
+
+@media screen and (max-width: 800px) {
+  .barIcons{
+    height: 6vw;
+    width: 6vw;
+  }
+}
+
+.searchIconBar{
+  padding: 5px;
+  border-radius: 5px;
+  height: 2.5vw;
+  width: 2.5vw;
+  color: var(--light-text);
+  background: var(--dark-blue);
+  border: 1px solid #1e1e1ed9;
+  box-shadow: 2px 3px 2px #1e1e1ed9;
+}
+.searchIconBar:hover{
+  background: var(--mid-blue-btn);
+  transition: all 0.2s ease-in-out;
+}
+
+@media screen and (max-width: 800px) {
+  .searchIconBar{
+    height: 4vw;
+    width: 4vw;
+  }
+}
 
 /*--------------------Recommandation--------------------*/
 .RecommandationContent {
@@ -286,25 +322,8 @@
     background-color: var(--dark-blue);
     color: var(--light-text);
     border-radius: 10px;
-    padding: 1rem;
-}
-
-#modalShareRoom .qr-code-container {
-    padding: 10px;
-    background-color: white;
-    border-radius:20px;
-    display: inline-block
-}
-
-#modalShareRoom .row {
-    margin-bottom: 0;
-    display: flex;
-    align-items: center;
-}
-
-#modalShareRoom h5 {
-    margin-bottom: 3rem;
-    font-size: 3rem;
+   overflow:visible;
+   
 }
 
 /* --------------------Suggestions de texte pour recherche--------------------*/
@@ -335,7 +354,10 @@
     width: 100vh;
     max-width: 150vh !important;
     overflow-y: auto;
-    font-family: inherit;
+}
+
+#searchResultsModal::-webkit-scrollbar {
+   background: transparent;
 }
 
 #searchResultsModal #closeResultsModal {
@@ -393,6 +415,35 @@
     background: rgba(0, 125, 255, 1);
 }
 
+/* --------------------Modal Aide--------------------*/
+#ModalHelpUser {
+  background-color: #1e1e2f;
+  color: #fff;
+  overflow-y: auto;
+}
+
+#ModalHelpUser ul {
+  text-align: left;
+  font-size: 1rem;
+  margin: 0.8rem;
+  padding: 0;
+  list-style-type: disc;
+  list-style-position: inside;
+}
+
+#ModalHelpUser ul li {
+  margin-bottom: 0.5rem;
+  color: var(--light-text);
+}
+
+.icons{
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+  margin: 0 5px;
+}
+
 #searchResultsModal .add-to-playlist:active{
     background: rgba(0, 200, 255, 1);
 }
+

@@ -49,8 +49,6 @@ const ModalRoomParameters = () => {
         }
     };
 
-
-
     // Handle the change of the switches
   const handleChange = (event) => {
     const { name, checked } = event.target;
@@ -72,31 +70,31 @@ const ModalRoomParameters = () => {
             <label htmlFor="roomName">Nom de la Room</label>
           </div>
 
-            <div className="switchdiv">
-          <div className="switch">
-            <label>
-              Vote pour skip
-              <input type="checkbox" name="voteSkip" checked={formData.voteSkip} onChange={handleChange} />
-              <span className="lever"></span>
-            </label>
-          </div>
-
-          <div className="switch">
-            <label>
-              Vote pour add
-              <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
-              <span className="lever"></span>
-            </label>
-          </div>
-
-          <div className="switch">
-            <label>
-              Free to share
-              <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
-              <span className="lever"></span>
-            </label>
-          </div>
+          <div className="switchdiv">
+            <div className="switch">
+              <label>
+                Vote pour skip
+                <input type="checkbox" name="voteSkip" checked={formData.voteSkip} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
             </div>
+
+            <div className="switch">
+              <label>
+                Vote pour add
+                <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
+            </div>
+
+            <div className="switch">
+              <label>
+                Free to share
+                <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
+            </div>
+          </div>
 
           <button type="submit" className="btn waves-effect waves-light">Créer</button>
         </form>

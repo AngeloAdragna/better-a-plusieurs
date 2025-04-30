@@ -3,7 +3,7 @@
     position: fixed;
     z-index: 1;
     right: 0;
-    bottom: 5vh;
+    bottom: 1.5vh;
     display: flex;
     flex-direction: column;
     padding: 1%;
@@ -25,10 +25,10 @@
 
 .arrow, .rotate {
     position: absolute;
-    left: -4.8%;
     background: var(--dark-blue);
-    width: 5%;
-    height: 3vw;
+    left: -30px;
+    width: 30px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -36,13 +36,15 @@
     border-left: 0.5px solid #1e1e1e53;
     box-shadow: -2px 3px 3px #1e1e1e;
     cursor: pointer;
+    top: 30px;
 }
 
 .rotate {
-    left: -10%;
+    left: -40px;
+    width: 40px;
+    height: 40px;
     border-radius: 0 10px 10px 0;
     transform: rotate(180deg);
-    width: 10%;
     box-shadow: 2px -3px 3px #1e1e1e;
 }
 
@@ -50,7 +52,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 1rem;
+ 
 }
 
 .message {
@@ -124,12 +126,10 @@
     scroll-behavior: smooth;
     flex: 1;
     overflow-y: auto;
-    max-height: 60vh;
-    padding-right: 5px;
 }
 
 .MessageList::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .MessageList::-webkit-scrollbar-track {
@@ -147,10 +147,9 @@
     width: 100%;
     background: var(--mid-dark-blue);
     border-radius: 10px;
+    padding: 5px 10px;
     margin-bottom: 15px;
-    padding: 20px;
 }
-
 .sendMessageButton {
     background: var(--mid-blue-btn);
     border-radius: 10px;
@@ -162,7 +161,7 @@
 }
 
 .sendMessageButton svg {
-    width: 25px;
+    width: 20px;
     height: 25px;
     fill: white;
 }
@@ -174,16 +173,41 @@
 }
 
 /* Materialize responsive classes */
-@media screen and (min-width: 600px) {
+@media screen and (max-width: 1000px) {
     .ChatContainer {
-        width: 46vw; /* Taille sur les écrans moyens */
-        top: 13vw;
+        width: 49vw; 
+        top: 15vh;
     }
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1000px) {
     .ChatContainer {
-        width: 30vw; /* Taille pour les grands écrans */
-        top: 8vw;
+        width: 45vw; 
+        top: 18vh;
     }
 }
+
+@media (min-height: 500px) {
+    .MessageList {
+        max-height: 62vh;
+    }
+} 
+
+@media (max-height: 480px) {
+    .MessageList {
+        max-height: 52vh;
+    }
+    .ChatContainer {
+        top: 22vh;
+    } 
+} 
+
+@media (max-height: 380px) {
+    .MessageList {
+        max-height: 42vh;
+    }
+    .ChatContainer {
+        top: 28vh;
+    }
+} 
+
