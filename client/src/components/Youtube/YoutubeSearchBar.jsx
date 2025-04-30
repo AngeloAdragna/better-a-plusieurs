@@ -5,12 +5,13 @@ import debounce from 'lodash.debounce';
 import { IoSearchSharp } from "react-icons/io5";
 import { FaArrowCircleDown } from "react-icons/fa";
 
-const YouTubeSearchBar = ({roomId, socket}) => {
+const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [suggestions, setSuggestions] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+    const [currentSelectedVideo, setCurrentSelectedVideo] = useState(null)
 
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
@@ -109,10 +110,33 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     };
 
 
+    useEffect(() => {
+        const handleVoteEnded = ({id, result}) => {
+            if (!currentSelectedVideo) return;
+
+            console.log(`result : ${result}`)
+            if (result) {
+                socket.emit("selectVideo", {roomId: roomId, video: currentSelectedVideo})
+                setCurrentSelectedVideo(null)
+            }
+        }
+
+        socket.on("voteEnded", handleVoteEnded)
+        return () => {
+            socket.off("voteEnded", handleVoteEnded);
+        };
+    }, [socket, currentSelectedVideo]);
+
     const handleSelectVideo = (video, roomId, socket) => {
-        // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
-        //console.log(socket)   // DEBUG
-        socket.emit("selectVideo", {roomId: roomId, video: video})
+        if (isAllowedToAdd) {
+            // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
+            //console.log(socket)   // DEBUG
+            socket.emit("selectVideo", {roomId: roomId, video: video})
+        }
+        else {
+            setCurrentSelectedVideo(video)
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "add", videoName: video.title });
+        }
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats

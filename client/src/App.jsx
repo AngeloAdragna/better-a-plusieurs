@@ -17,7 +17,7 @@ import LoginButton from "./components/Login/LoginButton.jsx";
 
 import "./styles/HomePage.css";
 import {io} from "socket.io-client";
-import {SocketProvider, useSocket} from "./components/SocketContext.jsx";
+import {SocketProvider, useSocket} from "./context/SocketContext.jsx";
 
 function HomePage() {
     const socket = useSocket();

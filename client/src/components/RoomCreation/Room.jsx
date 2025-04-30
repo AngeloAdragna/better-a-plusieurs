@@ -5,16 +5,16 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import RecommandationContent from "../Recommandation/RecommandationContent.jsx";
 import PlaylistContent from "../Playlists/PlaylistContent.jsx";
 import "../../styles/Room.css";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import YoutubeFrame from "../Youtube/YoutubeFrame.jsx";
-import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
-import { io } from "socket.io-client"
-import {useSocket} from "../SocketContext.jsx";
+import {useSocket} from "../../context/SocketContext.jsx";
 import VoteBox from "../VoteBox.jsx";
+import NotificationZone from "../NotificationZone.jsx";
 
 function Room() {
     const { roomId } = useParams();
     const socket = useSocket();
+    const navigate = useNavigate();
     /**
      * roomInfo contient les informations de la salle :
      * {
@@ -40,6 +40,27 @@ function Room() {
     }, [roomId, socket]);
 
 
+    React.useEffect(() => {
+        if (!socket) return;
+
+        const leaveRoom = () => {
+            if (socket && roomId) {
+                socket.emit("leaveRoom", roomId);
+                console.log("🚪 Quitte la room :", roomId);
+            }
+        };
+
+        window.addEventListener("beforeunload", leaveRoom);
+
+        return () => {
+            leaveRoom();
+            window.removeEventListener("beforeunload", leaveRoom);
+        };
+    }, [location.pathname, socket, roomId]);
+
+
+
+
     // RÉCUPÉRATION DES INFOS DE LA SALLE
     React.useEffect(() => {
         async function getData() {
@@ -55,11 +76,6 @@ function Room() {
         getData();
     }, [roomId]);
 
-    const startVoteTest = () => {
-        socket.emit("startVote", { roomId, author: "test", voteType: "add", videoName: "Michou" });
-        console.log ("Vote lancé");
-    }
-
     // c'est invisible mais c'est pour éviter d'afficher la salle alors qu'elle n'est pas encore chargée
     if (!socket || !roomInfo) {
         return <div>Chargement de la salle...</div>;
@@ -74,6 +90,7 @@ function Room() {
                          // TODO : vérifier si le client est le propriétaire
                          roomInfo.freeToShare
                      }
+                     isAllowedToAdd={!roomInfo.voteAdd}
             />
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
@@ -81,20 +98,20 @@ function Room() {
                         <YoutubeFrame roomId={roomId} video={{ title: "Fatal Bazooka &quot;Fous Ta Cagoule&quot; HD", thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
-                        <GoogleOAuthProvider clientId="261173889792-5lnsehpl504t0g1an722duv93n0mfhv1.apps.googleusercontent.com">
-                            <RecommandationContent />
+                        <GoogleOAuthProvider clientId="478919430256-l32pfmh4nehvpj7lfmflbktj21tgd733.apps.googleusercontent.com">
+                            <RecommandationContent roomInfo={roomInfo} socket={socket} isAllowedToAdd={!roomInfo.voteAdd} />
                         </GoogleOAuthProvider>
                     </div>
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
-                    <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket}/>
+                    <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket} isAllowedToAdd={!roomInfo.voteAdd} isAllowedToSkip={!roomInfo.voteSkip}/>
                 </div>
                 <div >{/* Chat */}
                     <ChatBox roomId={roomId} socket={socket} /> {/* Chat */}
                 </div>
             </div>
             <VoteBox roomId={roomId} socket={socket} />
-            <button onClick={startVoteTest}></button>
+            <NotificationZone socket={socket} />
         </div>
     );
 }

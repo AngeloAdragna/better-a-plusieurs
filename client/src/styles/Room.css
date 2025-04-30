@@ -293,7 +293,31 @@
     background: rgba(255, 255, 255, 0.25);
 }
 
-/*--------------------Modal Share Room--------------------*/
+.skip-video {
+    position: fixed;
+    z-index: 999;
+    bottom: 20px;
+}
+
+.skip-video button {
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    background-color: #37359a;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.skip-video button:hover{
+    background: rgba(0, 125, 255, 1);
+}
+
+.skip-video button:active{
+    background: rgba(0, 200, 255, 1);
+}
+
+    /*--------------------Modal Share Room--------------------*/
 #modalShareRoom {
     background-color: var(--dark-blue);
     color: var(--light-text);
@@ -316,6 +340,7 @@
     max-height: 200px;
     overflow-y: scroll;
     text-align: left;
+    font-family: inherit;
 }
 
 
@@ -329,7 +354,6 @@
     width: 100vh;
     max-width: 150vh !important;
     overflow-y: auto;
-
 }
 
 #searchResultsModal::-webkit-scrollbar {
@@ -384,6 +408,7 @@
     text-align: center;
     cursor: pointer;
     margin: 10px;
+    font-family: inherit;
 }
 
 #searchResultsModal .add-to-playlist:hover {
@@ -417,3 +442,8 @@
   vertical-align: middle;
   margin: 0 5px;
 }
+
+#searchResultsModal .add-to-playlist:active{
+    background: rgba(0, 200, 255, 1);
+}
+

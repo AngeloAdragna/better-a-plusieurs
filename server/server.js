@@ -9,7 +9,11 @@ import RoomManager from "./RoomManager.js";
 
 const app = express();
 export default app;
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // URL de votre frontend React
+  methods: ['GET', 'POST'],
+  credentials: true,  // Si vous avez besoin de gérer les cookies / sessions
+}));
 app.use(express.json());
 
 /**
@@ -73,6 +77,18 @@ app.get('/room/:id', (req, res) => {
   res.json(room.toJSON());
 });
 
+app.post('/room/:id', (req, res) => {
+  const roomId = req.params.id;
+  const { accessToken } = req.body;
+
+  const room = RoomManager.getRoomById(roomId);
+  if (!room) {
+    return res.status(404).json({ error: 'Room not found' });
+  }
+
+});
+
+
 app.get('/room-playlist/:id', (req, res) => {
   const playlist = RoomManager.getRoomById(req.params.id).getVideoPlaylist();
   if (!playlist) return res.status(404).send('Playlist not found');
@@ -135,7 +151,15 @@ if (process.env.NODE_ENV !== 'test') {
      */
     socket.on("joinRoom", (roomId) => {
       socket.join(roomId);
-      console.log(`✅ ${socket.id} a rejoint la salle : ${roomId}`);
+      console.log(`🔄 ${socket.username} a rejoint la salle : ${roomId}`);
+      io.to(roomId).emit("userJoined", socket.username);
+      console.log(`✅ ${socket.username} a rejoint la salle : ${roomId}`);
+    });
+
+    socket.on("leaveRoom", (roomId) => {
+        socket.leave(roomId);
+        io.to(roomId).emit("userLeft", socket.username);
+        console.log(`❌ ${socket.username} a quitté la salle : ${roomId}`);
     });
 
     socket.on("userConnected", (username) => {
@@ -170,7 +194,7 @@ if (process.env.NODE_ENV !== 'test') {
         setTimeout(() => {
           console.log(`⌛ Vote terminé dans la salle ${roomId}`);
           const result = room.endVote();
-          io.to(roomId).emit("voteEnded", { id, result });
+          io.in(roomId).emit("voteEnded", { id, result });
         }, 15000);
       } else {
         console.log("Impossible de lancer le vote, une autre action est déjà en cours.");
@@ -245,12 +269,23 @@ if (process.env.NODE_ENV !== 'test') {
         if (playlist.length > 0) {
           console.log(`Tous les clients de la room ${roomId} ont terminé leur vidéo, passage à la suivante`)
           const nextVideo = playlist[0]
-          room.removeVideoFromPlaylist(nextVideo)
           io.in(roomId).emit("videoAddedPlaylist",room.removeVideoFromPlaylist(nextVideo))
           io.in(roomId).emit("selectVideo", nextVideo)
 
           videoEndedCounter[roomId] = 0   // Réinitialisation du compteur pour la prochaine vidéo
         }
+      }
+    })
+
+
+    socket.on("nextVideo", ({roomId}) => {
+      const room = RoomManager.getRoomById(roomId)
+      if (!room) return
+      const playlist = room.getVideoPlaylist()
+      if (playlist.length > 0) {
+        const nextVideo = playlist[0]
+        io.in(roomId).emit("videoAddedPlaylist",room.removeVideoFromPlaylist(nextVideo))
+        io.in(roomId).emit("selectVideo", nextVideo)
       }
     })
 

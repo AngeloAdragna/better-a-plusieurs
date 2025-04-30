@@ -10,11 +10,11 @@ import axios from 'axios';
 import room from "../RoomCreation/Room.jsx";
 
 
-function PlaylistContent({roomInfo, roomId, socket}) {
-    //const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
+function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToSkip}) {
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
-    const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []); 
+    const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []);
+    const [isSkipVote, setIsSkipVote] = useState(false)
 
     const handleLinkClick = () => {
         setIsSelected((prev) => !prev);
@@ -69,9 +69,34 @@ function PlaylistContent({roomInfo, roomId, socket}) {
         }
     }, [roomId]);
 
-    const handleDeleteVideoFromPlaylist = (video) => {
-        socket.emit("videoDeletedPlaylist", {roomId: roomId, video: video})
+    const handleSkipVideo = () => {
+        console.log("Vote to skip")
+        if (isAllowedToSkip) {
+            socket.emit("nextVideo", {roomId : roomId})
+        }
+        else {
+            setIsSkipVote(true)
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "skip", videoName: "actuelle" });
+        }
+
     }
+
+    useEffect(() => {
+        const nextVideo = ({id, result}) => {
+            //console.log(`Result = ${result}`)
+            if (isSkipVote) {
+                if (result) socket.emit("nextVideo", {roomId: roomId})
+                setIsSkipVote(false)
+            }
+        }
+
+        socket.on("voteEnded", nextVideo)
+        return () => {
+            socket.off("voteEnded", nextVideo);
+        };
+    }, [socket, isSkipVote]);
+
+
 
 
     return (
@@ -93,12 +118,19 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                                 roomId={roomId}
                                 socket={socket}
                                 isPlaylistItem={!isSelected}
+                                isAllowedToAdd={isAllowedToAdd}
                             />
                         ))
+                    )}
+                    {videoPlaylist.length > 0 && (
+                        <div className="skip-video">
+                            <button onClick={handleSkipVideo}>Vidéo suivante ⏭️</button>
+                        </div>
                     )}
                 </div>
 
             </div>
+
             <div className={`ContentPlaylistHistory ${isSelected ? '' : 'desactived'}`}>
                 <div className="history-container">
                     {videoHistory.length === 0 ? (
