@@ -9,7 +9,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-function RecommandationContent({ roomInfo, socket }) {
+function RecommandationContent({ roomInfo, socket, isAllowedToAdd }) {
   const { roomId } = useParams();
 
   const [accessToken, setAccessToken] = useState(null);
@@ -24,7 +24,6 @@ function RecommandationContent({ roomInfo, socket }) {
   useEffect(() => {
     const handleVoteEnded = ({ id, result }) => {
       if (!currentSelectedVideo) return;
-
       if (result) {
         socket.emit("videoAddedPlaylist", { roomId, video: currentSelectedVideo });
         setCurrentSelectedVideo(null);
@@ -38,7 +37,7 @@ function RecommandationContent({ roomInfo, socket }) {
   }, [socket, currentSelectedVideo, roomId]);
 
   const handleVideoClick = (video) => {
-    if (roomInfo?.isAllowedToAdd) {
+    if (isAllowedToAdd) {
       socket.emit("selectVideo", { roomId, video });
     } else {
       setCurrentSelectedVideo(video);

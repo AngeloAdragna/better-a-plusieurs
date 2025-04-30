@@ -98,7 +98,7 @@ function Room() {
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="478919430256-l32pfmh4nehvpj7lfmflbktj21tgd733.apps.googleusercontent.com">
-                            <RecommandationContent roomInfo={roomInfo} socket={socket} />
+                            <RecommandationContent roomInfo={roomInfo} socket={socket} isAllowedToAdd={!roomInfo.voteAdd} />
                         </GoogleOAuthProvider>
                     </div>
                 </div>
