@@ -33,11 +33,11 @@
     border-radius: 20px;
     font-size: 20px;
     height: auto !important;
-    width: auto; !important;
+    width: auto !important;
     line-height: normal !important;
 }
 
-a:hover {
+.CenteredContent a:hover {
     background-color: var(--light-grey) !important;
 }
 

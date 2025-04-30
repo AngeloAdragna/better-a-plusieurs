@@ -46,7 +46,6 @@
 .item {
   background-color: var(--light-blue);
   text-align: center;
-
 }
 
 .nameAppliBar {
@@ -57,13 +56,45 @@
 
 .iconBar{
   padding-top: 5px;
+
 }
 .barIcons{
   padding: 5px;
   border-radius: 15px;
-    height: 60px;
-  border: 0.5px solid #1e1e1e92;
-  box-shadow: inset 2px 4px 4px #1e1e1ed9;
+  height: 4vw;
+  width: 4vw;
+  color: var(--light-text);
+  border: 1px solid #1e1e1ed9;
+  box-shadow: inset 2px 3px 2px #1e1e1ed9;
+}
+
+.barIcons:hover{
+  background: var(--mid-blue-btn);
+  box-shadow: 2px 3px 2px #1e1e1ed9;
+  transition: all 0.2s ease-in-out;
+}
+
+@media screen and (max-width: 700px) {
+  .barIcons{
+    height: 6vw;
+    width: 6vw;
+  }
+}
+
+.searchIconBar{
+  padding: 5px;
+  border-radius: 15px;
+  height: 4vw;
+  width: 4vw;
+  color: var(--light-text);
+  background: var(--dark-blue);
+  border: 1px solid #1e1e1ed9;
+  box-shadow: inset 2px 3px 2px #1e1e1ed9;
+}
+.searchIconBar:hover{
+  background: var(--mid-blue-btn);
+  box-shadow: 2px 3px 2px #1e1e1ed9;
+  transition: all 0.2s ease-in-out;
 }
 
 

@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import M from "materialize-css";
 import debounce from 'lodash.debounce';
+import { IoSearchSharp } from "react-icons/io5";
 
 const YouTubeSearchBar = ({roomId, socket}) => {
     const [query, setQuery] = useState('');
@@ -179,11 +180,9 @@ const YouTubeSearchBar = ({roomId, socket}) => {
 
                     </div>
                     <div className="col s2">
-                        <button className="btn green" type="submit" style={{ padding: '0 10px' }}>
-                            🔍
-                        </button>
+                        <IoSearchSharp  className="searchIconBar" onClick={handleSearch} />
                         {isFormSubmitted && (
-                            <button className="btn green" style={{ padding: '0 10px' }} onClick={openResultsModalManually}>
+                            <button className="searchIconBar" onClick={openResultsModalManually}>
                                 ⬇️
                             </button>)
                         }

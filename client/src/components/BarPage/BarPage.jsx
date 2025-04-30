@@ -4,6 +4,9 @@ import ModalParametersUserRoom from "./ModalParametersUserRoom";
 import ModalShareRoom from "./ModalShareRoom";
 import React, { useState } from "react";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
+import { FaCogs } from "react-icons/fa";
+import { GoShareAndroid } from "react-icons/go";
+import { BsPatchQuestion } from "react-icons/bs";
 
 const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -21,35 +24,35 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
                         </div>
                     </div>
                 </div>
-                <div className='col s4'>
+                <div className='col s5'>
                     <YoutubeSearchBar roomId={roomId} socket={socket}/>
                 </div>
-                <div className='col s4 item'>
+                <div className='col s3 item'>
                     <div className='valign-wrapper iconBar'>
                         <div className='col s4'>
                             <a className="modal-trigger" href="#ModalParametersUser"
                                 onClick={() => setModalOpen(true)}>
-                                <img className="barIcons" src='/src/assets/icon_param.svg' alt='Icon Parameters'/>
+                                 <FaCogs className="barIcons" />
                             </a>
                             {<ModalParametersUser/>}
-                        </div>
-                        <div className='col s4'>
-                            <a className="modal-trigger" href="#ModalHelpUser"
-                                onClick={() => setModalOpen(true)}>
-                                <img className="barIcons" src='/src/assets/icon_aide.svg' alt='Icon Aide'/>
-                            </a>
-                            {<ModalHelpUser/>}
                         </div>
                         {isAllowedToShare && (
                             <div className='col s4'>
                                 <a className="modal-trigger" href="#modalShareRoom"
                                     onClick={() => setModalOpen(true)}>
-                                    <img className="barIcons" src='/src/assets/share.png'
-                                            alt='Icon share Parameters'/>
+                                    <GoShareAndroid className="barIcons" />
                                 </a>
                                 <ModalShareRoom />
                             </div>
                         )}
+                        <div className='col s4'>
+                            <a className="modal-trigger " href="#ModalHelpUser"
+                                onClick={() => setModalOpen(true)}>
+                                <BsPatchQuestion className="barIcons" />
+                            </a>
+                            {<ModalHelpUser/>}
+                        </div>
+                        
                     </div>
                 </div>
             </div>
