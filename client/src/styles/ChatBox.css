@@ -25,10 +25,10 @@
 
 .arrow, .rotate {
     position: absolute;
-    left: -8%;
     background: var(--dark-blue);
-    width: 8%;
-    height: 4vw;
+    left: -30px;
+    width: 30px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,8 +40,9 @@
 }
 
 .rotate {
-    left: -10%;
-    width: 10%;
+    left: -40px;
+    width: 40px;
+    height: 40px;
     border-radius: 0 10px 10px 0;
     transform: rotate(180deg);
     box-shadow: 2px -3px 3px #1e1e1e;
