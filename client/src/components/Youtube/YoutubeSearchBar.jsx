@@ -3,6 +3,7 @@ import axios from 'axios';
 import M from "materialize-css";
 import debounce from 'lodash.debounce';
 import { IoSearchSharp } from "react-icons/io5";
+import { FaArrowCircleDown } from "react-icons/fa";
 
 const YouTubeSearchBar = ({roomId, socket}) => {
     const [query, setQuery] = useState('');
@@ -182,9 +183,8 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                     <div className="col s2">
                         <IoSearchSharp  className="searchIconBar" onClick={handleSearch} />
                         {isFormSubmitted && (
-                            <button className="searchIconBar" onClick={openResultsModalManually}>
-                                ⬇️
-                            </button>)
+                            <FaArrowCircleDown className="searchIconBar" onClick={openResultsModalManually}/>
+                        )
                         }
                     </div>
                 </div>

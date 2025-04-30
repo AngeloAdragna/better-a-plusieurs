@@ -8,6 +8,7 @@ import { FaCogs } from "react-icons/fa";
 import { GoShareAndroid } from "react-icons/go";
 import { BsPatchQuestion } from "react-icons/bs";
 
+
 const BarPage = ({roomName, roomId, socket, isAllowedToShare}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const isConnected = false; //TODO Remplace ça par un vrai état de connexion

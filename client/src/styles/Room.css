@@ -84,12 +84,12 @@
 .searchIconBar{
   padding: 5px;
   border-radius: 15px;
-  height: 4vw;
-  width: 4vw;
+  height: 2.5vw;
+  width: 2.5vw;
   color: var(--light-text);
   background: var(--dark-blue);
   border: 1px solid #1e1e1ed9;
-  box-shadow: inset 2px 3px 2px #1e1e1ed9;
+  box-shadow: 2px 3px 2px #1e1e1ed9;
 }
 .searchIconBar:hover{
   background: var(--mid-blue-btn);
@@ -97,6 +97,12 @@
   transition: all 0.2s ease-in-out;
 }
 
+@media screen and (max-width: 700px) {
+  .searchIconBar{
+    height: 4vw;
+    width: 4vw;
+  }
+}
 
 /*--------------------Recommandation--------------------*/
 .RecommandationContent {
