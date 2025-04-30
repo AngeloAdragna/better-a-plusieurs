@@ -38,7 +38,7 @@ function RecommandationContent({ roomInfo, socket, isAllowedToAdd }) {
 
   const handleVideoClick = (video) => {
     if (isAllowedToAdd) {
-      socket.emit("selectVideo", { roomId, video });
+      socket.emit("videoAddedPlaylist", { roomId, video });
     } else {
       setCurrentSelectedVideo(video);
       socket.emit("startVote", {
