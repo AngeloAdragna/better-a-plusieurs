@@ -96,7 +96,7 @@ function Room() {
             <div className="valign-wrapper main-content">
                 <div className="left-container col s12 m6 l7">
                     <div className="video-container">
-                        <YoutubeFrame roomId={roomId} video={{ title: "Fatal Bazooka &quot;Fous Ta Cagoule&quot; HD", thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
+                        <YoutubeFrame roomId={roomId} video={{ title: 'Fatal Bazooka "Fous Ta Cagoule" HD', thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="478919430256-l32pfmh4nehvpj7lfmflbktj21tgd733.apps.googleusercontent.com">

@@ -146,6 +146,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                                 roomId={roomId}
                                 socket={socket}
                                 isPlaylistItem={!isSelected}
+                                isAllowedToAdd={isAllowedToAdd}
                             />
                     )))}
                 </div>
