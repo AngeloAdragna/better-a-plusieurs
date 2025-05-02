@@ -105,8 +105,12 @@ const VideoPlayer = ({ roomId, video, socket, height = "390", width = "661" }) =
             }
         };
 
-        const syncTimeCode = (timeCode) => {
+        const syncTimeCode = (timeCode, video) => {
             if (player) {
+                if (video.id !== currentVideo.id) {
+                    changeVideo(video)
+                }
+
                 const currentLocalTime = player.getCurrentTime()
                 // console.log(`Current difference = ${Math.abs(currentLocalTime - timeCode)}`) // DEBUG
 
@@ -150,7 +154,7 @@ const VideoPlayer = ({ roomId, video, socket, height = "390", width = "661" }) =
         const newIntervalId = setInterval(() => {
             if (player) {
                 console.log(`Sync : timecode = ${player.getCurrentTime()}`); // DEBUG
-                socket.emit("sync", {roomId: roomId, timeCode: player.getCurrentTime()});
+                socket.emit("sync", {roomId: roomId, timeCode: player.getCurrentTime(), video: currentVideo});
             }
         }, syncPeriod);
 

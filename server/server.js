@@ -327,9 +327,9 @@ if (process.env.NODE_ENV !== 'test') {
       socket.to(roomId).emit("play", timeCode, video);
     });
 
-    socket.on("sync", ({ roomId, timeCode }) => {
+    socket.on("sync", ({ roomId, timeCode, video }) => {
       console.log(`🔄 Sync dans la salle ${roomId} : ${timeCode}`);
-      socket.to(roomId).emit("sync", timeCode);
+      socket.to(roomId).emit("sync", timeCode, video);
     });
 
     socket.on("selectVideo", ({roomId, video}) => {
