@@ -1,9 +1,11 @@
 .ChatContainer {
+    width: 45vw; 
+    top: 15.5vh;
     background-color: var(--dark-blue);
     position: fixed;
     z-index: 1;
     right: 0;
-    bottom: 1.5vh;
+    bottom: 0.5vh;
     display: flex;
     flex-direction: column;
     padding: 1%;
@@ -123,6 +125,7 @@
 }
 
 .MessageList {
+    max-height: 66vh;
     scroll-behavior: smooth;
     flex: 1;
     overflow-y: auto;
@@ -173,41 +176,25 @@
 }
 
 /* Materialize responsive classes */
-@media screen and (max-width: 1000px) {
+@media (max-width: 1000px) {
     .ChatContainer {
         width: 49vw; 
-        top: 15vh;
+    
     }
 }
 
-@media screen and (min-width: 1000px) {
-    .ChatContainer {
-        width: 45vw; 
-        top: 18vh;
-    }
-}
-
-@media (min-height: 500px) {
-    .MessageList {
-        max-height: 62vh;
-    }
-} 
 
 @media (max-height: 480px) {
     .MessageList {
-        max-height: 52vh;
+        max-height: 62vh;
     }
-    .ChatContainer {
-        top: 22vh;
-    } 
+   
 } 
 
 @media (max-height: 380px) {
     .MessageList {
-        max-height: 42vh;
+        max-height: 52vh;
     }
-    .ChatContainer {
-        top: 28vh;
-    }
+  
 } 
 

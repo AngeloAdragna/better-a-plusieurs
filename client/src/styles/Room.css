@@ -8,7 +8,7 @@
 }  
 
 .main-content {
-  padding: 1vw 1vw 0.5vh 2vw;
+  padding: 1vh 1vw 0.5vh 2vw;
   gap: 2vw;
   width: 100%;
   flex-grow: 1; 
@@ -30,21 +30,44 @@
   padding: 0.5vw 0 1vw 0;
 }  
 
+.btn-google-connexion{
+  background: var(--dark-blue);
+  color: var(--light-text);
+  border-radius: 10px;
+  padding: 1vw;
+  width: fit-content;
+  box-shadow: 2px 3px 4px #1e1e1e92;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.btn-google-connexion:hover{
+  background: var(--mid-blue-btn);
+  transition: all 0.2s ease-in-out;
+}
 
 
 
 /*--------------------Bar--------------------*/
 .BarPage {
   background-color: var(--dark-blue);
-  margin: 0.5vw ;
-  padding: 0.2vw 0.5vw 0.2vw 0.5vw;
+  margin: 0.5vh;
+  padding: 25px 0px;
+  height: 13.5vh;
   border-radius: 10px;
   border: 1px solid #1e1e1e84;
   box-shadow: 1px 4px 3px #1e1e1e;
 }
 
+.input-field {
+  position: relative;
+  margin-top: 0rem !important;
+  margin-bottom: 0rem !important;
+}
+
 .item {
-  background-color: var(--light-blue);
   text-align: center;
 }
 
@@ -104,51 +127,44 @@
 }
 
 /*--------------------Recommandation--------------------*/
-.RecommandationContent {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-  max-width: 100%;
-  overflow: hidden;
-  padding: 1rem;
-  box-sizing: border-box;
-  background: #039be5;
-}
-
 .video_recommand {
-  margin-bottom: 5px;
-  padding: 5px 0 5px 0; 
+  padding: 5px; 
   box-shadow: 2px 3px 3px #1e1e1ecb;
   border-radius: 20px;
   text-align: center;
-  background-color: var(--dark-blue)
+  background-color: var(--dark-blue);
+  height: 13vh;
 }
 
 .video_name {
   color: var(--light-text);
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: bold;
-}
-
-.video_description {
-  color: var(--light-text);
-  font-size: 1rem;
 }
 
 .swiper {
   height: 100%;
   max-height: 100%;
+  width: 100%;
+  padding:0 0px 20px 0;
 }
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: white;
+  color: var(--light-text);
+  width: 1vw;
+  height: 2vw;
+}
+
+.swiper-button-prev:after, .swiper-button-next:after {
+  font-size: 2.5rem;
+  color: whitesmoke;
+  margin-left: -6px;
 }
 
 
 .swiper-pagination-bullet {
-  background-color: #888; /* points inactifs */
+  background-color: var(--mid-blue-btn);
   opacity: 1;
 }
 
@@ -156,6 +172,10 @@
   background-color: var(--light-text); /* point actif */
 }
 
+.swiper-pagination-fraction, .swiper-pagination-custom, .swiper-horizontal > .swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal {
+  bottom: var(--swiper-pagination-bottom, -5px);
+  margin-top: 5px;
+}
 
 
 /*--------------------Playlist--------------------*/
@@ -175,7 +195,6 @@
     margin: 0 0.5vw 0 0.5vw;
     box-shadow: 2px 3px 3px #1e1e1e;
     width: 100%;
-
 }
 
 .video_playlist .infos {
@@ -185,7 +204,6 @@
 
 .video_playlist .btn-flat:hover {
     background-color: darkred;
-    border-radius: 20px;
 }
 
 .PlaylistContent{
@@ -195,14 +213,14 @@
   display: flex;
   flex-direction: column;
   border-radius: 15px;
-  border: 0.5px solid #1e1e1e53;
+  border: 1px solid #1e1e1e53;
   box-shadow: inset 2px 4px 4px #1e1e1ebd;
 }
 
 .ContentPlaylistHistory {
   display: flex;
   flex-direction: column;
-  margin: 0 1em 0 1em;
+  margin: 0 0.5em 0 1em;
   overflow-y: auto; /* Ajoute du scroll si le contenu déborde */
 }
 
@@ -215,6 +233,19 @@
     padding-right: 10px;  /* Un peu d'espace pour éviter que le scroll cache les vidéos */
     padding-bottom: 10px;
     align-items: center;
+}
+
+.playlist-container::-webkit-scrollbar, .history-container::-webkit-scrollbar {
+    width: 6px; /* Largeur de la scrollbar */
+}
+
+.playlist-container::-webkit-scrollbar-thumb, .history-container::-webkit-scrollbar-thumb {
+  background-color: var(--dark-blue); /* Couleur de l'arrière-plan de la scrollbar */
+  border-radius: 10px; /* Coins arrondis */
+}
+
+.playlist-container::-webkit-scrollbar-track, .history-container::-webkit-scrollbar-track {
+  background-color: var(--mid-blue-btn); /* Couleur de la scrollbar */
 }
 
 .desactived{
@@ -269,55 +300,40 @@
 
 .video_playlist .btn-flat {
     color: var(--light-text);
-    margin-right: 10px;
-
+    padding: 0 10px;
+    border-radius: 10px;
 }
 
-.del-from-playlist-btn {
-    flex-grow: 1;
-    width: 100%;
-    padding: 5px;
-    background-color: rgba(0, 0, 255, 0.25);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.del-from-playlist-btn:hover {
-    background: rgba(255, 0, 0, 1);
-}
 
 .video_playlist:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--mid-blue2);
+    transition: all 0.2s ease-in-out;
 }
 
 .skip-video {
     position: fixed;
-    z-index: 999;
-    bottom: 20px;
-}
-
-.skip-video button {
-    padding: 15px;
+    bottom: 15px;
+    padding: 10px;
     border-radius: 8px;
-    border: none;
-    width: 100%;
-    background-color: #37359a;
+    width:fit-content;
     cursor: pointer;
-    font-family: inherit;
+    background: var(--mid-blue-btn);
+    box-shadow: 2px 3px 4px #1e1e1e92;
 }
 
-.skip-video button:hover{
-    background: rgba(0, 125, 255, 1);
+.skip-video-icon {
+    width: 25px;
+    height: 22px;
+    vertical-align: middle;
+   
 }
 
-.skip-video button:active{
-    background: rgba(0, 200, 255, 1);
+.skip-video:hover{
+    background: var(--dark-blue);
 }
 
-    /*--------------------Modal Share Room--------------------*/
+
+/*--------------------Modal Share Room--------------------*/
 #modalShareRoom {
     background-color: var(--dark-blue);
     color: var(--light-text);

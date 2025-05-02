@@ -73,7 +73,7 @@ const ModalParametersUser = () => {
               </label>
             </div>
           </div>
-          <btn type="submit" className="btnHover" style={{ margin: "20px" }}>Modifier</btn>
+          <button type="submit" className="btnHover" style={{ margin: "20px" }}>Modifier</button>
         </form>
       </div>
     </div>

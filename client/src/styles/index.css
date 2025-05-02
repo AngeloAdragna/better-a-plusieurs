@@ -17,8 +17,8 @@
   --mid-dark-blue: #393767; /* #btn in playlist */
   --light-grey: #595170; /* #nuance bar */
   --mid-blue-btn:#393767; /* #btn in playlist */
-  --mid-blue: #393766; /* #playlist */
   --mid-blue: #403D73; /* #playlist */
+  --mid-blue2: #5a568b; /* #playlist */
   --bg-color: #4A4459;
   
 }
@@ -106,14 +106,14 @@ html {
 
 .btnHover{
   color: var(--light-text);
-  background: var(--mid-blue-btn);
-  color: #fff;
+  background: var(--dark-blue);
+  border: none;
   text-align: center;
   letter-spacing: .5px;
   box-shadow: 2px 3px 2px #1e1e1ed9;
   cursor: pointer;
   font-size: 14px;
-  border-radius: 2px;
+  border-radius: 6px;
   height: 36px;
   line-height: 36px;
   padding: 0 16px;
@@ -121,7 +121,7 @@ html {
 }
 
 .btnHover:hover {
-  background: var(--light-grey);
+  background: var(--mid-blue2);
   box-shadow: 2px 3px 2px #1e1e1ed9;
   transition: all 0.2s ease-in-out;
 }

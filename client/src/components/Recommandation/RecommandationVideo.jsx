@@ -9,7 +9,7 @@ const RecommandationVideo = ({ title, thumbnail, url }) => {
             <img
                 src={thumbnail}
                 alt={title}
-                style={{ width: "60%", borderRadius: "20px" }}
+                style={{ width: "60%", borderRadius: "10px" }}
             />
             <div className={"video_name"}>{truncate(title, 40)}</div>
         </div>
