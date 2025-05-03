@@ -169,6 +169,7 @@ class Room {
       voteAdd: this.#voteAdd,
       freeToShare: this.#freeToShare,
       ownerClient: this.#ownerClient,
+      videoPlaylist: this.#videoPlaylist,
     };
   }
 

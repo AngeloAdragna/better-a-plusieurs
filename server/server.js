@@ -62,9 +62,9 @@ app.delete("/users/:id", async (req, res) => {
  * Route de création d'une route
  */
 app.post('/create-room', (req, res) => {
-  // TODO : Récupération de l'utilisateur qui a créé la room et ajout de son id dans la room
-  const { roomName, voteSkip, voteAdd, freeToShare} = req.body;
-  const room = RoomManager.createRoom(roomName, voteSkip, voteAdd, freeToShare);//
+  const { roomName, voteSkip, voteAdd, freeToShare, ownerUsername } = req.body;
+  console.log("Création de la room :", roomName, voteSkip, voteAdd, freeToShare, ownerUsername);
+  const room = RoomManager.createRoom(roomName, voteSkip, voteAdd, freeToShare, ownerUsername);
   res.json({ id: room.getId() }); 
 });
 
@@ -117,15 +117,21 @@ app.get("/suggest", async (req, res) => {
         q: query
       },
       headers: {
-        "User-Agent": "Mozilla/5.0" // parfois nécessaire pour que Google réponde bien
+        "User-Agent": "Mozilla/5.0"
       }
     });
 
-    res.json(response.data); // retourne les suggestions au front
+    res.json(response.data);
   } catch (err) {
     console.error("Erreur suggestion :", err);
     res.status(500).json({ error: "Erreur lors de la récupération des suggestions" });
   }
+});
+
+app.get("/openRooms", (req, res) => {
+  const rooms = RoomManager.getOpenRooms();
+  const jsonRooms = rooms.map((room) => room.toJSON());
+  res.json(jsonRooms);
 });
 
 /**
@@ -223,7 +229,6 @@ if (process.env.NODE_ENV !== 'test') {
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
       room.addVideoToPlaylist(video);
-      //console.log("Ajout de la vidéo à la playlist :", room.getVideoPlaylist());
       io.in(roomId).emit("videoAddedPlaylist", room.getVideoPlaylist());
     });
 

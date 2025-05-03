@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Room from "./components/RoomCreation/Room.jsx";
 import ModalJoinRoom from "./components/RoomCreation/ModalJoinRoom.jsx";
 import ModalRoomParameters from "./components/RoomCreation/ModalRoomParameters.jsx";
+import RoomList from "./components/RoomList.jsx";
 
 // Composants liés à l'authentification
 import ModalOpenConnection from "./components/Login/ModalOpenConnection.jsx";
@@ -16,20 +17,14 @@ import RegisterButton from "./components/Login/RegisterButton.jsx";
 import LoginButton from "./components/Login/LoginButton.jsx";
 
 import "./styles/HomePage.css";
-import {io} from "socket.io-client";
 import {SocketProvider, useSocket} from "./context/SocketContext.jsx";
 
 function HomePage() {
     const socket = useSocket();
     const [modalOpen, setModalOpen] = useState(false);
     const [isConnectionOnly, setIsConnectionOnly] = useState(false);
-    const { isConnected } = useContext(AuthContext);
+    const { isConnected, setIsConnected } = useContext(AuthContext);
     const [username, setUsername] = useState(localStorage.getItem("username"));
-
-    const openConnectionModal = () => {
-        setModalOpen(true);
-        setIsConnectionOnly(true);
-    };
 
     const openRoomCreationModal = () => {
         setModalOpen(true);
@@ -70,14 +65,17 @@ function HomePage() {
             socket.emit("disconnectUser", username);
             socket.disconnect();
         }
+
         localStorage.removeItem("username");
         setUsername(null);
+        setIsConnected(false);
     };
+
 
 
     return (
         <div className="homepage-container">
-
+            <div className={"main-container"}>
                 {username ? (
                     <div className="header-buttons-connected">
                         <div className="connected-info">
@@ -91,8 +89,8 @@ function HomePage() {
                     </div>
                 ) : (
                     <div className="header-buttons-unconnected">
-                        <LoginButton socket={socket} />
-                        <RegisterButton socket={socket} />
+                        <LoginButton socket={socket}/>
+                        <RegisterButton socket={socket}/>
                     </div>
                 )}
             <div className="CenteredContent">
@@ -113,11 +111,18 @@ function HomePage() {
                         Rejoindre une Room
                     </a>
                 </div>
+                </div>
             </div>
+            <div className="transition">
+                <></>
+            </div>
+
+            <RoomList />
+
 
             {/* Modales */}
             {modalOpen && (
-                isConnected ? <ModalRoomParameters /> : <ModalOpenConnection onlyConnection={isConnectionOnly} />
+                isConnected ? <ModalRoomParameters/> : <ModalOpenConnection onlyConnection={isConnectionOnly}/>
             )}
             {modalOpen && <ModalJoinRoom/>}
         </div>
@@ -125,12 +130,11 @@ function HomePage() {
 }
 
 
-
 function AppContent() {
     return (
         <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/room/:roomId" element={<Room />} />
+            <Route path="/" element={<HomePage/>}/>
+            <Route path="/room/:roomId" element={<Room/>}/>
         </Routes>
     );
 }
@@ -140,7 +144,7 @@ function App() {
         <AuthProvider>
             <SocketProvider>
                 <BrowserRouter>
-                    <AppContent />
+                    <AppContent/>
                 </BrowserRouter>
             </SocketProvider>
         </AuthProvider>
