@@ -1,5 +1,5 @@
 .ChatContainer {
-    width: 45vw; 
+    width: 39vw; 
     top: 15.5vh;
     background-color: var(--dark-blue);
     position: fixed;
@@ -178,7 +178,7 @@
 /* Materialize responsive classes */
 @media (max-width: 1000px) {
     .ChatContainer {
-        width: 49vw; 
+        width: 46vw; 
     
     }
 }

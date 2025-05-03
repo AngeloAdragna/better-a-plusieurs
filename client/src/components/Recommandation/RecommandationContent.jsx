@@ -107,7 +107,6 @@ function RecommandationContent({ roomInfo, socket, isAllowedToAdd }) {
                 pagination={{ clickable: true }}
                 loop={true}
                 breakpoints={{
-                    320: { slidesPerView: 2 },   // petits écrans
                     480: { slidesPerView: 3 },
                     768: { slidesPerView: 4 },
                     1024: { slidesPerView: 5 }   // grands écrans
