@@ -1,9 +1,14 @@
-.homepage-container {
+.main-container {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-image: url("../assets/homeSpace.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
 }
+
 
 .header-buttons-unconnected {
     position: absolute;
@@ -76,4 +81,10 @@
 
 .disconect-btn a {
     color: var(--light-text) !important;
+}
+
+.transition {
+    background: linear-gradient(to bottom, #1C0A5F, #1B0A57);
+    height: 40px;
+    width: 100vw;
 }
