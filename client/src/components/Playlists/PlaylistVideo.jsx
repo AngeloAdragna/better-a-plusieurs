@@ -39,36 +39,35 @@ const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem
     }, [socket, isAddVote]);
 
     return (
-        <div className="video_playlist valign-wrapper" style={{ padding: "0px", margin: 0 , cursor: "pointer"}}>
-            <div className="infos" onClick={handlePlayVideo}>
-                <div className="col s3" style={{padding: "5px"}}>
-                    <img
-                        src={thumbnail}
-                        alt={title}
-                        className="responsive-img"
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            display: "block",
-                            borderRadius: "10px"
-                        }}
-                    />
-                </div>
-                <div className="col s9 title">
-                    <span className="video_name">
-                        {truncate(title, 40)}
-                    </span>
-                </div>
+        <div className="video_playlist valign-wrapper" onClick={handlePlayVideo}>
+            <div className="col s2" style={{padding: "5px 0px 5px 0px"}} >
+                <img
+                    src={thumbnail}
+                    alt={title}
+                    style={{
+                        width: "100%",
+                        height: "90%",
+                        objectFit: "cover",
+                        display: "block",
+                        borderRadius: "10px"
+                    }}
+                />
             </div>
-            {isPlaylistItem && (
+            <div className="col s8 title">
+                <span className="video_name">
+                    {truncate(title, 40)}
+                </span>
+            </div>
+        
             <div className="col s2">
+            {isPlaylistItem && (
                 <button className="btn-flat" onClick={() => handleDeleteVideoFromPlaylist(video)}>
                     ✖
                 </button>
-            </div>
             )}
+            </div>
         </div>
+       
     );
 };
 

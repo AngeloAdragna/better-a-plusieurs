@@ -13,13 +13,17 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd}) =
     const [modalOpen, setModalOpen] = useState(false);
     const isConnected = false; //TODO Remplace ça par un vrai état de connexion
     return (
-        <section className='BarPage'>
-            <div className='valign-wrapper'>
+        <section className='BarPage valign-wrapper'>
                 <div className='col s4'>
                     <div className='item'>
                         <div className='valign-wrapper'>
                             <div className='col s4 valign-wrapper'>
-                                <img src='/src/assets/icon_space.svg' alt='Icon Space' href='/' />
+                                <img 
+                                    src='/src/assets/icon_space.svg' 
+                                    alt='Icon Space' 
+                                    href='/' 
+                                    style={{ maxWidth: "100%", height: "auto" }} 
+                                />
                             </div>
                             <div className='col s8 nameAppliBar'> {roomName}</div>
                         </div>
@@ -56,7 +60,7 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd}) =
                         
                     </div>
                 </div>
-            </div>
+   
         </section>
     );
 }

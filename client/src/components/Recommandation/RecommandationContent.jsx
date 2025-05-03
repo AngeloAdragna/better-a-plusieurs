@@ -96,17 +96,21 @@ function RecommandationContent({ roomInfo, socket, isAllowedToAdd }) {
   return (
       <div>
         {!accessToken ? (
-            <button onClick={login} style={{ margin: '1rem' }}>
+            <span className='btn-google-connexion' onClick={login} style={{ margin: '1rem' }}>
               Se connecter avec Google
-            </button>
+            </span>
         ) : (
             <Swiper
                 modules={[Navigation, Pagination]}
                 spaceBetween={20}
-                slidesPerView={3}
                 navigation
                 pagination={{ clickable: true }}
                 loop={true}
+                breakpoints={{
+                    480: { slidesPerView: 3 },
+                    768: { slidesPerView: 4 },
+                    1024: { slidesPerView: 5 }   // grands écrans
+                }}
             >
               {videoList.map((video, i) => (
                   <SwiperSlide key={i} onClick={() => handleVideoClick(video)}>
