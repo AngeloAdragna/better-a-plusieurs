@@ -202,15 +202,9 @@
 .video_playlist {
     background: var(--dark-blue);
     border-radius: 10px;
-    padding: 0.5vw;
-    margin: 0 0.5vw 0 0.5vw;
     box-shadow: 2px 3px 3px #1e1e1e;
     width: 100%;
-}
-
-.video_playlist .infos {
-    display: flex;
-    align-items: center;
+    height: 10vh;
 }
 
 .video_playlist .btn-flat:hover {
@@ -233,6 +227,10 @@
   flex-direction: column;
   margin: 0 0.5em 0 1em;
   overflow-y: auto; /* Ajoute du scroll si le contenu déborde */
+}
+
+.desactived{
+  display: none;
 }
 
 .playlist-container, .history-container {
@@ -259,9 +257,7 @@
   background-color: var(--mid-blue-btn); /* Couleur de la scrollbar */
 }
 
-.desactived{
-  display: none;
-}
+
 
 .SelectionBar{
   display: flex;
