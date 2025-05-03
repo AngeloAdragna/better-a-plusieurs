@@ -57,4 +57,11 @@ npm run dev
 Ouvrir un navigateur et se rendre à l'adresse :  
 ```
 http://localhost:5173  
-```  
+```
+
+### Exécuter les tests : 
+```sh
+cd server  
+npx cucumber-js
+```
+
