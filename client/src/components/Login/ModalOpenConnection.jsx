@@ -82,7 +82,7 @@ const ModalOpenConnection = ({socket}) => {
                             <label htmlFor="password">Mot de passe</label>
                         </div>
 
-                        <button type="submit" className="btn waves-effect waves-light">
+                        <button id="submit" type="submit" className="btn waves-effect waves-light">
                             Se connecter
                         </button>
                     </form>

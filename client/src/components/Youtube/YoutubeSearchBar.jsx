@@ -172,6 +172,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
                 <div className="valign-wrapper">
                     <div className="input-field col s11 text-suggestions-wrapper">
                         <input
+                            id="input_searchbar"
                             type="text"
                             placeholder="Rechercher sur YouTube..."
                             value={query}
@@ -205,7 +206,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
                     </div>
                     <div className="col s2">
-                        <IoSearchSharp  className="searchIconBar" onClick={handleSearch} />
+                        <IoSearchSharp id='btn_searchIconBar'  className="searchIconBar" onClick={handleSearch} />
                         {isFormSubmitted && (
                             <FaArrowCircleDown className="searchIconBar" onClick={openResultsModalManually}/>
                         )
@@ -229,7 +230,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
                                         <div
                                             key={video.id.videoId}
                                             onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
-                                            className="modal-close col">
+                                            className="video-selector modal-close col">
                                             <img
                                                 src={video.snippet.thumbnails.medium.url}
                                                 alt="thumbnail"

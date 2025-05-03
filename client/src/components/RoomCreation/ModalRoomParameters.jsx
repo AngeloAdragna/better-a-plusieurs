@@ -68,6 +68,7 @@ const ModalRoomParameters = () => {
         <form onSubmit={onSubmit}>
           <div className="input-field">
             <input
+              id="roomName"
               type="text"
               name="roomName"
               value={formData.roomName}
@@ -81,7 +82,7 @@ const ModalRoomParameters = () => {
               <label>
                 Vote pour skip
                 <input type="checkbox" name="voteSkip" checked={formData.voteSkip} onChange={handleChange} />
-                <span className="lever"></span>
+                <span id="check_skip" className="lever"></span>
               </label>
             </div>
 
@@ -89,20 +90,20 @@ const ModalRoomParameters = () => {
               <label>
                 Vote pour add
                 <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
-                <span className="lever"></span>
+                <span id="check_add" className="lever"></span>
               </label>
             </div>
 
             <div className="switch">
               <label>
                 Free to share
-                <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
-                <span className="lever"></span>
+                <input  type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
+                <span id="check_share" className="lever"></span>
               </label>
             </div>
           </div>
 
-          <button type="submit" className="btn waves-effect waves-light">Créer</button>
+          <button id="submit" type="submit" className="btn waves-effect waves-light">Créer</button>
         </form>
       </div>
     </div>
