@@ -32,6 +32,7 @@ const ModalOpenConnection = ({socket}) => {
                 setIsConnected(true);
                 localStorage.setItem("username", formData.username);
                 socket.emit("userConnected", formData.username);
+                window.location.reload();
             })
             .catch(error => {
                 console.error("Login failed:", error.response.data);

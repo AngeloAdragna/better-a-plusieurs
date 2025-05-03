@@ -27,13 +27,18 @@ const ModalRoomParameters = () => {
         event.preventDefault();
 
         try {
-            formData.ownerClient = localStorage.getItem("clientId");
+            const username = localStorage.getItem("username"); // 👈 récupéré ici
+            const formToSend = {
+                ...formData,
+                ownerUsername: username // 👈 ajouté ici
+            };
+
             const response = await fetch('http://localhost:8080/create-room', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(formToSend),
             });
 
             const data = await response.json();
@@ -48,6 +53,7 @@ const ModalRoomParameters = () => {
             M.toast({ html: "Erreur serveur" });
         }
     };
+
 
     // Handle the change of the switches
   const handleChange = (event) => {
