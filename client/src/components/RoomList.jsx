@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-import "../styles/RoomList.css";
+import "../styles/roomList.css";
 
 export default function RoomList() {
     const [rooms, setRooms] = useState([]);
