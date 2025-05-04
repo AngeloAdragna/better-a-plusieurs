@@ -160,10 +160,10 @@ const VoteBox = ({roomId, socket}) => {
                         {voteResult.success
                             ? voteResult.voteType === "skip"
                                 ? "La vidéo a été passée !"
-                                : `La vidéo "${voteResult.videoName}" à été ajoutée en playlist !`
+                                : `Lancement de la vidéo "${voteResult.videoName}" !`
                             : voteResult.voteType === "skip"
                                 ? "La vidéo n'a pas été passée."
-                                : `La vidéo "${voteResult.videoName}" n'a pas été ajoutée en playlist.`}
+                                : `Annulation du lancement de la vidéo "${voteResult.videoName}"...`}
                     </h5>
                 </div>
             ) : (
@@ -172,7 +172,7 @@ const VoteBox = ({roomId, socket}) => {
 
                     <h5 className="vote-title">
                         {currentVoteInfos.voteType === "add"
-                            ? `Vote pour ajouter en playlist "${currentVoteInfos.videoName}"`
+                            ? `Vote pour lancer "${currentVoteInfos.videoName}"`
                             : "Vote pour passer la vidéo"}
                     </h5>
                     <p className="vote-author">
