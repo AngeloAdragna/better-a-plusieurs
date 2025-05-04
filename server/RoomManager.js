@@ -29,6 +29,10 @@ class RoomManager {
     static getRoomById(id)  {
         return this.#rooms.find((r) => r.getId() === id);
     }
+
+    static getOpenRooms() {
+        return this.#rooms.filter((r) => r.getFreeToShare());
+    }
 }
 
 export default RoomManager;

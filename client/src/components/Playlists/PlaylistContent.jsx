@@ -1,6 +1,5 @@
 import React, { use, useState,useEffect } from "react";
 import io from "socket.io-client";
-
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -9,6 +8,7 @@ import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
 import axios from 'axios';
 import room from "../RoomCreation/Room.jsx";
+import { MdSkipNext } from "react-icons/md";
 
 
 function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToSkip}) {
@@ -125,8 +125,8 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                         ))
                     )}
                     {videoPlaylist.length > 0 && (
-                        <div className="skip-video">
-                            <button onClick={handleSkipVideo}>Vidéo suivante ⏭️</button>
+                        <div className="skip-video button">
+                            <span onClick={handleSkipVideo}>Vidéo suivante <MdSkipNext className="skip-video-icon" /></span>
                         </div>
                     )}
                 </div>

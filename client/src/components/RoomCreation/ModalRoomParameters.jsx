@@ -4,7 +4,6 @@ import M from "materialize-css";
 
 const ModalRoomParameters = () => {
   const navigate = useNavigate();
-    const serverIP = import.meta.env.VITE_SERVER_IP;
 
 
     // State for the form data
@@ -28,13 +27,18 @@ const ModalRoomParameters = () => {
         event.preventDefault();
 
         try {
-            formData.ownerClient = localStorage.getItem("clientId");
-            const response = await fetch(`http://${serverIP}:8080/create-room`, {
+            const username = localStorage.getItem("username"); // 👈 récupéré ici
+            const formToSend = {
+                ...formData,
+                ownerUsername: username // 👈 ajouté ici
+            };
+
+            const response = await fetch('http://localhost:8080/create-room', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(formToSend),
             });
 
             const data = await response.json();
@@ -49,7 +53,6 @@ const ModalRoomParameters = () => {
             M.toast({ html: "Erreur serveur" });
         }
     };
-
 
 
     // Handle the change of the switches
@@ -73,31 +76,31 @@ const ModalRoomParameters = () => {
             <label htmlFor="roomName">Nom de la Room</label>
           </div>
 
-            <div className="switchdiv">
-          <div className="switch">
-            <label>
-              Vote pour skip
-              <input type="checkbox" name="voteSkip" checked={formData.voteSkip} onChange={handleChange} />
-              <span className="lever"></span>
-            </label>
-          </div>
-
-          <div className="switch">
-            <label>
-              Vote pour add
-              <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
-              <span className="lever"></span>
-            </label>
-          </div>
-
-          <div className="switch">
-            <label>
-              Free to share
-              <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
-              <span className="lever"></span>
-            </label>
-          </div>
+          <div className="switchdiv">
+            <div className="switch">
+              <label>
+                Vote pour skip
+                <input type="checkbox" name="voteSkip" checked={formData.voteSkip} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
             </div>
+
+            <div className="switch">
+              <label>
+                Vote pour add
+                <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
+            </div>
+
+            <div className="switch">
+              <label>
+                Free to share
+                <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
+            </div>
+          </div>
 
           <button type="submit" className="btn waves-effect waves-light">Créer</button>
         </form>

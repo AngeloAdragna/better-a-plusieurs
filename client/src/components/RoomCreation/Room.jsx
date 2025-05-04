@@ -32,7 +32,8 @@ function Room() {
 
     // TODO : connexion du client pour definir si c'est le propriétaire ou pas
     //const clientId = localStorage.getItem("clientId");
-    //const isOwner = roomInfo.ownerClient === clientId;
+    //const isOwner = roomInfo;
+
 
     React.useEffect(() => {
         if (!socket) return;
@@ -93,14 +94,15 @@ function Room() {
                      }
                      isAllowedToAdd={!roomInfo.voteAdd}
             />
-            <div className="valign-wrapper main-content">
-                <div className="left-container col s12 m6 l7">
+            
+            <div className=" valign-wrapper main-content">
+                <div className="col s12 m6 l7">
                     <div className="video-container">
                         <YoutubeFrame roomId={roomId} video={{ title: 'Fatal Bazooka "Fous Ta Cagoule" HD', thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="478919430256-l32pfmh4nehvpj7lfmflbktj21tgd733.apps.googleusercontent.com">
-                            <RecommandationContent roomInfo={roomInfo} />
+                            <RecommandationContent roomInfo={roomInfo} socket={socket} isAllowedToAdd={!roomInfo.voteAdd} />
                         </GoogleOAuthProvider>
                     </div>
                 </div>

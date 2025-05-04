@@ -1,9 +1,14 @@
-.homepage-container {
+.main-container {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-image: url("../assets/homeSpace.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
 }
+
 
 .header-buttons-unconnected {
     position: absolute;
@@ -33,11 +38,11 @@
     border-radius: 20px;
     font-size: 20px;
     height: auto !important;
-    width: auto; !important;
+    width: auto !important;
     line-height: normal !important;
 }
 
-a:hover {
+.CenteredContent a:hover {
     background-color: var(--light-grey) !important;
 }
 
@@ -76,4 +81,10 @@ a:hover {
 
 .disconect-btn a {
     color: var(--light-text) !important;
+}
+
+.transition {
+    background: linear-gradient(to bottom, #1C0A5F, #1B0A57);
+    height: 40px;
+    width: 100vw;
 }
