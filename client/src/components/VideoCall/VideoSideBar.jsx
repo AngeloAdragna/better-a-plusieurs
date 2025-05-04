@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '../../firebase';
 import '../../styles/VideoSideBar.css';
 
-const VideoSideBar = ({ roomId, localStreamRef, localUserId }) => {
+const VideoSideBar = ({ roomId, localStreamRef, localUserId, remoteStreams }) => {
     const [users, setUsers] = useState({});
+    const videoRefs = useRef({}); // Un objet pour garder les refs par UID
 
     useEffect(() => {
         const usersRef = ref(db, `rooms/${roomId}/users`);
@@ -13,6 +14,15 @@ const VideoSideBar = ({ roomId, localStreamRef, localUserId }) => {
         });
         return () => unsubscribe();
     }, [roomId]);
+
+    // Met à jour les srcObject des vidéos distantes quand les flux changent
+    useEffect(() => {
+        Object.entries(remoteStreams || {}).forEach(([uid, stream]) => {
+            if (videoRefs.current[uid] && videoRefs.current[uid].current) {
+                videoRefs.current[uid].current.srcObject = stream;
+            }
+        });
+    }, [remoteStreams]);
 
     return (
         <div className="video-sidebar">
@@ -28,17 +38,24 @@ const VideoSideBar = ({ roomId, localStreamRef, localUserId }) => {
                 <div>
                     {users[localUserId]?.pseudo || "Moi"}
                     <span style={{ fontSize: "0.8em", color: "gray", marginLeft: 6 }}>
-            ({users[localUserId]?.status || "?"})
-        </span>
+                        ({users[localUserId]?.status || "?"})
+                    </span>
                 </div>
             </div>
 
             {/* Vidéos distantes */}
-            {users && Object.entries(users).map(([uid, user]) => (
-                uid !== localUserId && (
+            {Object.entries(users).map(([uid, user]) => {
+                if (uid === localUserId) return null;
+
+                // Crée la ref si elle n’existe pas encore
+                if (!videoRefs.current[uid]) {
+                    videoRefs.current[uid] = React.createRef();
+                }
+
+                return (
                     <div key={uid} className="user-video-tile">
                         <video
-                            id={`video-${uid}`}
+                            ref={videoRefs.current[uid]}
                             autoPlay
                             playsInline
                             style={{ width: 160, height: 90, borderRadius: 8 }}
@@ -50,8 +67,8 @@ const VideoSideBar = ({ roomId, localStreamRef, localUserId }) => {
                             </span>
                         </div>
                     </div>
-                )
-            ))}
+                );
+            })}
         </div>
     );
 };
