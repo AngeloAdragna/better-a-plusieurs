@@ -1,0 +1,23 @@
+{
+  "rooms": {
+    "exampleRoomId": {
+      "users": {
+        "userId1": {
+          "pseudo": "Arthur",
+          "videoEnabled": true,
+          "audioEnabled": true
+        },
+        "userId2": {
+          "pseudo": "Laurène",
+          "videoEnabled": false,
+          "audioEnabled": true
+        }
+      },
+      "signaling": {
+        "offers": {},
+        "answers": {},
+        "iceCandidates": {}
+      }
+    }
+  }
+}

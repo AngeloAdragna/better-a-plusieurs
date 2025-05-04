@@ -1,4 +1,4 @@
-import { ref, update, remove } from 'firebase/database';
+import {ref, update, remove, onDisconnect} from 'firebase/database';
 import { db } from '../firebase.js';
 
 // Rejoindre ou créer une room
@@ -8,8 +8,11 @@ export function joinRoom(roomId, userId, pseudo) {
     update(userRef, {
         pseudo,
         videoEnabled: true,
-        audioEnabled: true
+        audioEnabled: true,
+        status: "connecting",
     });
+
+    onDisconnect(userRef).remove();
 }
 
 // Quitter une room

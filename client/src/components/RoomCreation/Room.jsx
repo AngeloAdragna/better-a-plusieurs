@@ -84,6 +84,9 @@ function Room() {
         return <div>Chargement de la salle...</div>;
     }
 
+    // Ajout de la récupération du username pour le passer à VideoCall
+    const username = localStorage.getItem("username") || "Anonyme";
+
     return (
         <div className="room-container row">
             <BarPage roomName={roomInfo.name}
@@ -109,7 +112,7 @@ function Room() {
                     <div style={{ flex: 1 }}>
                         Vidéo
                     </div>
-                    <VideoCall roomId={roomId} userId={clientId} />
+                    <VideoCall roomId={roomId} userId={clientId} username={username} />
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
                     <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket}/>

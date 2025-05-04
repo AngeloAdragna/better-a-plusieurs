@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { db } from '../../firebase';
-import { ref, onChildAdded, push, set, get } from 'firebase/database';
+import {ref, onChildAdded, push, set, get, onDisconnect, onChildRemoved, update} from 'firebase/database';
 import VideoSideBar from './VideoSideBar';
 
 const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
 
-const VideoCall = ({ roomId, userId }) => {
+const VideoCall = ({ roomId, userId, username }) => {
+
     const localStreamRef = useRef();
     const peerConnections = useRef({});
 
@@ -24,10 +25,14 @@ const VideoCall = ({ roomId, userId }) => {
         };
 
         pc.ontrack = (event) => {
+            console.log("✅ ontrack déclenché pour", remoteUserId);
             const remoteVideo = document.getElementById(`video-${remoteUserId}`);
             if (remoteVideo) {
                 remoteVideo.srcObject = event.streams[0];
             }
+
+            const userRef = ref(db, `rooms/${roomId}/users/${userId}`);
+            update(userRef, { status: "connected", pseudo: username });
         };
 
         peerConnections.current[remoteUserId] = pc;
@@ -35,6 +40,7 @@ const VideoCall = ({ roomId, userId }) => {
     };
 
     const [localStream, setLocalStream] = useState(null);
+    const [remoteUserIds, setRemoteUserIds] = useState([]);
 
     useEffect(() => {
         const startLocalStream = async () => {
@@ -46,6 +52,17 @@ const VideoCall = ({ roomId, userId }) => {
 
         startLocalStream();
     }, []);
+    useEffect(() => {
+        const usersRef = ref(db, `rooms/${roomId}/users`);
+        const unsub = onChildAdded(usersRef, (snapshot) => {
+            const uid = snapshot.key;
+            if (uid !== userId) {
+                setRemoteUserIds((prev) => [...new Set([...prev, uid])]);
+            }
+        });
+
+        return () => unsub();
+    }, [roomId, userId]);
 
     useEffect(() => {
         if (!localStream) return;
@@ -54,31 +71,33 @@ const VideoCall = ({ roomId, userId }) => {
         const answersRef = ref(db, `rooms/${roomId}/signaling/answers`);
         const candidatesRef = ref(db, `rooms/${roomId}/signaling/iceCandidates`);
 
-        // Quand quelqu'un envoie une offre
-        onChildAdded(offersRef, async (snapshot) => {
+        // 1. On stocke les fonctions de désabonnement
+        const unsubOffers = onChildAdded(offersRef, async (snapshot) => {
             const { offer, from } = snapshot.val();
             if (from === userId) return;
 
-            let peerConnection = peerConnections.current[from];
-            if (!peerConnection) {
-                peerConnection = createPeerConnection(from);
+            let pc = peerConnections.current[from];
+            if (!pc) {
+                pc = createPeerConnection(from);
             }
 
             if (
-                peerConnection.signalingState === "stable" ||
-                peerConnection.signalingState === "have-remote-offer"
+                pc.signalingState === "stable" ||
+                pc.signalingState === "have-remote-offer"
             ) {
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-                await push(answersRef, { answer: peerConnection.localDescription.toJSON(), from: userId });
+                await pc.setRemoteDescription(new RTCSessionDescription(offer));
+                const answer = await pc.createAnswer();
+                await pc.setLocalDescription(answer);
+                await push(ref(db, `rooms/${roomId}/signaling/answers`), {
+                    answer: pc.localDescription.toJSON(),
+                    from: userId,
+                });
             } else {
-                console.warn("❗ Ignored setting offer because signalingState is", peerConnection.signalingState);
+                console.warn("❗ Ignored setting offer because signalingState is", pc.signalingState);
             }
         });
 
-        // Quand quelqu'un envoie une réponse
-        onChildAdded(answersRef, async (snapshot) => {
+        const unsubAnswers = onChildAdded(answersRef, async (snapshot) => {
             const { answer, from } = snapshot.val();
             const pc = peerConnections.current[from];
             if (pc) {
@@ -90,8 +109,7 @@ const VideoCall = ({ roomId, userId }) => {
             }
         });
 
-        // Quand quelqu'un envoie un candidat ICE
-        onChildAdded(candidatesRef, async (snapshot) => {
+        const unsubCandidates = onChildAdded(candidatesRef, async (snapshot) => {
             const { candidate, from } = snapshot.val();
             const pc = peerConnections.current[from];
             if (pc && pc.remoteDescription && pc.remoteDescription.type) {
@@ -99,22 +117,68 @@ const VideoCall = ({ roomId, userId }) => {
             }
         });
 
-        const createOffer = async () => {
-            const offersSnapshot = await get(offersRef);
-            if (offersSnapshot.exists()) {
-                console.log("⚠️ Une offre existe déjà, j'attends.");
-                return;
+        // Crée les offres vers les autres utilisateurs
+        const createOffers = async () => {
+            for (const remoteUserId of remoteUserIds.filter(id => id !== userId)) {
+                // ✅ Vérifie si une connexion existe déjà
+                if (peerConnections.current[remoteUserId]) {
+                    console.log(`⏩ Connexion déjà existante avec ${remoteUserId}`);
+                    continue;
+                }
+
+                const pc = createPeerConnection(remoteUserId);
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+                await push(ref(db, `rooms/${roomId}/signaling/offers`), {
+                    offer: pc.localDescription.toJSON(),
+                    from: userId,
+                    to: remoteUserId,
+                });
+                console.log(`📤 Offre envoyée à ${remoteUserId}`);
             }
-            const peerConnection = createPeerConnection(userId);
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            await push(offersRef, { offer: peerConnection.localDescription.toJSON(), from: userId });
-            console.log("📤 Nouvelle offre envoyée !");
         };
 
-        createOffer();
-    }, [localStream, roomId, userId]);
+        createOffers();
 
+        // 2. On arrête les écouteurs quand le composant se démonte
+        return () => {
+            unsubOffers();
+            unsubAnswers();
+            unsubCandidates();
+        };
+    }, [localStream, roomId, userId, remoteUserIds]);
+
+    useEffect(() => {
+        const usersRef = ref(db, `rooms/${roomId}/users`);
+
+        const unsubscribe = onChildRemoved(usersRef, (snapshot) => {
+            const userLeftId = snapshot.key;
+
+            const pc = peerConnections.current[userLeftId];
+            if (pc) {
+                pc.close();
+                delete peerConnections.current[userLeftId];
+                console.log(`❌ Connexion fermée avec ${userLeftId}`);
+            }
+
+            const remoteVideo = document.getElementById(`video-${userLeftId}`);
+            if (remoteVideo) {
+                remoteVideo.srcObject = null;
+            }
+        });
+
+        return () => unsubscribe();
+    }, [roomId]);
+    useEffect(() => {
+        const handleUnload = () => {
+            leaveRoom(roomId, userId); // ✅ utilise userId reçu en prop
+        };
+
+        window.addEventListener("beforeunload", handleUnload);
+        return () => {
+            window.removeEventListener("beforeunload", handleUnload);
+        };
+    }, [roomId, userId]);
     return (
         <>
             <VideoSideBar roomId={roomId} localStreamRef={localStreamRef} localUserId={userId} />
