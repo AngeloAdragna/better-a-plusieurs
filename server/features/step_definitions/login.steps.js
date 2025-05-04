@@ -3,9 +3,8 @@ import request from "supertest";
 import { expect } from "chai";
 import { createUser, deleteUser, getUsers } from "../../db.js";
 import app from "../../server.js";
-import puppeteer from "puppeteer";
+import puppeteer from 'puppeteer';
 
-let response;
 let browser;
 let page;
 
@@ -21,14 +20,42 @@ Before(async function () {
 
 // Launch browser before tests
 Before(async function () {
-    const chromiumPath = '/usr/bin/chromium-browser'; 
-    browser = await puppeteer.launch({ headless: false, slowMo: 40, executablePath: chromiumPath });
+    let chromePath;
+
+    // Vérifier le système d'exploitation
+    if (process.platform === 'win32') {
+        // Pour Windows
+        chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'; // Chemin de Chrome sur Windows
+        console.log(`Using Chrome on Windows: ${chromePath}`);
+    } else if (process.platform === 'linux') {
+        // Pour Linux
+        chromePath = '/usr/bin/chromium-browser'; // Chemin de Chromium sur Linux
+        console.log(`Using Chromium on Linux: ${chromePath}`);
+    } else if (process.platform === 'darwin') {
+        // Pour macOS
+        chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'; // Chemin de Chrome sur macOS
+        console.log(`Using Chrome on macOS: ${chromePath}`);
+    } else {
+        throw new Error(`Unsupported platform: ${process.platform}`);
+    }
+
+    // Lancer le navigateur avec le chemin fixe
+    browser = await puppeteer.launch({
+        headless: false,
+        slowMo: 40,
+        executablePath: chromePath,
+        timeout: 10000 // 10 secondes
+    });
+
     page = await browser.newPage();
 });
 
 // Close browser after tests
 After(async function () {
-    await browser.close();
+    if (browser) {
+        console.log('Closing browser...');
+        await browser.close();
+    }
 });
 
 // User setup
