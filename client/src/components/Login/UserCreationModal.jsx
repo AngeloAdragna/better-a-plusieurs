@@ -8,6 +8,7 @@ const UserCreationModal = () => {
     const [formData, setFormData] = useState({ name: '', password: '' });
     const [submittedData, setSubmittedData] = useState(null);
     const modalRef = useRef(null);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     useEffect(() => {
         if (modalRef.current) {
@@ -20,7 +21,7 @@ const UserCreationModal = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Form submitted:", formData);
-        axios.post( 'http://localhost:8080' + '/users', formData)
+        axios.post( `http://${serverIP}:8080` + '/users', formData)
             .then(response => {
                 console.log("User created:", response.data);
                 setSubmittedData(response.data);

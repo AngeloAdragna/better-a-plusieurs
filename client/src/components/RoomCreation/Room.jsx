@@ -15,6 +15,8 @@ function Room() {
     const { roomId } = useParams();
     const socket = useSocket();
     const navigate = useNavigate();
+    const serverIP = import.meta.env.VITE_SERVER_IP;
+    //console.log(`Adresse IP du serveur : ${serverIP}`)
     /**
      * roomInfo contient les informations de la salle :
      * {
@@ -64,7 +66,7 @@ function Room() {
     // RÉCUPÉRATION DES INFOS DE LA SALLE
     React.useEffect(() => {
         async function getData() {
-            const response = await fetch(`http://localhost:8080/room/${roomId}`);
+            const response = await fetch(`http://${serverIP}:8080/room/${roomId}`);
             if (response.ok) {
                 const data = await response.json();
                 console.log("Données reçues de la room :", data);
@@ -96,7 +98,7 @@ function Room() {
             <div className=" valign-wrapper main-content">
                 <div className="col s12 m6 l7">
                     <div className="video-container">
-                        <YoutubeFrame roomId={roomId} video={{ title: "Fatal Bazooka &quot;Fous Ta Cagoule&quot; HD", thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
+                        <YoutubeFrame roomId={roomId} video={{ title: 'Fatal Bazooka "Fous Ta Cagoule" HD', thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
                     </div>
                     <div className="recommendation-container">{/* Recommandations */}
                         <GoogleOAuthProvider clientId="478919430256-l32pfmh4nehvpj7lfmflbktj21tgd733.apps.googleusercontent.com">

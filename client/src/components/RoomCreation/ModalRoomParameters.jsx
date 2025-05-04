@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import M from "materialize-css";
 
+
 const ModalRoomParameters = () => {
   const navigate = useNavigate();
+    const serverIP = import.meta.env.VITE_SERVER_IP
 
 
     // State for the form data
@@ -33,7 +35,7 @@ const ModalRoomParameters = () => {
                 ownerUsername: username // 👈 ajouté ici
             };
 
-            const response = await fetch('http://localhost:8080/create-room', {
+            const response = await fetch(`http://${serverIP}:8080/create-room`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

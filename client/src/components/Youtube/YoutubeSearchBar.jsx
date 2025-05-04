@@ -13,6 +13,8 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false)
     const [currentSelectedVideo, setCurrentSelectedVideo] = useState(null)
 
+    const serverIP = import.meta.env.VITE_SERVER_IP;
+
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
 
@@ -85,7 +87,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
         try {
             // On effectue la requête
-            const res = await axios.get(`http://localhost:8080/suggest?q=${encodeURIComponent(query)}`);
+            const res = await axios.get(`http://${serverIP}:8080/suggest?q=${encodeURIComponent(query)}`);
             // On parse la réponse pour avoir quelque chose d'exploitable
             const suggestions = parseGoogleSuggestResponse(res.data);
             // On actualise les suggestions
@@ -205,9 +207,9 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
                     </div>
                     <div className="col s2">
-                        <IoSearchSharp  className="searchIconBar" onClick={handleSearch} />
+                        <IoSearchSharp type="submit" className="searchIconBar" onClick={handleSearch} />
                         {isFormSubmitted && (
-                            <FaArrowCircleDown className="searchIconBar" onClick={openResultsModalManually}/>
+                            <FaArrowCircleDown type="button" className="searchIconBar" onClick={openResultsModalManually}/>
                         )
                         }
                     </div>
