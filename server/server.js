@@ -6,20 +6,26 @@ import cors from "cors";
 import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from './db.js';
 import {authenticateToken} from "./middleware/authenticateToken.js";
 import RoomManager from "./RoomManager.js";
-import getLocalIP from "./utils/getLocalIP.js";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 /**
-  * Récupération de l'ip locale du serveur et écriture dans un fichier .env
+  * Récupération de l'ip locale du serveur et écriture dans un fichier .env dans le répertoire /client/
   */
-const serverIP = getLocalIP;
-const clientIP = serverIP;
+const args = process.argv.slice(2);       // Récupère les arguments passés
+const serverIP = args[0];                  // Utilise l'argument passé
+
+if (!serverIP) {
+  // Erreur si on ne place pas une ip en argument du lancement du serveur
+  console.error("❌ Erreur : Veuillez spécifier l'adresse IP du serveur en argument.");
+  console.error("➡️  Exemple : node server.js 192.168.1.42");
+  process.exit(1);                          // Interrompt l'exécution du serveur
+}
+
 console.log(`Adresse IP du serveur : ${serverIP}`)
 
-const envContent = `VITE_SERVER_IP=${serverIP}
-VITE_CLIENT_IP=${clientIP}`;
+const envContent = `VITE_SERVER_IP=${serverIP}`;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,9 +33,7 @@ const envPath = path.join(__dirname, "../client/.env") // Racine du projet
 fs.writeFileSync(envPath, envContent);
 
 console.log(`✅ Fichier .env généré avec :
-- VITE_SERVER_IP=${serverIP}
-- VITE_CLIENT_IP=${clientIP}`);
-
+- VITE_SERVER_IP=${serverIP}`);
 
 
 const app = express();
