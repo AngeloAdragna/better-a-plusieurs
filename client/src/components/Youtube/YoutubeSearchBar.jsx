@@ -209,7 +209,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
                             🔍
                         </button>
                         {isFormSubmitted && (
-                            <button className="btn green" style={{ padding: '0 12px' }} onClick={openResultsModalManually}>
+                            <button  type="button" className="btn green" style={{ padding: '0 12px' }} onClick={openResultsModalManually}>
                                 ⬇️
                             </button>)
                         }
