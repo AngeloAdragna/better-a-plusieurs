@@ -60,8 +60,11 @@ http://localhost:5173
 ```
 
 ### Exécuter les tests : 
+Attention il faut que google chrome soit installé pour que puppeteer fonctionne et que les tests passent !
 ```sh
-cd server  
+cd client
+npm run dev
+cd../server
 npx cucumber-js
 ```
 
