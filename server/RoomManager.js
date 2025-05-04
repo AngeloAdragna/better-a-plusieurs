@@ -3,7 +3,7 @@ import Room from './Room.js';
 class RoomManager {
     static #rooms = [];
 
-    static createRoom(name, voteSkip, voteAdd, freeToShare, ownerClient) {
+    static createRoom(name, voteSkip, voteAdd, freeToShare, ownerClient = null) {
       const room = new Room(crypto.randomUUID(), name, voteSkip, voteAdd, freeToShare, ownerClient);
       this.#rooms.push(room);
       return room;
@@ -28,6 +28,10 @@ class RoomManager {
 
     static getRoomById(id)  {
         return this.#rooms.find((r) => r.getId() === id);
+    }
+
+    static getOpenRooms() {
+        return this.#rooms.filter((r) => r.getFreeToShare());
     }
 }
 

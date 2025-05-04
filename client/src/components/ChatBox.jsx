@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
 import M from "materialize-css";
 import { IoIosArrowForward, IoIosSend } from "react-icons/io";
 import Picker from "@emoji-mart/react";
@@ -8,10 +7,9 @@ import { GiphyFetch } from "@giphy/js-fetch-api";
 import { Grid } from "@giphy/react-components";
 import "../styles/ChatBox.css";
 
-const socket = io("http://localhost:8080");
 const gf = new GiphyFetch("Rg2Fql3Wpc2tKQUHOpUTKo0PdG80rmJX"); // TODO: move to .env
 
-const ChatBox = ({roomId}) => {
+const ChatBox = ({roomId, socket}) => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [showPicker, setShowPicker] = useState(false);
@@ -75,12 +73,6 @@ const ChatBox = ({roomId}) => {
         const hue = Math.abs(hash) % 360;
         return `hsl(${hue}, 65%, 60%)`;
     };
-
-    useEffect(() => {
-        if (roomId) {
-            socket.emit("joinRoom", roomId);
-        }
-    }, [roomId]);
 
 
     return (

@@ -2,16 +2,16 @@ import { useState } from "react";
 import UserCreationModal from "./UserCreationModal.jsx";
 import ModalOpenConnection from "./ModalOpenConnection.jsx";
 
-const LoginButton = () => {
+const LoginButton = ({socket}) => {
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
         <>
-            <a className="waves-effect waves-light btn modal-trigger" href="#modalConnection"
+            <a className="modal-trigger btnHover" href="#modalConnection"
                onClick={() => setModalOpen(true)}>
                 Se connecter
             </a>
-            {modalOpen && <ModalOpenConnection />}
+            {modalOpen && <ModalOpenConnection socket={socket} />}
         </>
     );
 };

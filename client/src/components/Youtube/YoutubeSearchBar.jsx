@@ -2,15 +2,25 @@ import React, {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import M from "materialize-css";
 import debounce from 'lodash.debounce';
+import { IoSearchSharp } from "react-icons/io5";
+import { FaArrowCircleDown } from "react-icons/fa";
 
-const YouTubeSearchBar = ({roomId, socket}) => {
+const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [suggestions, setSuggestions] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+    const [currentSelectedVideo, setCurrentSelectedVideo] = useState(null)
 
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
+
+    function decodeHtmlEntities(text) {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = text;
+        return textarea.value;
+    }
 
     // Gestion de la recherche lors de la soumission du formulaire
     const handleSearch = async (e) => {
@@ -31,7 +41,17 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                 }
             );
 
-            setResults(response.data.items);
+            // Décodage html des titres pour pouvoir les afficher correctement
+            const decodedResults = response.data.items.map(video => ({
+                ...video,
+                snippet: {
+                    ...video.snippet,
+                    title: decodeHtmlEntities(video.snippet.title),
+                }
+            }));
+
+            setIsFormSubmitted(true);
+            setResults(decodedResults);
         } catch (error) {
             console.error('Erreur lors de la recherche :', error);
         }
@@ -90,10 +110,33 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     };
 
 
-    const handleSelectVideo = (videoId, roomId, socket) => {
-        // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
-        //console.log(socket)   // DEBUG
-        socket.emit("selectVideo", {roomId: roomId, videoId: videoId})
+    useEffect(() => {
+        const handleVoteEnded = ({id, result}) => {
+            if (!currentSelectedVideo) return;
+
+            console.log(`result : ${result}`)
+            if (result) {
+                socket.emit("selectVideo", {roomId: roomId, video: currentSelectedVideo})
+                setCurrentSelectedVideo(null)
+            }
+        }
+
+        socket.on("voteEnded", handleVoteEnded)
+        return () => {
+            socket.off("voteEnded", handleVoteEnded);
+        };
+    }, [socket, currentSelectedVideo]);
+
+    const handleSelectVideo = (video, roomId, socket) => {
+        if (isAllowedToAdd) {
+            // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
+            //console.log(socket)   // DEBUG
+            socket.emit("selectVideo", {roomId: roomId, video: video})
+        }
+        else {
+            setCurrentSelectedVideo(video)
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "add", videoName: video.title });
+        }
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats
@@ -111,11 +154,23 @@ const YouTubeSearchBar = ({roomId, socket}) => {
         }
     }, [results]);
 
+    const openResultsModalManually = () => {
+        const modal = document.querySelector('.modal');
+        const instance = M.Modal.getInstance(modal);
+        instance.open();
+    }
+
+    // Fonction pour ajouter une vidéo à la playlist
+    const handleAddVideoToPlaylist = (video) => {
+        //Todo verif structure lien bien vid
+        socket.emit("videoAddedPlaylist", { roomId, video });  // Envoie la vidéo au serveur
+    };
+
     return (
-        <div className="container">
-            <form onSubmit={handleSearch} className="center-align">
-                <div className="row valign-wrapper">
-                    <div className="input-field col s10 text-suggestions-wrapper">
+        <div>
+            <form onSubmit={handleSearch}>
+                <div className="valign-wrapper">
+                    <div className="input-field col s11 text-suggestions-wrapper">
                         <input
                             type="text"
                             placeholder="Rechercher sur YouTube..."
@@ -124,7 +179,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                                 const value = e.target.value
                                 setQuery(value);
                                 handleInputChange(e);  // à chaque changement, on actualise les suggestions
-                                }
+                            }
                             }
                             onFocus={() => setShowSuggestions(true)}
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 100)} // Délai pour laisser le temps de cliquer sur une suggestion
@@ -150,9 +205,11 @@ const YouTubeSearchBar = ({roomId, socket}) => {
 
                     </div>
                     <div className="col s2">
-                        <button className="btn green" type="submit" style={{ padding: '0 12px' }}>
-                            🔍
-                        </button>
+                        <IoSearchSharp  className="searchIconBar" onClick={handleSearch} />
+                        {isFormSubmitted && (
+                            <FaArrowCircleDown className="searchIconBar" onClick={openResultsModalManually}/>
+                        )
+                        }
                     </div>
                 </div>
             </form>
@@ -163,19 +220,27 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                     <button id="closeResultsModal" className="modal-close btn-flat" >
                         ✖
                     </button>
-                <h5>Résultats de la recherche</h5>
+                    <h5>Résultats de la recherche</h5>
                     {results.length > 0 && (
                         <div>
                             {results.map((video) => (
-                                <div
-                                    key={video.id.videoId}
-                                    onClick={() => handleSelectVideo(video.id.videoId, roomId, socket)}
-                                    className="video-result modal-close">
-                                    <img
-                                        src={video.snippet.thumbnails.medium.url}
-                                        alt="thumbnail"
-                                    />
-                                    <p>{video.snippet.title}</p>
+                                <div>
+                                    <div className="video-result row">
+                                        <div
+                                            key={video.id.videoId}
+                                            onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
+                                            className="modal-close col">
+                                            <img
+                                                src={video.snippet.thumbnails.medium.url}
+                                                alt="thumbnail"
+                                                className="col"
+                                            />
+                                            <p>{video.snippet.title}</p>
+                                        </div>
+                                        <button className="add-to-playlist" onClick={() => handleAddVideoToPlaylist({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId })}>
+                                            Ajouter à la playlist
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>

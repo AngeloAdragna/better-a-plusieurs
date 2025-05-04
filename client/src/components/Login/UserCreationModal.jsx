@@ -81,7 +81,7 @@ const UserCreationModal = () => {
                 </div>
             </div>
 
-            <ModalRoomParameters />
+            <ModalRoomParameters/>
         </>
     );
 };

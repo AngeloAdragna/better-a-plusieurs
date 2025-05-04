@@ -2,14 +2,16 @@ import React, {useEffect, useState} from "react";
 import YouTube from "react-youtube";
 
 
-const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" }) => {
+const VideoPlayer = ({ roomId, video, socket, height = "390", width = "661" }) => {
     const [player, setPlayer] = useState(null)
-    const [currentVideoId, setCurrentVideoId] = useState(videoId)
+    const [currentVideo, setCurrentVideo] = useState(video)
     const [_, setIntervalId] = useState(null)
     const [isPlaying, setIsPlaying] = useState(false);
     const [syncPeriod] = useState(2000); // 2 seconds
     const [isTimerRunning, setIsTimerRunning] = useState(false)
     const [authorizedTimeDelta] = useState(2);
+    const [videoAlreadyAddedToHistory, setVideoAlreadyAddedToHistory] = useState(false);
+
 
 
 
@@ -17,9 +19,9 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
         height: height,
         width: width,
         playerVars: {
-            autoplay: 1,        // Auto
-            //mute: 1           // the only way to enable autoplay in your navigator if you don't want
-                                // to enable it manually
+            autoplay: 0,        // Not Auto
+
+            // to enable it manually
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // !!!!! You have to enable "video and audio" into your navigator to enable autoplay with sound !!!!!
             // !!!!! without doing this, it won't work                                                      !!!!!
@@ -42,10 +44,24 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
         setIsTimerRunning(false)
     }
 
+    const checkAndAddToHistory = (roomId, video) => {
+        if (!videoAlreadyAddedToHistory) {
+            socket.emit("videoAddedHistory", {roomId, video})
+            setVideoAlreadyAddedToHistory(true)
+        }
+    }
+
     const onStateChange = (event) => {
         if (!player) return;
 
         const state = event.data;
+        if (state === 0) {
+            // La vidéo est terminée
+            console.log("Vidéo terminée");
+            cancelPeriodicSync();
+            setIsPlaying(false);
+            socket.emit("videoEnded", roomId)
+        }
         if (state === 2) {
             // If the video is set to pause
             // Disable periodic sync
@@ -57,10 +73,11 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
 
         } else if (state === 1 && !isPlaying) {
             // If the video is set to play and wasn't playing yet
-            //console.log(`Play : state = ${state}`); // DEBUG
-            socket.emit("play", {roomId: roomId, timeCode: player.getCurrentTime()});
+            //console.log(`Play : state = ${state}, ID DE VIDEO = ${currentVideo.id}`); // DEBUG
+            socket.emit("play", {roomId: roomId, timeCode: player.getCurrentTime(), video: currentVideo});
             // Enable periodic sync
             setPeriodicSync()
+            checkAndAddToHistory(roomId, currentVideo)
         }
     };
 
@@ -74,12 +91,17 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
             }
         };
 
-        const handlePlay = (time) => {
+        const handlePlay = (time, video) => {
+            //console.log(`ID DE LA VIDEO : ${videoId}`)    // DEBUG
             if (player && !isPlaying) {
                 setPeriodicSync()           // We want to restart the periodic synchronization
                 player.playVideo()
                 player.seekTo(time, true)   // Sync timecodes
                 setIsPlaying(true)
+                if (video.id !== currentVideo.id) {
+                    changeVideo(video)
+                }
+                checkAndAddToHistory(currentVideo)
             }
         };
 
@@ -88,33 +110,34 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
                 const currentLocalTime = player.getCurrentTime()
                 // console.log(`Current difference = ${Math.abs(currentLocalTime - timeCode)}`) // DEBUG
 
-                // Synchronise timecode only if the difference is higher than allowed
+                // Synchronize timecode only if the difference is higher than allowed
                 if (Math.abs(currentLocalTime - timeCode) > authorizedTimeDelta) {
                     player.seekTo(timeCode, true)
                 }
             }
         }
 
-        const changeVideo = (newVideoId) => {
-            console.log(`Nouvel Id de video : ${newVideoId}`)
-            setCurrentVideoId(newVideoId)
+        const changeVideo = (newVideo) => {
+            console.log(`Nouvel Id de video : ${newVideo.id}`)
+            setCurrentVideo(newVideo)
             if(player) {
                 player.seekTo(0, true)
             }
             cancelPeriodicSync()
+            setVideoAlreadyAddedToHistory(false)
 
         }
 
         socket.on("pause", handlePause);
         socket.on("play", handlePlay);
         socket.on("sync", syncTimeCode);
-        socket.on("selectVideo", (newVideoId) => changeVideo(newVideoId));
+        socket.on("selectVideo", changeVideo);
 
         return () => {
             socket.off("pause", handlePause);
             socket.off("play", handlePlay);
             socket.off("sync", syncTimeCode);
-            socket.off("selectVideo", (newVideoId) => changeVideo(newVideoId));
+            socket.off("selectVideo", changeVideo);
         };
     }, [player, isPlaying, socket]);
 
@@ -137,7 +160,7 @@ const VideoPlayer = ({ roomId, videoId, socket, height = "390", width = "661" })
 
     }, [isTimerRunning]);
 
-    return <YouTube videoId={currentVideoId} opts={opts} onReady={onReady} onStateChange={onStateChange} />
+    return <YouTube videoId={currentVideo.id} opts={opts} onReady={onReady} onStateChange={onStateChange} />
 };
 
 export default VideoPlayer;

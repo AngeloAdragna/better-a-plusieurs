@@ -1,16 +1,16 @@
 import { useState } from "react";
 import UserCreationModal from "./UserCreationModal.jsx";
 
-const Register = () => {
+const Register = ({socket}) => {
     const [modalOpen, setModalOpen] = useState(false);
 
     return (
         <>
-            <a className="waves-effect waves-light btn modal-trigger" href="#modalUserCreation"
+            <a className="btnHover modal-trigger" href="#modalUserCreation"
                onClick={() => setModalOpen(true)}>
                 Créer un compte
             </a>
-            {modalOpen && <UserCreationModal/>}
+            {modalOpen && <UserCreationModal socket={socket}/>}
         </>
     );
 };
