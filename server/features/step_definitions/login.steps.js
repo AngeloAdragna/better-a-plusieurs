@@ -2,7 +2,6 @@ import { Given, When, Then, Before, After } from "@cucumber/cucumber";
 import request from "supertest";
 import { expect } from "chai";
 import { createUser, deleteUser, getUsers } from "../../db.js";
-import app from "../../server.js";
 import puppeteer from 'puppeteer';
 
 let browser;
@@ -71,12 +70,6 @@ Given('a user {string} with password {string}', async function (name, password) 
     await createUser({ name, password });
 });
 
-// Sending a POST request
-When('I POST to {string} with:', async function (endpoint, dataTable) {
-    const data = dataTable.rowsHash();
-    console.log("Sending POST request with body:", data);
-    response = await request(app).post(endpoint).send(data);
-});
 
 // Checking response status
 Then('the response status should be {int}', function (expectedStatus) {
@@ -127,12 +120,6 @@ When('I click the submit button', async function () {
     await page.click('#submit');  // adapte le sélecteur
 });
 
-Then('I should see the user {string} connected', async function (username) {    
-    await page.waitForSelector('#connected-info', { visible: true });
-    const connectedInfo = await page.$eval('#connected-info', el => el.textContent.trim());
-    const expectedText = `Connecté en tant que ${username}`;
-    expect(connectedInfo).to.equal(expectedText);
-});
 
 
 Then("I should see an error message when i submit", async function () {

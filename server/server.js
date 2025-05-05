@@ -15,7 +15,6 @@ import { fileURLToPath } from 'url';
   */
 const args = process.argv.slice(2);       // Récupère les arguments passés
 const serverIP = args[0];                  // Utilise l'argument passé
-
 if (!serverIP) {
   // Erreur si on ne place pas une ip en argument du lancement du serveur
   console.error("❌ Erreur : Veuillez spécifier l'adresse IP du serveur en argument.");
