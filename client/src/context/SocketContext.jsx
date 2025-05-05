@@ -9,9 +9,10 @@ export function useSocket() {
 
 export function SocketProvider({ children }) {
     const [socket, setSocket] = useState(null);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     useEffect(() => {
-        const newSocket = io("http://localhost:8080");
+        const newSocket = io(`http://${serverIP}:8080`);
         setSocket(newSocket);
 
         newSocket.on("connect", () => {
