@@ -183,7 +183,7 @@ When('I click on the button number {int} to add video to the playlist', async fu
 When('I select the video number {int}', async function (index) {
     // Wait for the modal to be open and ensure the video selectors are available
     await page.waitForSelector('#searchResultsModal.open');
-    
+
     // Wait for the video selector elements to be available
     const buttons = await page.$$('.video-selector');
     
@@ -206,7 +206,6 @@ When('I click on the skip button', async function () {
     await page.click('#skip_video_btn');  // adapte le sélecteur
 });
 
-
 When('I click on close button', async function () {
     await page.click('#closeResultsModal');  // adapte le sélecteur
 });
@@ -222,3 +221,38 @@ When('I display the history', async function () {
 When('I wait for {int} seconds', async function (seconds) {
     await new Promise(resolve => setTimeout(resolve, seconds * 1000));  // attends le nombre de secondes spécifié
 });
+
+
+
+Then('I should see the video playing', async function () {
+    const videoElement = await page.$('#video');
+    const isPlaying = await videoElement.evaluate(el => !el.paused);
+    expect(isPlaying).to.be.true;
+});
+
+Then('I should see the playlist displayed', async function () {
+    await page.waitForSelector('.playlist-container', { visible: true });
+    const playlistVisible = await page.$eval('.playlist-container', el => el.style.display !== 'none');
+    expect(playlistVisible).to.be.true;
+});
+
+Then('I should see the history displayed', async function () {
+    await page.waitForSelector('.history-container', { visible: true });
+    const historyVisible = await page.$eval('.history-container', el => el.style.display !== 'none');
+    expect(historyVisible).to.be.true;
+});
+
+Then('I should see the video skipped', async function () {
+    const videoElement = await page.$('#video');
+    const currentVideoSrc = await videoElement.evaluate(el => el.currentSrc);
+    const isPlaying = await videoElement.evaluate(el => !el.paused);
+    expect(isPlaying).to.be.true;
+
+    // Ensure the video source has changed to confirm it's a different video
+    const previousVideoSrc = this.previousVideoSrc || null;
+    expect(currentVideoSrc).to.not.equal(previousVideoSrc);
+
+    // Store the current video source for future comparisons
+    this.previousVideoSrc = currentVideoSrc;
+});
+
