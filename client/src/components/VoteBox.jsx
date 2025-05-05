@@ -126,6 +126,15 @@ const VoteBox = ({roomId, socket}) => {
             id: currentVoteInfos.id,
             vote: choice,
         });
+        disableButtons()
+    };
+
+    const disableButtons = () => {
+        const yesButton = document.getElementById('vote-yes-btn');
+        const noButton = document.getElementById('vote-no-btn');
+
+        if (yesButton) yesButton.disabled = true;
+        if (noButton) noButton.disabled = true;
     };
 
 
@@ -151,10 +160,10 @@ const VoteBox = ({roomId, socket}) => {
                         {voteResult.success
                             ? voteResult.voteType === "skip"
                                 ? "La vidéo a été passée !"
-                                : `La vidéo "${voteResult.videoName}" a été ajoutée à la playlist !`
+                                : `Lancement de la vidéo "${voteResult.videoName}" !`
                             : voteResult.voteType === "skip"
                                 ? "La vidéo n'a pas été passée."
-                                : `La vidéo "${voteResult.videoName}" n'a pas été ajoutée.`}
+                                : `Annulation du lancement de la vidéo "${voteResult.videoName}"...`}
                     </h5>
                 </div>
             ) : (
@@ -163,7 +172,7 @@ const VoteBox = ({roomId, socket}) => {
 
                     <h5 className="vote-title">
                         {currentVoteInfos.voteType === "add"
-                            ? `Vote pour ajouter "${currentVoteInfos.videoName}" à la playlist`
+                            ? `Vote pour lancer "${currentVoteInfos.videoName}"`
                             : "Vote pour passer la vidéo"}
                     </h5>
                     <p className="vote-author">
@@ -190,12 +199,14 @@ const VoteBox = ({roomId, socket}) => {
 
                     <div className="vote-buttons">
                         <button
+                            id="vote-yes-btn"
                             className="btn green vote-button"
                             onClick={() => handleVote("oui")}
                         >
                             Oui
                         </button>
                         <button
+                            id="vote-no-btn"
                             className="btn red vote-button"
                             onClick={() => handleVote("non")}
                         >

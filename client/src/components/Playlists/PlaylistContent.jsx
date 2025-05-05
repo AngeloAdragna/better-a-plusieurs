@@ -1,6 +1,5 @@
 import React, { use, useState,useEffect } from "react";
 import io from "socket.io-client";
-
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -9,13 +8,15 @@ import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
 import axios from 'axios';
 import room from "../RoomCreation/Room.jsx";
+import { MdSkipNext } from "react-icons/md";
 
 
-function PlaylistContent({roomInfo, roomId, socket}) {
-    //const { roomId } = useParams();  // Récupère l'ID de la room depuis l'URL
+function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToSkip}) {
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
-    const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []); 
+    const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []);
+    const [isSkipVote, setIsSkipVote] = useState(false);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     const handleLinkClick = () => {
         setIsSelected((prev) => !prev);
@@ -43,7 +44,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
     useEffect(() => {
         if (roomId) {
             //socket.emit("joinRoom", roomId);
-            axios.get(`http://localhost:8080/room-playlist/${roomId}`)
+            axios.get(`http://${serverIP}:8080/room-playlist/${roomId}`)
                 .then((response) => {
                     setVideoPlaylist(response.data);
                     console.log("Playlist récupérée :", response.data);
@@ -59,7 +60,7 @@ function PlaylistContent({roomInfo, roomId, socket}) {
     useEffect(() => {
         if (roomId) {
             //socket.emit("joinRoom", roomId);
-            axios.get(`http://localhost:8080/room-history/${roomId}`)
+            axios.get(`http://${serverIP}:8080/room-history/${roomId}`)
                 .then((response) => {
                     setVideoHistory(response.data);
                     console.log("Historique récupéré :", response.data);
@@ -70,9 +71,34 @@ function PlaylistContent({roomInfo, roomId, socket}) {
         }
     }, [roomId]);
 
-    const handleDeleteVideoFromPlaylist = (video) => {
-        socket.emit("videoDeletedPlaylist", {roomId: roomId, video: video})
+    const handleSkipVideo = () => {
+        console.log("Vote to skip")
+        if (isAllowedToSkip) {
+            socket.emit("nextVideo", {roomId : roomId})
+        }
+        else {
+            setIsSkipVote(true)
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "skip", videoName: "actuelle" });
+        }
+
     }
+
+    useEffect(() => {
+        const nextVideo = ({id, result}) => {
+            //console.log(`Result = ${result}`)
+            if (isSkipVote) {
+                if (result) socket.emit("nextVideo", {roomId: roomId})
+                setIsSkipVote(false)
+            }
+        }
+
+        socket.on("voteEnded", nextVideo)
+        return () => {
+            socket.off("voteEnded", nextVideo);
+        };
+    }, [socket, isSkipVote]);
+
+
 
 
     return (
@@ -87,38 +113,41 @@ function PlaylistContent({roomInfo, roomId, socket}) {
                         <p>La playlist est vide</p> // Message si la playlist est vide
                     ) : (
                         videoPlaylist.map((video, i) => (
-                            <div key={i} className="playlist-video-item">
-                                <PlaylistVideo
-                                    title={video.title}
-                                    thumbnail={video.thumbnail}
-                                    video={video}
-                                    roomId={roomId}
-                                    socket={socket}
-                                />
-                                <button className="del-from-playlist-btn" onClick={() => handleDeleteVideoFromPlaylist(video)}>
-                                    Supprimer de la playlist
-                                </button>
-                            </div>
-                        ))
-                    )}
-                </div>
-
-            </div>
-            <div className={`ContentPlaylistHistory ${isSelected ? '' : 'desactived'}`}>
-                <div className="history-container">
-                    {videoHistory.length === 0 ? (
-                            <p>Aucune vidéo n'a été lue pour le moment</p> // Message si la playlist est vide
-                        ) : (
-                        videoHistory.map((video, i) => (
-                        <div key={i}>
                             <PlaylistVideo
                                 title={video.title}
                                 thumbnail={video.thumbnail}
                                 video={video}
                                 roomId={roomId}
                                 socket={socket}
+                                isPlaylistItem={!isSelected}
+                                isAllowedToAdd={isAllowedToAdd}
                             />
+                        ))
+                    )}
+                    {videoPlaylist.length > 0 && (
+                        <div className="skip-video button">
+                            <span onClick={handleSkipVideo}>Vidéo suivante <MdSkipNext className="skip-video-icon" /></span>
                         </div>
+                    )}
+                </div>
+
+            </div>
+
+            <div className={`ContentPlaylistHistory ${isSelected ? '' : 'desactived'}`}>
+                <div className="history-container">
+                    {videoHistory.length === 0 ? (
+                            <p>Aucune vidéo n'a été lue pour le moment</p> // Message si la playlist est vide
+                        ) : (
+                        videoHistory.map((video, i) => (
+                            <PlaylistVideo
+                                title={video.title}
+                                thumbnail={video.thumbnail}
+                                video={video}
+                                roomId={roomId}
+                                socket={socket}
+                                isPlaylistItem={!isSelected}
+                                isAllowedToAdd={isAllowedToAdd}
+                            />
                     )))}
                 </div>
             </div>

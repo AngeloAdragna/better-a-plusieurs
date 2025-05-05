@@ -2,13 +2,18 @@ import React, {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import M from "materialize-css";
 import debounce from 'lodash.debounce';
+import { IoSearchSharp } from "react-icons/io5";
+import { FaArrowCircleDown } from "react-icons/fa";
 
-const YouTubeSearchBar = ({roomId, socket}) => {
+const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [suggestions, setSuggestions] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+    const [currentSelectedVideo, setCurrentSelectedVideo] = useState(null)
+
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
@@ -82,7 +87,7 @@ const YouTubeSearchBar = ({roomId, socket}) => {
 
         try {
             // On effectue la requête
-            const res = await axios.get(`http://localhost:8080/suggest?q=${encodeURIComponent(query)}`);
+            const res = await axios.get(`http://${serverIP}:8080/suggest?q=${encodeURIComponent(query)}`);
             // On parse la réponse pour avoir quelque chose d'exploitable
             const suggestions = parseGoogleSuggestResponse(res.data);
             // On actualise les suggestions
@@ -107,10 +112,33 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     };
 
 
+    useEffect(() => {
+        const handleVoteEnded = ({id, result}) => {
+            if (!currentSelectedVideo) return;
+
+            console.log(`result : ${result}`)
+            if (result) {
+                socket.emit("selectVideo", {roomId: roomId, video: currentSelectedVideo})
+                setCurrentSelectedVideo(null)
+            }
+        }
+
+        socket.on("voteEnded", handleVoteEnded)
+        return () => {
+            socket.off("voteEnded", handleVoteEnded);
+        };
+    }, [socket, currentSelectedVideo]);
+
     const handleSelectVideo = (video, roomId, socket) => {
-        // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
-        //console.log(socket)   // DEBUG
-        socket.emit("selectVideo", {roomId: roomId, video: video})
+        if (isAllowedToAdd) {
+            // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
+            //console.log(socket)   // DEBUG
+            socket.emit("selectVideo", {roomId: roomId, video: video})
+        }
+        else {
+            setCurrentSelectedVideo(video)
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "add", videoName: video.title });
+        }
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats
@@ -141,10 +169,10 @@ const YouTubeSearchBar = ({roomId, socket}) => {
     };
 
     return (
-        <div className="container">
-            <form onSubmit={handleSearch} className="center-align">
-                <div className="row valign-wrapper">
-                    <div className="input-field col s10 text-suggestions-wrapper">
+        <div>
+            <form onSubmit={handleSearch}>
+                <div className="valign-wrapper">
+                    <div className="input-field col s11 text-suggestions-wrapper">
                         <input
                             type="text"
                             placeholder="Rechercher sur YouTube..."
@@ -179,13 +207,10 @@ const YouTubeSearchBar = ({roomId, socket}) => {
 
                     </div>
                     <div className="col s2">
-                        <button className="btn green" type="submit" style={{ padding: '0 12px' }}>
-                            🔍
-                        </button>
+                        <IoSearchSharp type="submit" className="searchIconBar" onClick={handleSearch} />
                         {isFormSubmitted && (
-                            <button className="btn green" style={{ padding: '0 12px' }} onClick={openResultsModalManually}>
-                                ⬇️
-                            </button>)
+                            <FaArrowCircleDown type="button" className="searchIconBar" onClick={openResultsModalManually}/>
+                        )
                         }
                     </div>
                 </div>
@@ -202,14 +227,15 @@ const YouTubeSearchBar = ({roomId, socket}) => {
                         <div>
                             {results.map((video) => (
                                 <div>
-                                    <div className="video-result">
+                                    <div className="video-result row">
                                         <div
                                             key={video.id.videoId}
                                             onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
-                                            className="modal-close">
+                                            className="modal-close col">
                                             <img
                                                 src={video.snippet.thumbnails.medium.url}
                                                 alt="thumbnail"
+                                                className="col"
                                             />
                                             <p>{video.snippet.title}</p>
                                         </div>

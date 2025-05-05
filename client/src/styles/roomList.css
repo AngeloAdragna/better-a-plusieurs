@@ -1,0 +1,33 @@
+.RoomList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    background-image: url("../assets/homeSpace2.png");
+}
+
+.room-list-item {
+    background-color: var(--mid-blue);
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 0.5fr 1fr 0.5fr ;
+    gap: 40px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.joinRoomBtn {
+    background-color: var(--mid-blue-btn);
+    padding: 10px;
+    border : white 1px solid;
+    border-radius: 20px;
+}

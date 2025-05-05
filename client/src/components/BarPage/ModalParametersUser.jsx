@@ -4,9 +4,12 @@ import M from "materialize-css";
 
 const ModalParametersUser = () => {
   const navigate = useNavigate();
-  // exemple
+  // State for the form data
   const [formData, setFormData] = useState({
-    url: "",
+    roomName: "",
+    voteSkip: false,
+    voteAdd: false,
+    freeToShare: false,
   });
 
   // Initialize the modal
@@ -24,22 +27,53 @@ const ModalParametersUser = () => {
   
   };
  
+  // Handle the change of the switches
+  const handleChange = (event) => {
+    const { name, checked } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
   return (
     <div id="ModalParametersUser" className="modal">
       <div className="modal-content">
-        <h5>Paramètres de l'utilisateur et ses préférences</h5>
+        <h5>Paramètres de la room</h5>
         <form onSubmit={onSubmit}>
-          <div className="input-field">
+        <div className="input-field">
             <input
               type="text"
-              name="url"
-              value={formData.url}
-              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              name="roomName"
+              value={formData.roomName}
+              onChange={(e) => setFormData({ ...formData, roomName: e.target.value })}
             />
-            <label htmlFor="url">Url de la Room</label>
+            <label htmlFor="roomName">Nouveau nom de la Room</label>
           </div>
 
-          <button type="submit" className="btn waves-effect waves-light">Créer</button>
+          <div className="switchdiv">
+            <div className="switch">
+              <label>
+                Vote pour skip
+                <input type="checkbox" name="voteSkip" checked={formData.voteSkip} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
+            </div>
+
+            <div className="switch">
+              <label>
+                Vote pour add
+                <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
+            </div>
+
+            <div className="switch">
+              <label>
+                Free to share
+                <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
+                <span className="lever"></span>
+              </label>
+            </div>
+          </div>
+          <button type="submit" className="btnHover" style={{ margin: "20px" }}>Modifier</button>
         </form>
       </div>
     </div>
