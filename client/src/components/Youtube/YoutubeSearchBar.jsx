@@ -130,13 +130,17 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     const handleSelectVideo = (video, roomId, socket) => {
         if (isAllowedToAdd) {
             // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
-            //console.log(socket)   // DEBUG
+            //console.log(socket)   // DEBUG 
             socket.emit("selectVideo", {roomId: roomId, video: video})
+
         }
         else {
             setCurrentSelectedVideo(video)
             socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "add", videoName: video.title });
         }
+        const modal = document.querySelector('.modal');
+        const instance = M.Modal.getInstance(modal);
+        instance.close(); // Ferme le modal
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats
@@ -229,8 +233,9 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
                                     <div className="video-result row">
                                         <div
                                             key={video.id.videoId}
+                                            className="video-selector modal-close col"
                                             onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
-                                            className="video-selector modal-close col">
+                                            >
                                             <img
                                                 src={video.snippet.thumbnails.medium.url}
                                                 alt="thumbnail"

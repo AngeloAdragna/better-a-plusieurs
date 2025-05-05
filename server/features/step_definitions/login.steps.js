@@ -7,6 +7,7 @@ import puppeteer from 'puppeteer';
 
 let browser;
 let page;
+let response;
 
 // Clean up users before tests
 Before(async function () {
@@ -127,10 +128,12 @@ When('I click the submit button', async function () {
 });
 
 Then('I should see the user {string} connected', async function (username) {    
+    await page.waitForSelector('#connected-info', { visible: true });
     const connectedInfo = await page.$eval('#connected-info', el => el.textContent.trim());
     const expectedText = `Connecté en tant que ${username}`;
     expect(connectedInfo).to.equal(expectedText);
 });
+
 
 Then("I should see an error message when i submit", async function () {
     const errorMessagePromise = new Promise(resolve => {
@@ -151,9 +154,9 @@ When('I fill in the room name with {string}', async function (roomName) {
     await page.type('#roomName', roomName);
 });
 
-When('I check all the checkboxes', async function () {
-    await page.click('#check_skip');
-    await page.click('#check_add');
+When('I check the last checkbox', async function () {
+    // Attendre que la case à cocher soit visible avant de cliquer dessus
+    await page.waitForSelector('#check_share', { visible: true });
     await page.click('#check_share');
 });
 
@@ -176,13 +179,23 @@ When('I click on the button number {int} to add video to the playlist', async fu
     }
     await buttons[index - 1].click();
 });
+
 When('I select the video number {int}', async function (index) {
+    // Wait for the modal to be open and ensure the video selectors are available
     await page.waitForSelector('#searchResultsModal.open');
+    
+    // Wait for the video selector elements to be available
     const buttons = await page.$$('.video-selector');
+    
+    // Validate the index to make sure it's within range
     if (index < 1 || index > buttons.length) {
-        throw new Error(`Invalid button index: ${index}`);
+        throw new Error(`Invalid button index: ${index}. Only ${buttons.length} videos available.`);
     }
-    await buttons[index - 1].click();
+    
+    // Wait for the button to be clickable before clicking it
+    const buttonToClick = buttons[index - 1];
+    await page.waitForSelector('.video-selector');
+    await buttonToClick.click();
 });
 
 When('I launch the video', async function () {
