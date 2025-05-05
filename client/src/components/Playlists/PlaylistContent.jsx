@@ -104,8 +104,8 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
     return (
         <section className='PlaylistContent'>
             <div className="SelectionBar">
-                <span onClick={handleLinkClick} className={`button ${isSelected ? 'down' : 'up'}`}>History</span>
-                <span onClick={handleLinkClick} className={`button ${isSelected ? 'up' : 'down'}`}>Playlist</span>
+                <span id="display_history" onClick={handleLinkClick} className={`button ${isSelected ? 'down' : 'up'}`}>History</span>
+                <span id="display_playlist" onClick={handleLinkClick} className={`button ${isSelected ? 'up' : 'down'}`}>Playlist</span>
             </div>
             <div className={`ContentPlaylistHistory ${isSelected ? 'desactived' : ''}`}>
                 <div className="playlist-container">
@@ -125,7 +125,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                         ))
                     )}
                     {videoPlaylist.length > 0 && (
-                        <div className="skip-video button">
+                        <div id="skip_video_btn" className="skip-video button">
                             <span onClick={handleSkipVideo}>Vidéo suivante <MdSkipNext className="skip-video-icon" /></span>
                         </div>
                     )}
