@@ -41,7 +41,7 @@ export default function RoomList() {
                     <li key={index} style={{ marginBottom: '1em' }} className={"room-list-item"}>
                         <div className={"name"}>{room.name || "Room sans nom"}</div>
                         <div className={"owner"}><strong>by </strong> {room.ownerClient || "Inconnu"}</div>
-                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {room.videoPlaylist?.[0]?.title || "Aucune vidéo"}</div>
+                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {room.videoHistory?.[0]?.title || "Aucune vidéo"}</div>
 
                         {isConnected && (
                             <button
