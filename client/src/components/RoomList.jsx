@@ -43,9 +43,9 @@ export default function RoomList() {
             <ul>
                 {rooms.map((room, index) => (
                     <li key={index} style={{ marginBottom: '1em' }} className={"room-list-item"}>
-                        <div className={"name"}>{room.name || "Room sans nom"}</div>
+                        <div className={"name"}>{ truncate(room.name || "Room sans nom", 40)}</div>
                         <div className={"owner"}><strong>by </strong> {room.ownerClient || "Inconnu"}</div>
-                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {truncate(room.videoHistory?.[0]?.title || "Aucune vidéo", 50)}</div>
+                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {truncate(room.videoHistory?.[0]?.title || "Aucune vidéo", 40)}</div>
                         {isConnected && (
                             <button
                                 className="joinRoomBtn"
