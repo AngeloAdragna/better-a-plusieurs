@@ -39,8 +39,8 @@ const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem
     }, [socket, isAddVote]);
 
     return (
-        <div className="video_playlist valign-wrapper" onClick={handlePlayVideo}>
-            <div className="col s2" style={{padding: "5px 0px 5px 0px"}} >
+        <div className="video_playlist valign-wrapper">
+            <div className="col s2" style={{padding: "5px 0px 5px 0px"}} onClick={handlePlayVideo} >
                 <img
                     src={thumbnail}
                     alt={title}
@@ -53,7 +53,7 @@ const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem
                     }}
                 />
             </div>
-            <div className="col s8 title">
+            <div className="col s8 title" onClick={handlePlayVideo}>
                 <span className="video_name">
                     {truncate(title, 40)}
                 </span>
