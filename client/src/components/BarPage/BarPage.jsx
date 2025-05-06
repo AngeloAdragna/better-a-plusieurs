@@ -1,6 +1,5 @@
 import ModalParametersUser from "./ModalParametersUser";
 import ModalHelpUser from "./ModalHelpUser";
-import ModalParametersUserRoom from "./ModalParametersUserRoom";
 import ModalShareRoom from "./ModalShareRoom";
 import React, { useState } from "react";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
@@ -11,7 +10,6 @@ import { BsPatchQuestion } from "react-icons/bs";
 
 const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd}) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const isConnected = false; //TODO Remplace ça par un vrai état de connexion
     return (
         <section className='BarPage valign-wrapper'>
                 <div className='col s4'>
