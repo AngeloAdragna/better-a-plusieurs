@@ -8,11 +8,12 @@ export default function RoomList() {
     const [rooms, setRooms] = useState([]);
     const navigate = useNavigate();
     const { isConnected } = useContext(AuthContext);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     useEffect(() => {
         const fetchOpenRooms = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/openRooms");
+                const response = await axios.get(`http://${serverIP}:8080/openRooms`);
                 setRooms(response.data);
             } catch (error) {
                 console.error("Erreur lors de la récupération des rooms :", error);
