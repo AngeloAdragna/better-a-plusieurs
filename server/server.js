@@ -9,6 +9,7 @@ import RoomManager from "./RoomManager.js";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 /**
   * Récupération de l'ip locale du serveur et écriture dans un fichier .env dans le répertoire /client/
@@ -25,7 +26,30 @@ if (!serverIP) {
 
 console.log(`Adresse IP du serveur : ${serverIP}`)
 
-const envContent = `VITE_SERVER_IP=${serverIP}`;
+let envContent = `VITE_SERVER_IP=${serverIP}`;
+
+//add env variable to envContent
+dotenv.config();
+
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VITE_FIREBASE_APP_ID,
+  measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID
+};
+
+envContent += `\nVITE_FIREBASE_API_KEY=${firebaseConfig.apiKey}`;
+envContent += `\nVITE_FIREBASE_AUTH_DOMAIN=${firebaseConfig.authDomain}`;
+envContent += `\nVITE_FIREBASE_DATABASE_URL=${firebaseConfig.databaseURL}`;
+envContent += `\nVITE_FIREBASE_PROJECT_ID=${firebaseConfig.projectId}`;
+envContent += `\nVITE_FIREBASE_STORAGE_BUCKET=${firebaseConfig.storageBucket}`;
+envContent += `\nVITE_FIREBASE_MESSAGING_SENDER_ID=${firebaseConfig.messagingSenderId}`;
+envContent += `\nVITE_FIREBASE_APP_ID=${firebaseConfig.appId}`;
+envContent += `\nVITE_FIREBASE_MEASUREMENT_ID=${firebaseConfig.measurementId}`;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
