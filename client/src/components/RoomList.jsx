@@ -8,11 +8,16 @@ export default function RoomList() {
     const [rooms, setRooms] = useState([]);
     const navigate = useNavigate();
     const { isConnected } = useContext(AuthContext);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
+
+    const truncate = (str, maxLength) => {
+        return str.length > maxLength ? str.slice(0, maxLength - 3) + '...' : str;
+    };
 
     useEffect(() => {
         const fetchOpenRooms = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/openRooms");
+                const response = await axios.get(`http://${serverIP}:8080/openRooms`);
                 setRooms(response.data);
             } catch (error) {
                 console.error("Erreur lors de la récupération des rooms :", error);
@@ -24,23 +29,23 @@ export default function RoomList() {
 
     if (!rooms || rooms.length === 0) {
         return (
-            <div className="RoomList">
-                <h2>Liste des Rooms</h2>
-                <ul><li>Aucune room disponible</li></ul>
-            </div>
+            <></>
         );
     }
 
     return (
+        <>
+        <div className="transition">
+            <></>
+        </div>
         <div className="RoomList">
             <h2>Liste des Rooms</h2>
             <ul>
                 {rooms.map((room, index) => (
                     <li key={index} style={{ marginBottom: '1em' }} className={"room-list-item"}>
-                        <div className={"name"}>{room.name || "Room sans nom"}</div>
+                        <div className={"name"}>{ truncate(room.name || "Room sans nom", 40)}</div>
                         <div className={"owner"}><strong>by </strong> {room.ownerClient || "Inconnu"}</div>
-                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {room.videoPlaylist?.[0]?.title || "Aucune vidéo"}</div>
-
+                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {truncate(room.videoHistory?.[0]?.title || "Aucune vidéo", 40)}</div>
                         {isConnected && (
                             <button
                                 className="joinRoomBtn"
@@ -54,5 +59,6 @@ export default function RoomList() {
                 ))}
             </ul>
         </div>
+        </>
     );
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import M from "materialize-css";
 
-const ModalParametersUser = () => {
+const ModalParametersUser = ({roomId, socket}) => {
   const navigate = useNavigate();
   // State for the form data
   const [formData, setFormData] = useState({
@@ -20,14 +20,39 @@ const ModalParametersUser = () => {
     }
   }, []);
 
-  
-  const onSubmit = (event) => {
-    event.preventDefault();
-    //TODO Si la room existe, rediriger vers la room avec son url
-  
-  };
- 
-  // Handle the change of the switches
+    useEffect(() => {
+        fetch(`http://${import.meta.env.VITE_SERVER_IP}:8080/room/${roomId}`)
+            .then((res) => res.json())
+            .then((data) => {
+                setFormData({
+                    roomName: data.name || "",
+                    voteSkip: data.voteSkip || false,
+                    voteAdd: data.voteAdd || false,
+                    freeToShare: data.freeToShare || false,
+                });
+            })
+            .catch((err) => console.error("Erreur chargement room :", err));
+    }, [roomId]);
+
+
+
+    const onSubmit = (event) => {
+        event.preventDefault();
+        socket.emit("updateRoomParameters", {
+            roomId,
+            roomName: formData.roomName,
+            voteSkip: formData.voteSkip,
+            voteAdd: formData.voteAdd,
+            freeToShare: formData.freeToShare
+        });
+
+        const modalInstance = M.Modal.getInstance(document.getElementById("ModalParametersUser"));
+        modalInstance.close();
+    };
+
+
+
+    // Handle the change of the switches
   const handleChange = (event) => {
     const { name, checked } = event.target;
     setFormData((prev) => ({ ...prev, [name]: checked }));

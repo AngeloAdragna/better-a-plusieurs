@@ -41,6 +41,21 @@ function Room() {
         socket.emit("joinRoom", roomId);
     }, [roomId, socket]);
 
+    React.useEffect(() => {
+        if (!socket) return;
+
+        const handleRoomUpdated = (updatedRoomInfo) => {
+            console.log("🎯 Room mise à jour :", updatedRoomInfo);
+            setRoomInfo(updatedRoomInfo);
+        };
+
+        socket.on("roomUpdated", handleRoomUpdated);
+
+        return () => {
+            socket.off("roomUpdated", handleRoomUpdated);
+        };
+    }, [socket]);
+
 
     React.useEffect(() => {
         if (!socket) return;
@@ -93,11 +108,12 @@ function Room() {
                          roomInfo.freeToShare
                      }
                      isAllowedToAdd={!roomInfo.voteAdd}
+                     owner={roomInfo.ownerClient}
             />
-            
+
             <div className=" valign-wrapper main-content">
                 <div className="col s12 m6 l7">
-                  
+
                     <div id="video" className="video-container">
                         <YoutubeFrame roomId={roomId} video={{ title: 'Fatal Bazooka "Fous Ta Cagoule" HD', thumbnail: "https://i.ytimg.com/vi/PI9yKr39vGI/mqdefault.jpg", id: "PI9yKr39vGI" }} socket={socket} />
 

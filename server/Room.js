@@ -170,6 +170,7 @@ class Room {
       freeToShare: this.#freeToShare,
       ownerClient: this.#ownerClient,
       videoPlaylist: this.#videoPlaylist,
+      videoHistory: this.#videoHistory,
     };
   }
 
