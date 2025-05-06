@@ -105,17 +105,6 @@ app.get('/room/:id', (req, res) => {
   res.json(room.toJSON());
 });
 
-app.post('/room/:id', (req, res) => {
-  const roomId = req.params.id;
-  const { accessToken } = req.body;
-
-  const room = RoomManager.getRoomById(roomId);
-  if (!room) {
-    return res.status(404).json({ error: 'Room not found' });
-  }
-
-});
-
 
 app.get('/room-playlist/:id', (req, res) => {
   const playlist = RoomManager.getRoomById(req.params.id).getVideoPlaylist();
@@ -206,6 +195,24 @@ if (process.env.NODE_ENV !== 'test') {
       socket.emit("username", socket.username);
     });
 
+    socket.on("updateRoomParameters", ({ roomId, roomName, voteSkip, voteAdd, freeToShare }) => {
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) {
+        console.warn(`❌ Tentative de modification d'une room inexistante : ${roomId}`);
+        return;
+      }
+
+      if (typeof roomName === "string") room.setName(roomName);
+      room.changePreferences(voteSkip, voteAdd, freeToShare);
+
+      const updatedRoom = room.toJSON();
+
+      console.log(`⚙️ Paramètres mis à jour pour la room ${roomId}`, updatedRoom);
+
+      io.to(roomId).emit("roomUpdated", updatedRoom);
+    });
+
+
     /**
      * Gestion des messages
      */
@@ -257,7 +264,7 @@ if (process.env.NODE_ENV !== 'test') {
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
       room.addVideoToPlaylist(video);
-      io.in(roomId).emit("videoAddedPlaylist", room.getVideoPlaylist());
+      io.to(roomId).emit("videoAddedPlaylist", room.getVideoPlaylist());
     });
 
     socket.on("videoAddedHistory", ({ roomId, video }) => {

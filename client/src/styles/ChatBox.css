@@ -61,6 +61,7 @@
     margin-bottom: 0.5rem;
     word-break: break-word;
     display: flex;
+    font-size: 20px;
 }
 
 .message .author {
@@ -178,8 +179,7 @@
 /* Materialize responsive classes */
 @media (max-width: 1000px) {
     .ChatContainer {
-        width: 48vw; 
-    
+        width: 48vw;
     }
 }
 
