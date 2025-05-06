@@ -10,6 +10,10 @@ export default function RoomList() {
     const { isConnected } = useContext(AuthContext);
     const serverIP = import.meta.env.VITE_SERVER_IP;
 
+    const truncate = (str, maxLength) => {
+        return str.length > maxLength ? str.slice(0, maxLength - 3) + '...' : str;
+    };
+
     useEffect(() => {
         const fetchOpenRooms = async () => {
             try {
@@ -41,8 +45,7 @@ export default function RoomList() {
                     <li key={index} style={{ marginBottom: '1em' }} className={"room-list-item"}>
                         <div className={"name"}>{room.name || "Room sans nom"}</div>
                         <div className={"owner"}><strong>by </strong> {room.ownerClient || "Inconnu"}</div>
-                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {room.videoHistory?.[0]?.title || "Aucune vidéo"}</div>
-
+                        <div className={"current-video"}><strong>Vidéo en cours :</strong> {truncate(room.videoHistory?.[0]?.title || "Aucune vidéo", 50)}</div>
                         {isConnected && (
                             <button
                                 className="joinRoomBtn"

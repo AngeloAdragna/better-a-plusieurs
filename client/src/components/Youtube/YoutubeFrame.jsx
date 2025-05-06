@@ -20,6 +20,7 @@ const VideoPlayer = ({ roomId, video, socket, height = "390", width = "661" }) =
         width: width,
         playerVars: {
             autoplay: 0,        // Not Auto
+            mute: 1,          // Mute the video
 
             // to enable it manually
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
