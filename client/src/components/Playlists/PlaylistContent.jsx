@@ -1,13 +1,8 @@
 import React, { use, useState,useEffect } from "react";
-import io from "socket.io-client";
-import { useParams } from "react-router-dom";
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import {Pagination } from 'swiper/modules';
 import PlaylistVideo from "./PlaylistVideo.jsx";
 import axios from 'axios';
-import room from "../RoomCreation/Room.jsx";
 import { MdSkipNext } from "react-icons/md";
 
 
