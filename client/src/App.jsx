@@ -114,10 +114,6 @@ function HomePage() {
                 </div>
                 </div>
             </div>
-            <div className="transition">
-                <></>
-            </div>
-
             <RoomList />
 
 

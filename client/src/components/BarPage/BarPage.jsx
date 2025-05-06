@@ -9,7 +9,7 @@ import { GoShareAndroid } from "react-icons/go";
 import { BsPatchQuestion } from "react-icons/bs";
 
 
-const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd}) => {
+const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd, owner}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const isConnected = false; //TODO Remplace ça par un vrai état de connexion
     return (
@@ -35,13 +35,18 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd}) =
                 <div className='col s3 item'>
                     <div className='valign-wrapper iconBar'>
                         <div className='col s4'>
-                            <a className="modal-trigger" href="#ModalParametersUser"
+                            {owner === localStorage.getItem("username") && (
+                                <>
+                                <a className="modal-trigger" href="#ModalParametersUser"
                                 onClick={() => setModalOpen(true)}>
                                  <FaCogs className="barIcons" />
                             </a>
-                            {<ModalParametersUser/>}
+                                <ModalParametersUser roomId={roomId} socket={socket}/>
+                                </>
+                            )
+                        }
                         </div>
-                        {isAllowedToShare && (
+                        {(owner === localStorage.getItem("username") || isAllowedToShare) && (
                             <div className='col s4'>
                                 <a className="modal-trigger" href="#modalShareRoom"
                                     onClick={() => setModalOpen(true)}>

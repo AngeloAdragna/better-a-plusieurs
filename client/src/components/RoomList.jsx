@@ -24,14 +24,15 @@ export default function RoomList() {
 
     if (!rooms || rooms.length === 0) {
         return (
-            <div className="RoomList">
-                <h2>Liste des Rooms</h2>
-                <ul><li>Aucune room disponible</li></ul>
-            </div>
+            <></>
         );
     }
 
     return (
+        <>
+        <div className="transition">
+            <></>
+        </div>
         <div className="RoomList">
             <h2>Liste des Rooms</h2>
             <ul>
@@ -54,5 +55,6 @@ export default function RoomList() {
                 ))}
             </ul>
         </div>
+        </>
     );
 }
