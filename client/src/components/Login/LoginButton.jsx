@@ -1,5 +1,4 @@
 import { useState } from "react";
-import UserCreationModal from "./UserCreationModal.jsx";
 import ModalOpenConnection from "./ModalOpenConnection.jsx";
 
 const LoginButton = ({socket}) => {
