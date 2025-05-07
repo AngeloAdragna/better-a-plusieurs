@@ -29,12 +29,6 @@ function Room() {
      * }
      */
     const [roomInfo, setRoomInfo] = React.useState(null);
-
-    // TODO : connexion du client pour definir si c'est le propriétaire ou pas
-    //const clientId = localStorage.getItem("clientId");
-    //const isOwner = roomInfo;
-
-
     React.useEffect(() => {
         if (!socket) return;
         localStorage.setItem("roomId", roomId);
@@ -104,7 +98,6 @@ function Room() {
                      roomId={roomId}
                      socket={socket}
                      isAllowedToShare={
-                         // TODO : vérifier si le client est le propriétaire
                          roomInfo.freeToShare
                      }
                      isAllowedToAdd={!roomInfo.voteAdd}

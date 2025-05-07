@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import "../styles/VoteBox.css";
 import M from "materialize-css";
 
-// TODO : limiter a un vote par utilisateur !
 
 const VoteBox = ({roomId, socket}) => {
     /**

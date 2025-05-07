@@ -20,8 +20,6 @@ const ModalParametersUserRoom = ({owner}) => {
   
   const onSubmit = (event) => {
     event.preventDefault();
-    //TODO Si la room existe, rediriger vers la room avec son url
-  
   };
  
   return (

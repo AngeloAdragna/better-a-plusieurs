@@ -168,7 +168,6 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
-        //Todo verif structure lien bien vid
         socket.emit("videoAddedPlaylist", { roomId, video });  // Envoie la vidéo au serveur
     };
 

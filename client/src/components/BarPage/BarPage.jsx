@@ -11,7 +11,7 @@ import { BsPatchQuestion } from "react-icons/bs";
 
 const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd, owner}) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const isConnected = false; //TODO Remplace ça par un vrai état de connexion
+    const isConnected = false;
     return (
         <section className='BarPage valign-wrapper'>
                 <div className='col s4'>
