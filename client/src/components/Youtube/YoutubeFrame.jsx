@@ -12,9 +12,6 @@ const VideoPlayer = ({ roomId, video, socket, height = "390", width = "661" }) =
     const [authorizedTimeDelta] = useState(2);
     const [videoAlreadyAddedToHistory, setVideoAlreadyAddedToHistory] = useState(false);
 
-
-
-
     const opts = {
         height: height,
         width: width,

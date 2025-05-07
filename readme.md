@@ -1,60 +1,83 @@
-### Installation des dépendances  
-Dans le dossier `client`, exécuter la commande suivante :  
+### Installation des dépendances
+
+Dans le dossier `client`, exécuter la commande suivante :
+
 ```sh
-cd client  
-npm install  
+cd client
+npm install
 ```
 
+### Lancement du projet
 
-### Lancement du projet  
+#### Démarrer le serveur
 
-#### Démarrer le serveur  
-Ouvrir un premier terminal et exécuter :  
+Ouvrir un premier terminal et exécuter :
+
 ```sh
-cd server  
-node server.js  
+cd server
+node server.js
 ```
 
-#### Démarrer le client  
-Dans un second terminal, exécuter les commandes suivantes :  
+#### Démarrer le client
+
+Dans un second terminal, exécuter les commandes suivantes :
+
 ```sh
-cd client  
-npm run dev  
+cd client
+npm run dev
 ```
 
-### 3. Accès à l'application  
-Ouvrir un navigateur et se rendre à l'adresse :  
+### 3. Accès à l'application
+
+Ouvrir un navigateur et se rendre à l'adresse :
+
 ```
-http://localhost:5173  
-```  
+http://localhost:5173
+```
+
 =======
 
-### Installation des dépendances  
-Dans le dossier `client`, exécuter la commande suivante :  
+### Installation des dépendances
+
+Dans le dossier `client`, exécuter la commande suivante :
+
 ```sh
-cd client  
-npm install  
+cd client
+npm install
 ```
 
+### Lancement du projet
 
-### Lancement du projet  
+#### Démarrer le serveur
 
-#### Démarrer le serveur  
-Ouvrir un premier terminal et exécuter :  
+Ouvrir un premier terminal et exécuter :
+
 ```sh
-cd server  
-node server.js  
+cd server
+node server.js
 ```
 
-#### Démarrer le client  
-Dans un second terminal, exécuter les commandes suivantes :  
+#### Démarrer le client
+
+Dans un second terminal, exécuter les commandes suivantes :
+
 ```sh
-cd client  
-npm run dev  
+cd client
+npm run dev
 ```
 
-### 3. Accès à l'application  
-Ouvrir un navigateur et se rendre à l'adresse :  
+### 3. Accès à l'application
+
+Ouvrir un navigateur et se rendre à l'adresse :
+
 ```
-http://localhost:5173  
-```  
+http://localhost:5173
+```
+
+### Effectuer les tests
+
+Depuis la racine du projet `/better-a-plusieurs`
+
+```sh
+node runner_tests.js "votre adresse ip"
+```

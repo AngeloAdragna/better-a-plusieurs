@@ -1,6 +1,5 @@
 import ModalParametersUser from "./ModalParametersUser";
 import ModalHelpUser from "./ModalHelpUser";
-import ModalParametersUserRoom from "./ModalParametersUserRoom";
 import ModalShareRoom from "./ModalShareRoom";
 import React, { useState } from "react";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
