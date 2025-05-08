@@ -8,7 +8,7 @@ import { GoShareAndroid } from "react-icons/go";
 import { BsPatchQuestion } from "react-icons/bs";
 
 
-const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd, owner}) => {
+const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToPlay, owner}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const isConnected = false;
     return (
@@ -29,7 +29,7 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd, ow
                     </div>
                 </div>
                 <div className='col s5'>
-                    <YoutubeSearchBar roomId={roomId} socket={socket} isAllowedToAdd={isAllowedToAdd}/>
+                    <YoutubeSearchBar roomId={roomId} socket={socket} isAllowedToPlay={isAllowedToPlay}/>
                 </div>
                 <div className='col s3 item'>
                     <div className='valign-wrapper iconBar'>

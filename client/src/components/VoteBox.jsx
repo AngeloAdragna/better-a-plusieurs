@@ -12,11 +12,11 @@ const VoteBox = ({roomId, socket}) => {
      * Structure :
      * {
      *   id: number,            // ID unique du vote (généré aléatoirement ou automatiquement)
-     *   voteType: "add" | "skip" | null, // Type de vote : "add" pour ajouter une vidéo, "skip" pour passer une vidéo, null si aucun vote
+     *   voteType: "play" | "skip" | null, // Type de vote : "play" pour lire une vidéo, "skip" pour passer une vidéo, null si aucun vote
      *   author: string,         // Nom ou identifiant de l'utilisateur qui a lancé le vote
      *   nbrVotesYes: number,    // Nombre de votes "oui"
      *   nbrVotesNo: number,     // Nombre de votes "non"
-     *   videoName: string | null // Nom de la vidéo concernée (uniquement pour un vote "add"), null sinon
+     *   videoName: string | null // Nom de la vidéo concernée (uniquement pour un vote "play"), null sinon
      * }
      */
     const [currentVoteInfos, setCurrentVoteInfos] = useState({
@@ -170,7 +170,7 @@ const VoteBox = ({roomId, socket}) => {
                     <div className="vote-timer">{timeLeft}s</div>
 
                     <h5 className="vote-title">
-                        {currentVoteInfos.voteType === "add"
+                        {currentVoteInfos.voteType === "play"
                             ? `Vote pour lancer "${currentVoteInfos.videoName}"`
                             : "Vote pour passer la vidéo"}
                     </h5>

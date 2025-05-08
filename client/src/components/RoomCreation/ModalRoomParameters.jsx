@@ -12,7 +12,7 @@ const ModalRoomParameters = () => {
   const [formData, setFormData] = useState({
     roomName: "",
     voteSkip: false,
-    voteAdd: false,
+    votePlay: false,
     freeToShare: false,
   });
 
@@ -90,8 +90,8 @@ const ModalRoomParameters = () => {
 
             <div className="switch">
               <label>
-                Vote pour add
-                <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
+                Vote pour play
+                <input type="checkbox" name="votePlay" checked={formData.votePlay} onChange={handleChange} />
                 <span id="check_add" className="lever"></span>
               </label>
             </div>

@@ -8,7 +8,7 @@ const ModalParametersUser = ({roomId, socket}) => {
   const [formData, setFormData] = useState({
     roomName: "",
     voteSkip: false,
-    voteAdd: false,
+    votePlay: false,
     freeToShare: false,
   });
 
@@ -27,7 +27,7 @@ const ModalParametersUser = ({roomId, socket}) => {
                 setFormData({
                     roomName: data.name || "",
                     voteSkip: data.voteSkip || false,
-                    voteAdd: data.voteAdd || false,
+                    votePlay: data.votePlay || false,
                     freeToShare: data.freeToShare || false,
                 });
             })
@@ -42,7 +42,7 @@ const ModalParametersUser = ({roomId, socket}) => {
             roomId,
             roomName: formData.roomName,
             voteSkip: formData.voteSkip,
-            voteAdd: formData.voteAdd,
+            votePlay: formData.votePlay,
             freeToShare: formData.freeToShare
         });
 
@@ -84,8 +84,8 @@ const ModalParametersUser = ({roomId, socket}) => {
 
             <div className="switch">
               <label>
-                Vote pour add
-                <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
+                Vote pour play
+                <input type="checkbox" name="votePlay" checked={formData.votePlay} onChange={handleChange} />
                 <span className="lever"></span>
               </label>
             </div>

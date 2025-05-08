@@ -23,7 +23,7 @@ function Room() {
      *   id: string,
      *   name: string,
      *   voteSkip: boolean,
-     *   voteAdd: boolean,
+     *   votePlay: boolean,
      *   freeToShare: boolean,
      *   ownerClient: string | null
      * }
@@ -100,7 +100,7 @@ function Room() {
                      isAllowedToShare={
                          roomInfo.freeToShare
                      }
-                     isAllowedToAdd={!roomInfo.voteAdd}
+                     isAllowedToPlay={!roomInfo.votePlay}
                      owner={roomInfo.ownerClient}
             />
 
@@ -118,7 +118,7 @@ function Room() {
                     </div>
                 </div>
                 <div className="col s6 m6 l6 playlist-section">{/* playlist */}
-                    <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket} isAllowedToAdd={!roomInfo.voteAdd} isAllowedToSkip={!roomInfo.voteSkip}/>
+                    <PlaylistContent roomInfo={roomInfo} roomId={roomId} socket={socket} isAllowedToPlay={!roomInfo.votePlay} isAllowedToSkip={!roomInfo.voteSkip}/>
                 </div>
                 <div >{/* Chat */}
                     <ChatBox roomId={roomId} socket={socket} /> {/* Chat */}

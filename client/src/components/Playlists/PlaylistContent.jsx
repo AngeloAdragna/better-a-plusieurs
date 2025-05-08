@@ -6,7 +6,7 @@ import axios from 'axios';
 import { MdSkipNext } from "react-icons/md";
 
 
-function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToSkip}) {
+function PlaylistContent({roomInfo, roomId, socket, isAllowedToPlay, isAllowedToSkip}) {
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
     const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []);
@@ -115,7 +115,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                                 roomId={roomId}
                                 socket={socket}
                                 isPlaylistItem={!isSelected}
-                                isAllowedToAdd={isAllowedToAdd}
+                                isAllowedToPlay={isAllowedToPlay}
                             />
                         ))
                     )}
@@ -141,7 +141,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                                 roomId={roomId}
                                 socket={socket}
                                 isPlaylistItem={!isSelected}
-                                isAllowedToAdd={isAllowedToAdd}
+                                isAllowedToPlay={isAllowedToPlay}
                             />
                     )))}
                 </div>

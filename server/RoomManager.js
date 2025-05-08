@@ -4,8 +4,8 @@ import crypto from 'crypto';
 class RoomManager {
     static #rooms = [];
 
-    static createRoom(name, voteSkip, voteAdd, freeToShare, ownerClient = null) {
-      const room = new Room(crypto.randomUUID(), name, voteSkip, voteAdd, freeToShare, ownerClient);
+    static createRoom(name, voteSkip, votePlay, freeToShare, ownerClient = null) {
+      const room = new Room(crypto.randomUUID(), name, voteSkip, votePlay, freeToShare, ownerClient);
       this.#rooms.push(room);
       return room;
     }
@@ -18,9 +18,9 @@ class RoomManager {
         this.#rooms = this.#rooms.filter((r) => r !== room);
     }
 
-    static changeRoomParameters(roomId, voteSkip, voteAdd, freeToShare) {
+    static changeRoomParameters(roomId, voteSkip, votePlay, freeToShare) {
         const room = this.#rooms.find((r) => r.getId() === roomId);
-        room.changePreferences(voteSkip, voteAdd, freeToShare);
+        room.changePreferences(voteSkip, votePlay, freeToShare);
     }
 
     static getRooms() {

@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce';
 import { IoSearchSharp } from "react-icons/io5";
 import { FaArrowCircleDown } from "react-icons/fa";
 
-const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
+const YouTubeSearchBar = ({roomId, socket, isAllowedToPlay}) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [suggestions, setSuggestions] = useState([])
@@ -130,7 +130,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     }, [socket, currentSelectedVideo]);
 
     const handleSelectVideo = (video, roomId, socket) => {
-        if (isAllowedToAdd) {
+        if (isAllowedToPlay) {
             // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
             //console.log(socket)   // DEBUG 
             socket.emit("selectVideo", {roomId: roomId, video: video})
@@ -138,7 +138,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
         }
         else {
             setCurrentSelectedVideo(video)
-            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "add", videoName: video.title });
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "play", videoName: video.title });
         }
         const modal = document.querySelector('.modal');
         const instance = M.Modal.getInstance(modal);
