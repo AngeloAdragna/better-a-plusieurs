@@ -81,3 +81,14 @@ Depuis la racine du projet `/better-a-plusieurs`
 ```sh
 node runner_tests.js "votre adresse ip"
 ```
+http://localhost:5173  
+```
+
+### Exécuter les tests : 
+Attention il faut que google chrome soit installé pour que puppeteer fonctionne et que les tests passent !
+```sh
+cd client
+npm run dev
+cd../server
+npx cucumber-js
+```
