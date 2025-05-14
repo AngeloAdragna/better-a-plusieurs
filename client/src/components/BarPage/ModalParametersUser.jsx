@@ -9,7 +9,7 @@ const ModalParametersUser = ({roomId, socket}) => {
     roomName: "",
     voteSkip: false,
     votePlay: false,
-    freeToShare: false,
+    publicRoom: false,
   });
 
   // Initialize the modal
@@ -28,7 +28,7 @@ const ModalParametersUser = ({roomId, socket}) => {
                     roomName: data.name || "",
                     voteSkip: data.voteSkip || false,
                     votePlay: data.votePlay || false,
-                    freeToShare: data.freeToShare || false,
+                    publicRoom: data.publicRoom || false,
                 });
             })
             .catch((err) => console.error("Erreur chargement room :", err));
@@ -43,7 +43,7 @@ const ModalParametersUser = ({roomId, socket}) => {
             roomName: formData.roomName,
             voteSkip: formData.voteSkip,
             votePlay: formData.votePlay,
-            freeToShare: formData.freeToShare
+            publicRoom: formData.publicRoom
         });
 
         const modalInstance = M.Modal.getInstance(document.getElementById("ModalParametersUser"));
@@ -92,8 +92,8 @@ const ModalParametersUser = ({roomId, socket}) => {
 
             <div className="switch">
               <label>
-                Free to share
-                <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
+                Room publique
+                <input type="checkbox" name="publicRoom" checked={formData.publicRoom} onChange={handleChange} />
                 <span className="lever"></span>
               </label>
             </div>

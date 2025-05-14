@@ -90,9 +90,9 @@ app.delete("/users/:id", async (req, res) => {
  * Route de création d'une route
  */
 app.post('/create-room', (req, res) => {
-  const { roomName, voteSkip, votePlay, freeToShare, ownerUsername } = req.body;
-  console.log("Création de la room :", roomName, voteSkip, votePlay, freeToShare, ownerUsername);
-  const room = RoomManager.createRoom(roomName, voteSkip, votePlay, freeToShare, ownerUsername);
+  const { roomName, voteSkip, votePlay, publicRoom, ownerUsername } = req.body;
+  console.log("Création de la room :", roomName, voteSkip, votePlay, publicRoom, ownerUsername);
+  const room = RoomManager.createRoom(roomName, voteSkip, votePlay, publicRoom, ownerUsername);
   res.json({ id: room.getId() }); 
 });
 
@@ -195,7 +195,7 @@ if (process.env.NODE_ENV !== 'test') {
       socket.emit("username", socket.username);
     });
 
-    socket.on("updateRoomParameters", ({ roomId, roomName, voteSkip, votePlay, freeToShare }) => {
+    socket.on("updateRoomParameters", ({ roomId, roomName, voteSkip, votePlay, publicRoom }) => {
       const room = RoomManager.getRoomById(roomId);
       if (!room) {
         console.warn(`❌ Tentative de modification d'une room inexistante : ${roomId}`);
@@ -203,7 +203,7 @@ if (process.env.NODE_ENV !== 'test') {
       }
 
       if (typeof roomName === "string") room.setName(roomName);
-      room.changePreferences(voteSkip, votePlay, freeToShare);
+      room.changePreferences(voteSkip, votePlay, publicRoom);
 
       const updatedRoom = room.toJSON();
 

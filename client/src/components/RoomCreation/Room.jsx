@@ -24,7 +24,7 @@ function Room() {
      *   name: string,
      *   voteSkip: boolean,
      *   votePlay: boolean,
-     *   freeToShare: boolean,
+     *   publicRoom: boolean,
      *   ownerClient: string | null
      * }
      */
@@ -98,7 +98,7 @@ function Room() {
                      roomId={roomId}
                      socket={socket}
                      isAllowedToShare={
-                         roomInfo.freeToShare
+                         roomInfo.publicRoom
                      }
                      isAllowedToPlay={!roomInfo.votePlay}
                      owner={roomInfo.ownerClient}

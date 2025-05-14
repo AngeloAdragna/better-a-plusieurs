@@ -4,7 +4,7 @@ class Room {
     #ownerClient; // Client qui a créé la room
     #voteSkip; // Systeme de vote pour passer à la vidéo suivante
     #votePlay; // systeme de vote pour ajouter une vidéo à la playlist
-    #freeToShare; // Tout les participants a la room peuvent la partager
+    #publicRoom; // Tout les participants a la room peuvent la partager
     #videoPlaylist;   // Vidéos de la playlist
     #videoHistory;   // Historique des vidéos jouées
 
@@ -27,13 +27,13 @@ class Room {
         videoName: null,
     };
 
-    constructor(id, name, voteSkip, votePlay, freeToShare, ownerClient = null) {
+    constructor(id, name, voteSkip, votePlay, publicRoom, ownerClient = null) {
         this.#id = id;
         this.#roomName = name;
         this.#voteSkip = voteSkip;
         this.#ownerClient = ownerClient;
         this.#votePlay = votePlay;
-        this.#freeToShare = freeToShare;
+        this.#publicRoom = publicRoom;
         this.#videoPlaylist = [];
         this.#videoHistory = [];
     }
@@ -73,10 +73,10 @@ class Room {
         this.#ownerClient = client;
     }
 
-    changePreferences(voteSkip, votePlay, freeToShare) {
+    changePreferences(voteSkip, votePlay, publicRoom) {
         this.#voteSkip = voteSkip;
         this.#votePlay = votePlay;
-        this.#freeToShare = freeToShare;
+        this.#publicRoom = publicRoom;
     }
 
     getClient() {
@@ -91,8 +91,8 @@ class Room {
         return this.#votePlay;
     }
 
-    getFreeToShare() {
-        return this.#freeToShare;
+    getpublicRoom() {
+        return this.#publicRoom;
     }
 
     getId() {
@@ -167,7 +167,7 @@ class Room {
       name: this.#roomName,
       voteSkip: this.#voteSkip,
       votePlay: this.#votePlay,
-      freeToShare: this.#freeToShare,
+      publicRoom: this.#publicRoom,
       ownerClient: this.#ownerClient,
       videoPlaylist: this.#videoPlaylist,
       videoHistory: this.#videoHistory,

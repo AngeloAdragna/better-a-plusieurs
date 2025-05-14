@@ -12,8 +12,8 @@ const ModalRoomParameters = () => {
   const [formData, setFormData] = useState({
     roomName: "",
     voteSkip: false,
-    votePlay: false,
-    freeToShare: false,
+    votePlay: false, 
+      publicRoom: false,
   });
 
   // Initialize the modal
@@ -98,8 +98,8 @@ const ModalRoomParameters = () => {
 
             <div className="switch">
               <label>
-                Free to share
-                <input  type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
+                Room publique
+                <input type="checkbox" name="publicRoom" checked={formData.publicRoom} onChange={handleChange} />
                 <span id="check_share" className="lever"></span>
               </label>
             </div>
