@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
-const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem, isAllowedToAdd}) => {
-    const [isAddVote, setIsAddVote] = useState(false)
+const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem, isAllowedToPlay}) => {
+    const [isPlayVote, setIsPlayVote] = useState(false)
     const truncate = (str, maxLength) => {
         return str.length > maxLength ? str.slice(0, maxLength - 3) + '...' : str;
     };
@@ -13,12 +13,12 @@ const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem
     const handlePlayVideo = () => {
         console.log("Vote to skip")
 
-        if (isAllowedToAdd) {
+        if (isAllowedToPlay) {
             socket.emit("selectVideo", {roomId : roomId, video: video})
         }
         else {
-            setIsAddVote(true)
-            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "add", videoName: video.title });
+            setIsPlayVote(true)
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "play", videoName: video.title });
         }
 
     }
@@ -26,9 +26,9 @@ const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem
     useEffect(() => {
         const handleSelectVideo = ({id, result}) => {
             //console.log(`Result = ${result}`)
-            if(isAddVote) {
+            if(isPlayVote) {
                 if (result) socket.emit("selectVideo", {roomId: roomId, video: video})
-                setIsAddVote(false)
+                setIsPlayVote(false)
             }
         }
 
@@ -36,11 +36,11 @@ const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem
         return () => {
             socket.off("voteEnded", handleSelectVideo);
         };
-    }, [socket, isAddVote]);
+    }, [socket, isPlayVote]);
 
     return (
-        <div className="video_playlist valign-wrapper" onClick={handlePlayVideo}>
-            <div className="col s2" style={{padding: "5px 0px 5px 0px"}} >
+        <div className="video_playlist valign-wrapper">
+            <div className="col s2" style={{padding: "5px 0px 5px 0px"}} onClick={handlePlayVideo} >
                 <img
                     src={thumbnail}
                     alt={title}
@@ -53,7 +53,7 @@ const PlaylistVideo = ({ title, thumbnail, video, roomId, socket, isPlaylistItem
                     }}
                 />
             </div>
-            <div className="col s8 title">
+            <div className="col s8 title" onClick={handlePlayVideo}>
                 <span className="video_name">
                     {truncate(title, 40)}
                 </span>

@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import M from "materialize-css";
 
+
 const ModalRoomParameters = () => {
   const navigate = useNavigate();
+    const serverIP = import.meta.env.VITE_SERVER_IP
 
 
     // State for the form data
   const [formData, setFormData] = useState({
     roomName: "",
     voteSkip: false,
-    voteAdd: false,
-    freeToShare: false,
+    votePlay: false, 
+      publicRoom: false,
   });
 
   // Initialize the modal
@@ -33,7 +35,7 @@ const ModalRoomParameters = () => {
                 ownerUsername: username // 👈 ajouté ici
             };
 
-            const response = await fetch('http://localhost:8080/create-room', {
+            const response = await fetch(`http://${serverIP}:8080/create-room`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,6 +70,7 @@ const ModalRoomParameters = () => {
         <form onSubmit={onSubmit}>
           <div className="input-field">
             <input
+              id="roomName"
               type="text"
               name="roomName"
               value={formData.roomName}
@@ -81,28 +84,28 @@ const ModalRoomParameters = () => {
               <label>
                 Vote pour skip
                 <input type="checkbox" name="voteSkip" checked={formData.voteSkip} onChange={handleChange} />
-                <span className="lever"></span>
+                <span id="check_skip" className="lever"></span>
               </label>
             </div>
 
             <div className="switch">
               <label>
-                Vote pour add
-                <input type="checkbox" name="voteAdd" checked={formData.voteAdd} onChange={handleChange} />
-                <span className="lever"></span>
+                Vote pour play
+                <input type="checkbox" name="votePlay" checked={formData.votePlay} onChange={handleChange} />
+                <span id="check_add" className="lever"></span>
               </label>
             </div>
 
             <div className="switch">
               <label>
-                Free to share
-                <input type="checkbox" name="freeToShare" checked={formData.freeToShare} onChange={handleChange} />
-                <span className="lever"></span>
+                Room publique
+                <input type="checkbox" name="publicRoom" checked={formData.publicRoom} onChange={handleChange} />
+                <span id="check_share" className="lever"></span>
               </label>
             </div>
           </div>
 
-          <button type="submit" className="btn waves-effect waves-light">Créer</button>
+          <button id="submit" type="submit" className="btn waves-effect waves-light">Créer</button>
         </form>
       </div>
     </div>

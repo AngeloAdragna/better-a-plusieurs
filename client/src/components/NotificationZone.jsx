@@ -44,26 +44,30 @@ const NotificationZone = ({ socket }) => {
             showNotification(`🔙 ${username} a quitté la room`, "leave");
         };
 
-        const handleVideoAdded = (video) => {
-            if (!video?.title) return;
-            showNotification(`🔜 ${video.title} a été ajouté à la playlist`, "added");
+        const handleVideoAdded = (videos) => {
+            showNotification(`🔜 ${videos[videos.length - 1].title} a été ajouté à la playlist`, "added");
         };
 
         const handleVideoDeleted = (video) => {
             if (!video?.title) return;
-            showNotification(`🔙 ${video.title} a été supprimé de la playlist`, "deleted");
+            showNotification(`🔙 ${video[video.length - 1].title} a été supprimé de la playlist`, "deleted");
         };
 
         const handleVideoSelected = (video) => {
             if (!video?.title) return;
             showNotification(`🔜 ${video.title} a été sélectionné`, "selected");
-        };
+        }
+
+        const handleRoomUpdated = () => {
+            showNotification(`🔄 La room a été mise à jour`, "added");
+        }
 
         socket.on("userJoined", handleJoin);
         socket.on("userLeft", handleLeave);
         socket.on("videoAddedPlaylist", handleVideoAdded);
         socket.on("videoDeletedPlaylist", handleVideoDeleted);
-        socket.on("selectVideo", handleVideoSelected);
+        socket.on("selectVideo", handleVideoSelected)
+        socket.on("roomUpdated", handleRoomUpdated);
 
         return () => {
             socket.off("userJoined", handleJoin);
@@ -71,6 +75,7 @@ const NotificationZone = ({ socket }) => {
             socket.off("videoAddedPlaylist", handleVideoAdded);
             socket.off("videoDeletedPlaylist", handleVideoDeleted);
             socket.off("selectVideo", handleVideoSelected);
+            socket.off("roomUpdated", handleRoomUpdated);
         };
     }, [socket, notification]);
 

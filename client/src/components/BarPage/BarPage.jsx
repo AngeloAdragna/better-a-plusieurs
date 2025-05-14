@@ -1,6 +1,5 @@
 import ModalParametersUser from "./ModalParametersUser";
 import ModalHelpUser from "./ModalHelpUser";
-import ModalParametersUserRoom from "./ModalParametersUserRoom";
 import ModalShareRoom from "./ModalShareRoom";
 import React, { useState } from "react";
 import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
@@ -9,9 +8,9 @@ import { GoShareAndroid } from "react-icons/go";
 import { BsPatchQuestion } from "react-icons/bs";
 
 
-const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd}) => {
+const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToPlay, owner}) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const isConnected = false; //TODO Remplace ça par un vrai état de connexion
+    const isConnected = false;
     return (
         <section className='BarPage valign-wrapper'>
                 <div className='col s4'>
@@ -30,18 +29,23 @@ const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToAdd}) =
                     </div>
                 </div>
                 <div className='col s5'>
-                    <YoutubeSearchBar roomId={roomId} socket={socket} isAllowedToAdd={isAllowedToAdd}/>
+                    <YoutubeSearchBar roomId={roomId} socket={socket} isAllowedToPlay={isAllowedToPlay}/>
                 </div>
                 <div className='col s3 item'>
                     <div className='valign-wrapper iconBar'>
                         <div className='col s4'>
-                            <a className="modal-trigger" href="#ModalParametersUser"
+                            {owner === localStorage.getItem("username") && (
+                                <>
+                                <a className="modal-trigger" href="#ModalParametersUser"
                                 onClick={() => setModalOpen(true)}>
                                  <FaCogs className="barIcons" />
                             </a>
-                            {<ModalParametersUser/>}
+                                <ModalParametersUser roomId={roomId} socket={socket}/>
+                                </>
+                            )
+                        }
                         </div>
-                        {isAllowedToShare && (
+                        {(owner === localStorage.getItem("username") || isAllowedToShare) && (
                             <div className='col s4'>
                                 <a className="modal-trigger" href="#modalShareRoom"
                                     onClick={() => setModalOpen(true)}>

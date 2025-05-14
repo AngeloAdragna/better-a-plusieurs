@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import "../styles/VoteBox.css";
 import M from "materialize-css";
 
-// TODO : limiter a un vote par utilisateur !
 
 const VoteBox = ({roomId, socket}) => {
     /**
@@ -13,11 +12,11 @@ const VoteBox = ({roomId, socket}) => {
      * Structure :
      * {
      *   id: number,            // ID unique du vote (généré aléatoirement ou automatiquement)
-     *   voteType: "add" | "skip" | null, // Type de vote : "add" pour ajouter une vidéo, "skip" pour passer une vidéo, null si aucun vote
+     *   voteType: "play" | "skip" | null, // Type de vote : "play" pour lire une vidéo, "skip" pour passer une vidéo, null si aucun vote
      *   author: string,         // Nom ou identifiant de l'utilisateur qui a lancé le vote
      *   nbrVotesYes: number,    // Nombre de votes "oui"
      *   nbrVotesNo: number,     // Nombre de votes "non"
-     *   videoName: string | null // Nom de la vidéo concernée (uniquement pour un vote "add"), null sinon
+     *   videoName: string | null // Nom de la vidéo concernée (uniquement pour un vote "play"), null sinon
      * }
      */
     const [currentVoteInfos, setCurrentVoteInfos] = useState({
@@ -160,10 +159,10 @@ const VoteBox = ({roomId, socket}) => {
                         {voteResult.success
                             ? voteResult.voteType === "skip"
                                 ? "La vidéo a été passée !"
-                                : `La vidéo "${voteResult.videoName}" à été ajoutée en playlist !`
+                                : `Lancement de la vidéo "${voteResult.videoName}" !`
                             : voteResult.voteType === "skip"
                                 ? "La vidéo n'a pas été passée."
-                                : `La vidéo "${voteResult.videoName}" n'a pas été ajoutée en playlist.`}
+                                : `Annulation du lancement de la vidéo "${voteResult.videoName}"...`}
                     </h5>
                 </div>
             ) : (
@@ -171,8 +170,8 @@ const VoteBox = ({roomId, socket}) => {
                     <div className="vote-timer">{timeLeft}s</div>
 
                     <h5 className="vote-title">
-                        {currentVoteInfos.voteType === "add"
-                            ? `Vote pour ajouter en playlist "${currentVoteInfos.videoName}"`
+                        {currentVoteInfos.voteType === "play"
+                            ? `Vote pour lancer "${currentVoteInfos.videoName}"`
                             : "Vote pour passer la vidéo"}
                     </h5>
                     <p className="vote-author">

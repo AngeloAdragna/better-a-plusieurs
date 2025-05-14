@@ -7,7 +7,7 @@ import { GiphyFetch } from "@giphy/js-fetch-api";
 import { Grid } from "@giphy/react-components";
 import "../styles/ChatBox.css";
 
-const gf = new GiphyFetch("Rg2Fql3Wpc2tKQUHOpUTKo0PdG80rmJX"); // TODO: move to .env
+const gf = new GiphyFetch("Rg2Fql3Wpc2tKQUHOpUTKo0PdG80rmJX");
 
 const ChatBox = ({roomId, socket}) => {
     const [message, setMessage] = useState("");

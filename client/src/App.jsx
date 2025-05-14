@@ -41,7 +41,7 @@ function HomePage() {
             localStorage.removeItem("roomId");
         }
         socket.on("connect", () => {
-            console.log("✅ WebSocket connecté :", socket.id);
+            console.log("WebSocket connecté :", socket.id);
         });
 
         return () => {};
@@ -71,14 +71,14 @@ function HomePage() {
         setIsConnected(false);
     };
 
-
-
+   
     return (
         <div className="homepage-container">
             <div className={"main-container"}>
                 {username ? (
                     <div className="header-buttons-connected">
-                        <div className="connected-info">
+                        <div id="connected-info" className="connected-info">
+                            
                             Connecté en tant que <strong>{username}</strong>
                         </div>
                         <div className="disconect-btn">
@@ -97,6 +97,7 @@ function HomePage() {
                 <img src={"src/assets/icon_space.svg"} alt={"logo"} />
                 <div className={"buttonsCenter"}>
                     <a
+                        id="btn_createroom"
                         className="btnHover modal-trigger"
                         href={isConnected ? "#modalRoomParameters" : "#modalConnection"}
                         onClick={openRoomCreationModal}
@@ -113,10 +114,6 @@ function HomePage() {
                 </div>
                 </div>
             </div>
-            <div className="transition">
-                <></>
-            </div>
-
             <RoomList />
 
 

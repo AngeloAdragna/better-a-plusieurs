@@ -5,13 +5,15 @@ import debounce from 'lodash.debounce';
 import { IoSearchSharp } from "react-icons/io5";
 import { FaArrowCircleDown } from "react-icons/fa";
 
-const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
+const YouTubeSearchBar = ({roomId, socket, isAllowedToPlay}) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [suggestions, setSuggestions] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [isFormSubmitted, setIsFormSubmitted] = useState(false)
     const [currentSelectedVideo, setCurrentSelectedVideo] = useState(null)
+
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     // Clé d'API à utiliser pour pouvoir utiliser l'API de youtube
     const API_KEY = 'AIzaSyDfs_OdXymNYGXGcCHU8T1iu_w6Iz1CzKg';
@@ -85,7 +87,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
         try {
             // On effectue la requête
-            const res = await axios.get(`http://localhost:8080/suggest?q=${encodeURIComponent(query)}`);
+            const res = await axios.get(`http://${serverIP}:8080/suggest?q=${encodeURIComponent(query)}`);
             // On parse la réponse pour avoir quelque chose d'exploitable
             const suggestions = parseGoogleSuggestResponse(res.data);
             // On actualise les suggestions
@@ -128,15 +130,19 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
     }, [socket, currentSelectedVideo]);
 
     const handleSelectVideo = (video, roomId, socket) => {
-        if (isAllowedToAdd) {
+        if (isAllowedToPlay) {
             // Emission d'une requête au serveur pour indiquer qu'on souhaite changer de vidéo
-            //console.log(socket)   // DEBUG
+            //console.log(socket)   // DEBUG 
             socket.emit("selectVideo", {roomId: roomId, video: video})
+
         }
         else {
             setCurrentSelectedVideo(video)
-            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "add", videoName: video.title });
+            socket.emit("startVote", { roomId, author: localStorage.getItem("username"), voteType: "play", videoName: video.title });
         }
+        const modal = document.querySelector('.modal');
+        const instance = M.Modal.getInstance(modal);
+        instance.close(); // Ferme le modal
     }
 
     // Initialisation de la modal dans laquelle seront affichés les résultats
@@ -162,7 +168,6 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
     // Fonction pour ajouter une vidéo à la playlist
     const handleAddVideoToPlaylist = (video) => {
-        //Todo verif structure lien bien vid
         socket.emit("videoAddedPlaylist", { roomId, video });  // Envoie la vidéo au serveur
     };
 
@@ -172,6 +177,7 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
                 <div className="valign-wrapper">
                     <div className="input-field col s11 text-suggestions-wrapper">
                         <input
+                            id="input_searchbar"
                             type="text"
                             placeholder="Rechercher sur YouTube..."
                             value={query}
@@ -205,9 +211,9 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
 
                     </div>
                     <div className="col s2">
-                        <IoSearchSharp  className="searchIconBar" onClick={handleSearch} />
+                        <IoSearchSharp  type="submit" id='btn_searchIconBar'  className="searchIconBar" onClick={handleSearch} />
                         {isFormSubmitted && (
-                            <FaArrowCircleDown className="searchIconBar" onClick={openResultsModalManually}/>
+                            <FaArrowCircleDown type="button" className="searchIconBar" onClick={openResultsModalManually}/>
                         )
                         }
                     </div>
@@ -228,8 +234,9 @@ const YouTubeSearchBar = ({roomId, socket, isAllowedToAdd}) => {
                                     <div className="video-result row">
                                         <div
                                             key={video.id.videoId}
+                                            className="video-selector modal-close col"
                                             onClick={() => handleSelectVideo({ title: video.snippet.title, thumbnail: video.snippet.thumbnails.medium.url, id: video.id.videoId }, roomId, socket)}
-                                            className="modal-close col">
+                                            >
                                             <img
                                                 src={video.snippet.thumbnails.medium.url}
                                                 alt="thumbnail"

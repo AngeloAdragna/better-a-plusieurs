@@ -1,4 +1,4 @@
-import React, { use, useState,useEffect } from "react";
+import React, {useState,useEffect } from "react";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import PlaylistVideo from "./PlaylistVideo.jsx";
@@ -6,11 +6,12 @@ import axios from 'axios';
 import { MdSkipNext } from "react-icons/md";
 
 
-function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToSkip}) {
+function PlaylistContent({roomInfo, roomId, socket, isAllowedToPlay, isAllowedToSkip}) {
     const [isSelected, setIsSelected] = useState(true);
     const [videoPlaylist, setVideoPlaylist] = useState(roomInfo.videoPlaylist || []);  // Initialise la playlist avec les vidéos de la room
     const [videoHistory, setVideoHistory] = useState(roomInfo.videoHistory || []);
-    const [isSkipVote, setIsSkipVote] = useState(false)
+    const [isSkipVote, setIsSkipVote] = useState(false);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     const handleLinkClick = () => {
         setIsSelected((prev) => !prev);
@@ -38,7 +39,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
     useEffect(() => {
         if (roomId) {
             //socket.emit("joinRoom", roomId);
-            axios.get(`http://localhost:8080/room-playlist/${roomId}`)
+            axios.get(`http://${serverIP}:8080/room-playlist/${roomId}`)
                 .then((response) => {
                     setVideoPlaylist(response.data);
                     console.log("Playlist récupérée :", response.data);
@@ -54,7 +55,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
     useEffect(() => {
         if (roomId) {
             //socket.emit("joinRoom", roomId);
-            axios.get(`http://localhost:8080/room-history/${roomId}`)
+            axios.get(`http://${serverIP}:8080/room-history/${roomId}`)
                 .then((response) => {
                     setVideoHistory(response.data);
                     console.log("Historique récupéré :", response.data);
@@ -98,8 +99,8 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
     return (
         <section className='PlaylistContent'>
             <div className="SelectionBar">
-                <span onClick={handleLinkClick} className={`button ${isSelected ? 'down' : 'up'}`}>History</span>
-                <span onClick={handleLinkClick} className={`button ${isSelected ? 'up' : 'down'}`}>Playlist</span>
+                <span id="display_history" onClick={handleLinkClick} className={`button ${isSelected ? 'down' : 'up'}`}>History</span>
+                <span id="display_playlist" onClick={handleLinkClick} className={`button ${isSelected ? 'up' : 'down'}`}>Playlist</span>
             </div>
             <div className={`ContentPlaylistHistory ${isSelected ? 'desactived' : ''}`}>
                 <div className="playlist-container">
@@ -114,12 +115,12 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                                 roomId={roomId}
                                 socket={socket}
                                 isPlaylistItem={!isSelected}
-                                isAllowedToAdd={isAllowedToAdd}
+                                isAllowedToPlay={isAllowedToPlay}
                             />
                         ))
                     )}
                     {videoPlaylist.length > 0 && (
-                        <div className="skip-video button">
+                        <div id="skip_video_btn" className="skip-video button">
                             <span onClick={handleSkipVideo}>Vidéo suivante <MdSkipNext className="skip-video-icon" /></span>
                         </div>
                     )}
@@ -140,6 +141,7 @@ function PlaylistContent({roomInfo, roomId, socket, isAllowedToAdd, isAllowedToS
                                 roomId={roomId}
                                 socket={socket}
                                 isPlaylistItem={!isSelected}
+                                isAllowedToPlay={isAllowedToPlay}
                             />
                     )))}
                 </div>

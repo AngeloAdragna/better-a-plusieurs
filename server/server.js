@@ -6,13 +6,41 @@ import cors from "cors";
 import {getUsers, createUser, deleteUser, login, randomUserId, getUserById} from './db.js';
 import {authenticateToken} from "./middleware/authenticateToken.js";
 import RoomManager from "./RoomManager.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+/**
+  * Récupération de l'ip locale du serveur et écriture dans un fichier .env dans le répertoire /client/
+  */
+const args = process.argv.slice(2);       // Récupère les arguments passés
+const serverIP = args[0];                  // Utilise l'argument passé
+if (!serverIP) {
+  // Erreur si on ne place pas une ip en argument du lancement du serveur
+  console.error("❌ Erreur : Veuillez spécifier l'adresse IP du serveur en argument.");
+  console.error("➡️  Exemple : node server.js 192.168.1.42");
+  process.exit(1);                          // Interrompt l'exécution du serveur
+}
+
+console.log(`Adresse IP du serveur : ${serverIP}`)
+
+const envContent = `VITE_SERVER_IP=${serverIP}`;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.join(__dirname, "../client/.env") // Racine du projet
+fs.writeFileSync(envPath, envContent);
+
+console.log(`✅ Fichier .env généré avec :
+- VITE_SERVER_IP=${serverIP}`);
+
 
 const app = express();
 export default app;
 app.use(cors({
-  origin: 'http://localhost:5173', // URL de votre frontend React
+  origin: ['http://localhost:5173', `http://${serverIP}:5173`], // URL du frontend React
   methods: ['GET', 'POST'],
-  credentials: true,  // Si vous avez besoin de gérer les cookies / sessions
+  credentials: true,  // Si besoin de gérer les cookies / sessions
 }));
 app.use(express.json());
 
@@ -62,9 +90,9 @@ app.delete("/users/:id", async (req, res) => {
  * Route de création d'une route
  */
 app.post('/create-room', (req, res) => {
-  const { roomName, voteSkip, voteAdd, freeToShare, ownerUsername } = req.body;
-  console.log("Création de la room :", roomName, voteSkip, voteAdd, freeToShare, ownerUsername);
-  const room = RoomManager.createRoom(roomName, voteSkip, voteAdd, freeToShare, ownerUsername);
+  const { roomName, voteSkip, votePlay, publicRoom, ownerUsername } = req.body;
+  console.log("Création de la room :", roomName, voteSkip, votePlay, publicRoom, ownerUsername);
+  const room = RoomManager.createRoom(roomName, voteSkip, votePlay, publicRoom, ownerUsername);
   res.json({ id: room.getId() }); 
 });
 
@@ -75,17 +103,6 @@ app.get('/room/:id', (req, res) => {
   const room = RoomManager.getRoomById(req.params.id);
   if (!room) return res.status(404).send('Room not found');
   res.json(room.toJSON());
-});
-
-app.post('/room/:id', (req, res) => {
-  const roomId = req.params.id;
-  const { accessToken } = req.body;
-
-  const room = RoomManager.getRoomById(roomId);
-  if (!room) {
-    return res.status(404).json({ error: 'Room not found' });
-  }
-
 });
 
 
@@ -178,6 +195,24 @@ if (process.env.NODE_ENV !== 'test') {
       socket.emit("username", socket.username);
     });
 
+    socket.on("updateRoomParameters", ({ roomId, roomName, voteSkip, votePlay, publicRoom }) => {
+      const room = RoomManager.getRoomById(roomId);
+      if (!room) {
+        console.warn(`❌ Tentative de modification d'une room inexistante : ${roomId}`);
+        return;
+      }
+
+      if (typeof roomName === "string") room.setName(roomName);
+      room.changePreferences(voteSkip, votePlay, publicRoom);
+
+      const updatedRoom = room.toJSON();
+
+      console.log(`⚙️ Paramètres mis à jour pour la room ${roomId}`, updatedRoom);
+
+      io.to(roomId).emit("roomUpdated", updatedRoom);
+    });
+
+
     /**
      * Gestion des messages
      */
@@ -229,7 +264,7 @@ if (process.env.NODE_ENV !== 'test') {
       const room = RoomManager.getRoomById(roomId);
       if (!room) return;
       room.addVideoToPlaylist(video);
-      io.in(roomId).emit("videoAddedPlaylist", room.getVideoPlaylist());
+      io.to(roomId).emit("videoAddedPlaylist", room.getVideoPlaylist());
     });
 
     socket.on("videoAddedHistory", ({ roomId, video }) => {
@@ -307,9 +342,9 @@ if (process.env.NODE_ENV !== 'test') {
       socket.to(roomId).emit("play", timeCode, video);
     });
 
-    socket.on("sync", ({ roomId, timeCode }) => {
+    socket.on("sync", ({ roomId, timeCode, video }) => {
       console.log(`🔄 Sync dans la salle ${roomId} : ${timeCode}`);
-      socket.to(roomId).emit("sync", timeCode);
+      socket.to(roomId).emit("sync", timeCode, video);
     });
 
     socket.on("selectVideo", ({roomId, video}) => {
@@ -323,6 +358,6 @@ if (process.env.NODE_ENV !== 'test') {
   });
 
   server.listen(8080, '0.0.0.0', () => {
-    console.log("Serveur Socket.IO lancé sur http://localhost:8080");
+    console.log(`Serveur Socket.IO lancé sur http://${serverIP}:8080`);
   });
 }

@@ -10,6 +10,7 @@ const ModalOpenConnection = ({socket}) => {
     const [formData, setFormData] = useState({ username: '', password: '' });
     const [submittedData, setSubmittedData] = useState(null);
     const modalRef = useRef(null);
+    const serverIP = import.meta.env.VITE_SERVER_IP;
 
     useEffect(() => {
         if (modalRef.current) {
@@ -22,7 +23,7 @@ const ModalOpenConnection = ({socket}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Form submitted:", formData);
-        axios.post( 'http://localhost:8080' + '/login', formData)
+        axios.post( `http://${serverIP}:8080` + '/login', formData)
             .then(response => {
                 const token = response.data;
                 console.log("Token received:", token);
@@ -82,7 +83,7 @@ const ModalOpenConnection = ({socket}) => {
                             <label htmlFor="password">Mot de passe</label>
                         </div>
 
-                        <button type="submit" className="btn waves-effect waves-light">
+                        <button id="submit" type="submit" className="btn waves-effect waves-light">
                             Se connecter
                         </button>
                     </form>
