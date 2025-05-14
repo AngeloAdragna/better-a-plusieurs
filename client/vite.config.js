@@ -8,5 +8,6 @@ export default defineConfig({
     historyApiFallback: true, // Permet de gérer le routage côté client
     host: true, // ou '0.0.0.0' pour toutes les interfaces
     port: 5173, // (ou un autre port)
+    allowedHosts: ['srvetd-webgrp05.univ-avignon.fr']
   },
 });
