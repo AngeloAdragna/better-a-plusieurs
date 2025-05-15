@@ -6,18 +6,26 @@ import YoutubeSearchBar from "../Youtube/YoutubeSearchBar.jsx";
 import { FaCogs } from "react-icons/fa";
 import { GoShareAndroid } from "react-icons/go";
 import { BsPatchQuestion } from "react-icons/bs";
+import {useNavigate} from "react-router-dom";
 
 
 const BarPage = ({roomName, roomId, socket, isAllowedToShare, isAllowedToPlay, owner}) => {
     const [modalOpen, setModalOpen] = useState(false);
     const isConnected = false;
+    const navigate = useNavigate();
+
+    const goToHome = () => {
+        navigate("/");
+    };
+
     return (
         <section className='BarPage valign-wrapper'>
                 <div className='col s4'>
                     <div className='item'>
                         <div className='valign-wrapper'>
                             <div className='col s4 valign-wrapper'>
-                                <img 
+                                <img
+                                    onClick={goToHome}
                                     src='/src/assets/icon_space.svg' 
                                     alt='Icon Space' 
                                     href='/' 
