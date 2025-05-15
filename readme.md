@@ -82,10 +82,10 @@ Depuis la racine du projet `/better-a-plusieurs`
 node runner_tests.js "votre adresse ip"
 ```
 http://localhost:5173  
-```
 
 ### Exécuter les tests : 
 Attention il faut que google chrome soit installé pour que puppeteer fonctionne et que les tests passent !
+Il faut également lancer une première fois le server et le client afin de remplir la variable d'environnement !  
 ```sh
 cd client
 npm run dev
